@@ -1,0 +1,24 @@
+---
+# CrowdSec - Web Application Firewall
+
+- name: Ensure CrowdSec directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/crowdsec"
+    - "{{ container_data_root }}/crowdsec/config"
+    - "{{ container_data_root }}/crowdsec/data"
+
+- name: Deploy CrowdSec docker-compose
+  ansible.builtin.template:
+    src: crowdsec/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/crowdsec/docker-compose.yml"
+    mode: '0644'
+  notify: Restart crowdsec
+
+- name: Start CrowdSec container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/crowdsec"
+    state: present

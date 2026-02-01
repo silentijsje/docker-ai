@@ -1,0 +1,25 @@
+services:
+  portainer:
+    image: {{ portainer_image }}
+    container_name: portainer
+    restart: unless-stopped
+    environment:
+      - TZ={{ container_timezone }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ container_data_root }}/portainer:/data
+    ports:
+      - "{{ container_ports.portainer }}:9000"
+    networks:
+      - {{ container_network }}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.entrypoints=secureweb"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.{{ cloudflare_dns_zone }}`)"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.scheme=http"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+networks:
+  {{ container_network }}:
+    external: true
