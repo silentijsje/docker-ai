@@ -16,14 +16,14 @@ container_timezone: "{{ timezone }}"
 container_data_root: "{{ docker_data_root }}"        # /mnt/docker
 container_media_root: /mnt/media
 
-# SMB Share
-smb_share_path: //10.0.40.2/media
+# SMB Share (from vault for security)
+smb_share_path: "{{ vault_smb_share_path }}"
 
 # Theme (for LinuxServer.io containers with ThemePark mod)
 container_theme: nord
 
-# Cloudflare DNS zone for Traefik labels
-cloudflare_dns_zone: silentijsje.com
+# Cloudflare DNS zone for Traefik labels (from vault for security)
+cloudflare_dns_zone: "{{ vault_cloudflare_dns_zone }}"
 
 # Docker network
 container_network: mediastack
@@ -82,7 +82,7 @@ booklore_db_name: booklore
 # Traefik - Reverse Proxy
 traefik_image: "traefik:latest"
 traefik_log_level: "INFO"
-traefik_cert_email: "admin@{{ cloudflare_dns_zone }}"
+traefik_cert_email: "{{ vault_traefik_cert_email }}"
 
 # CrowdSec - WAF
 crowdsec_image: "crowdsecurity/crowdsec:latest"
