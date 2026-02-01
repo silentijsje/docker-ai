@@ -32,3 +32,14 @@ ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pas
 ```
 
 Never commit plaintext secrets to this repository.
+
+## Pre-commit Hook
+
+A pre-commit hook is available to prevent accidentally committing unencrypted vault files.
+
+**Install the hook:**
+```bash
+cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+```
+
+The hook will block commits if any vault file is not encrypted.
