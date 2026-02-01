@@ -1,0 +1,20 @@
+---
+# Portainer - Docker Management UI
+
+- name: Ensure Portainer directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/portainer"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Portainer docker-compose
+  ansible.builtin.template:
+    src: portainer/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/portainer/docker-compose.yml"
+    mode: '0644'
+  notify: Restart portainer
+
+- name: Start Portainer container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/portainer"
+    state: present

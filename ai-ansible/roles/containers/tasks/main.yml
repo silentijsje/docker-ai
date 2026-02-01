@@ -2,19 +2,66 @@
 # Main entry point for containers role
 # Deploys enabled containers from the enabled_containers variable
 
+# Ensure Docker network exists (MUST BE FIRST)
 - name: Ensure Docker network exists
   community.docker.docker_network:
     name: "{{ container_network }}"
     state: present
 
+# =============================================================================
+# PHASE 1: Infrastructure Services (Deploy in Order)
+# =============================================================================
+# Traefik MUST be first - all other services depend on it
+
+- name: Deploy Traefik reverse proxy
+  ansible.builtin.include_tasks: traefik.yml
+  when: enabled_containers.traefik | default(false)
+  tags:
+    - infrastructure
+    - traefik
+
+- name: Deploy CrowdSec WAF
+  ansible.builtin.include_tasks: crowdsec.yml
+  when: enabled_containers.crowdsec | default(false)
+  tags:
+    - infrastructure
+    - crowdsec
+
+- name: Deploy Portainer
+  ansible.builtin.include_tasks: portainer.yml
+  when: enabled_containers.portainer | default(false)
+  tags:
+    - infrastructure
+    - portainer
+
+- name: Deploy Homepage
+  ansible.builtin.include_tasks: homepage.yml
+  when: enabled_containers.homepage | default(false)
+  tags:
+    - infrastructure
+    - homepage
+
+# =============================================================================
+# PHASE 2+: Application Services
+# =============================================================================
+
 - name: Deploy Radarr
   ansible.builtin.include_tasks: radarr.yml
   when: enabled_containers.radarr | default(false)
+  tags:
+    - media_management
+    - radarr
 
 - name: Deploy Sonarr
   ansible.builtin.include_tasks: sonarr.yml
   when: enabled_containers.sonarr | default(false)
+  tags:
+    - media_management
+    - sonarr
 
 - name: Deploy Booklore
   ansible.builtin.include_tasks: booklore.yml
   when: enabled_containers.booklore | default(false)
+  tags:
+    - content
+    - booklore

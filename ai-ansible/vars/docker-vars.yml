@@ -16,14 +16,14 @@ container_timezone: "{{ timezone }}"
 container_data_root: "{{ docker_data_root }}"        # /mnt/docker
 container_media_root: /mnt/media
 
-# SMB Share
-smb_share_path: //10.0.40.2/media
+# SMB Share (from vault for security)
+smb_share_path: "{{ vault_smb_share_path }}"
 
 # Theme (for LinuxServer.io containers with ThemePark mod)
 container_theme: nord
 
-# Cloudflare DNS zone for Traefik labels
-cloudflare_dns_zone: silentijsje.com
+# Cloudflare DNS zone for Traefik labels (from vault for security)
+cloudflare_dns_zone: "{{ vault_cloudflare_dns_zone }}"
 
 # Docker network
 container_network: mediastack
@@ -34,6 +34,17 @@ container_network: mediastack
 # Assign ports for each service here. Internal ports are fixed by the app.
 
 container_ports:
+  # Infrastructure - Reverse Proxy & Management
+  traefik: 8080           # Dashboard
+  traefik_http: 80        # HTTP entry point
+  traefik_https: 443      # HTTPS entry point
+  traefik_metrics: 8082   # Prometheus metrics
+  crowdsec_api: 8080      # CrowdSec API
+  crowdsec_metrics: 6060  # Prometheus metrics
+  crowdsec_waf: 7422      # WAF
+  portainer: 9000         # Portainer UI
+  homepage: 3001          # Homepage dashboard
+
   # Media Management - *arr stack
   radarr: 7878           # Movies (internal: 7878)
   sonarr: 8989           # TV Shows (internal: 8989)
@@ -48,10 +59,6 @@ container_ports:
   # tautulli: 8181       # Plex stats (internal: 8181)
   # jellystat: 3000      # Jellyfin stats (internal: 3000)
   # overseerr: 5055      # Media requests (internal: 5055)
-
-  # Infrastructure
-  # portainer: 9000      # Docker management (internal: 9000)
-  # homepage: 3000       # Dashboard (internal: 3000)
 
 # =============================================================================
 # Service-Specific Settings
@@ -72,12 +79,33 @@ booklore_mariadb_image: lscr.io/linuxserver/mariadb:11.4.5
 booklore_mariadb_container_name: booklore-mariadb
 booklore_db_name: booklore
 
+# Traefik - Reverse Proxy
+traefik_image: "traefik:latest"
+traefik_log_level: "INFO"
+traefik_cert_email: "{{ vault_traefik_cert_email }}"
+
+# CrowdSec - WAF
+crowdsec_image: "crowdsecurity/crowdsec:latest"
+
+# Portainer - Docker Management
+portainer_image: "portainer/portainer-ce:latest"
+
+# Homepage - Dashboard
+homepage_image: "ghcr.io/gethomepage/homepage:latest"
+
 # =============================================================================
 # Enabled Services
 # =============================================================================
 # Toggle services on/off
 
 enabled_containers:
+  # Infrastructure (Phase 1)
+  traefik: true
+  crowdsec: true
+  portainer: true
+  homepage: true
+
+  # Media Management
   radarr: true
   sonarr: true
   booklore: true

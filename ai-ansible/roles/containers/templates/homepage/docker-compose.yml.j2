@@ -1,0 +1,27 @@
+services:
+  homepage:
+    image: {{ homepage_image }}
+    container_name: homepage
+    restart: unless-stopped
+    environment:
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_data_root }}/homepage/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "{{ container_ports.homepage }}:3000"
+    networks:
+      - {{ container_network }}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.entrypoints=secureweb"
+      - "traefik.http.routers.homepage.rule=Host(`homepage.{{ cloudflare_dns_zone }}`)"
+      - "traefik.http.routers.homepage.service=homepage"
+      - "traefik.http.services.homepage.loadbalancer.server.scheme=http"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+
+networks:
+  {{ container_network }}:
+    external: true

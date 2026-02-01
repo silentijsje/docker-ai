@@ -1,0 +1,33 @@
+---
+# Traefik - Reverse Proxy with Let's Encrypt
+# CRITICAL: Must be deployed first - all other services depend on this
+
+- name: Ensure Traefik directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/traefik"
+    - "{{ container_data_root }}/traefik/letsencrypt"
+    - "{{ container_data_root }}/traefik/config"
+    - "{{ container_data_root }}/traefik/logs"
+
+- name: Deploy Traefik static configuration
+  ansible.builtin.template:
+    src: traefik/traefik.yml.j2
+    dest: "{{ container_data_root }}/traefik/traefik.yml"
+    mode: '0644'
+  notify: Restart traefik
+
+- name: Deploy Traefik docker-compose
+  ansible.builtin.template:
+    src: traefik/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/traefik/docker-compose.yml"
+    mode: '0644'
+  notify: Restart traefik
+
+- name: Start Traefik container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/traefik"
+    state: present

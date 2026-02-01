@@ -1,0 +1,23 @@
+---
+# Homepage - Service Dashboard
+
+- name: Ensure Homepage directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/homepage"
+    - "{{ container_data_root }}/homepage/config"
+
+- name: Deploy Homepage docker-compose
+  ansible.builtin.template:
+    src: homepage/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/homepage/docker-compose.yml"
+    mode: '0644'
+  notify: Restart homepage
+
+- name: Start Homepage container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/homepage"
+    state: present
