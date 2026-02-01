@@ -1,0 +1,24 @@
+---
+# Default variables for containers role
+# Override these in group_vars/containers.yml
+
+container_puid: 1000
+container_pgid: 1000
+container_timezone: Europe/Amsterdam
+container_theme: nord
+container_network: mediastack
+
+container_data_root: /mnt/docker
+container_media_root: /mnt/media
+
+cloudflare_dns_zone: example.com
+
+container_ports:
+  radarr: 7878
+  sonarr: 8989
+  booklore: 8085
+
+enabled_containers:
+  radarr: true
+  sonarr: true
+  booklore: true

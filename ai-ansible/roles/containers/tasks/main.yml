@@ -1,0 +1,20 @@
+---
+# Main entry point for containers role
+# Deploys enabled containers from the enabled_containers variable
+
+- name: Ensure Docker network exists
+  community.docker.docker_network:
+    name: "{{ container_network }}"
+    state: present
+
+- name: Deploy Radarr
+  ansible.builtin.include_tasks: radarr.yml
+  when: enabled_containers.radarr | default(false)
+
+- name: Deploy Sonarr
+  ansible.builtin.include_tasks: sonarr.yml
+  when: enabled_containers.sonarr | default(false)
+
+- name: Deploy Booklore
+  ansible.builtin.include_tasks: booklore.yml
+  when: enabled_containers.booklore | default(false)

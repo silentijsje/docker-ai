@@ -20,26 +20,34 @@
   vars_files:
     - vars/users.yml
     - vars/vault.yml
+    - vars/docker-vars.yml
   tasks:
     - name: Install cifs-utils
       ansible.builtin.apt:
         name: cifs-utils
         state: present
 
+    - name: Create SMB credentials file
+      ansible.builtin.copy:
+        dest: /root/.smbcredentials
+        content: |
+          username={{ smb_credentials.username }}
+          password={{ smb_credentials.password }}
+        mode: '0600'
+        owner: root
+        group: root
+      no_log: true
+
     - name: Create mount point
       ansible.builtin.file:
-        path: /mnt/media
+        path: "{{ container_media_root }}"
         state: directory
         mode: '0755'
 
-    - name: Mount SMB share
+    - name: Mount SMB share via fstab
       ansible.posix.mount:
-        src: //10.0.30.2/media
-        path: /mnt/media
-        opts: >-
-          rw,vers=3,file_mode=0770,dir_mode=0770,
-          username={{ smb_credentials.username }},
-          password={{ smb_credentials.password }}
+        src: "{{ smb_share_path }}"
+        path: "{{ container_media_root }}"
+        opts: "rw,vers=3,credentials=/root/.smbcredentials,uid={{ container_puid }},gid={{ container_pgid }},file_mode=0770,dir_mode=0770"
         fstype: cifs
-        boot: true
         state: mounted

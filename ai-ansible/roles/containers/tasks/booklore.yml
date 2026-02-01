@@ -1,0 +1,25 @@
+---
+# Booklore - Book Library Manager
+# https://github.com/booklore/booklore
+
+- name: Ensure Booklore directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/booklore"
+    - "{{ container_data_root }}/booklore/data"
+    - "{{ container_data_root }}/booklore/mariadb"
+
+- name: Deploy Booklore docker-compose
+  ansible.builtin.template:
+    src: booklore/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/booklore/docker-compose.yml"
+    mode: '0644'
+  notify: Restart booklore
+
+- name: Start Booklore containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/booklore"
+    state: present

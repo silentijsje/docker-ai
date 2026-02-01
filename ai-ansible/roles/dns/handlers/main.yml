@@ -1,4 +1,0 @@
----
-- name: restart pihole
-  ansible.builtin.command: pihole restartdns
-  changed_when: false

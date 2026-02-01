@@ -1,0 +1,56 @@
+---
+###########################################################################
+# Booklore - Book Library Manager with MariaDB
+# Deployed by Ansible - Do not edit manually
+###########################################################################
+
+services:
+  booklore:
+    image: {{ booklore_image | default('booklore/booklore:latest') }}
+    container_name: {{ booklore_container_name | default('booklore') }}
+    restart: unless-stopped
+    environment:
+      - USER_ID={{ container_puid }}
+      - GROUP_ID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+      - DATABASE_URL=jdbc:mariadb://{{ booklore_mariadb_container_name | default('booklore-mariadb') }}:3306/{{ booklore_db_name | default('booklore') }}
+      - DATABASE_USERNAME={{ vault_booklore_db_user }}
+      - DATABASE_PASSWORD={{ vault_booklore_db_password }}
+      - BOOKLORE_PORT={{ container_ports.booklore }}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "{{ container_ports.booklore }}:{{ container_ports.booklore }}"
+    volumes:
+      - {{ container_data_root }}/booklore/data:/app/data
+      - {{ container_media_root }}/books:/books
+      - {{ container_media_root }}/Downloads/completed/Books:/bookdrop
+    networks:
+      - {{ container_network }}
+
+  mariadb:
+    image: {{ booklore_mariadb_image | default('lscr.io/linuxserver/mariadb:11.4.5') }}
+    container_name: {{ booklore_mariadb_container_name | default('booklore-mariadb') }}
+    restart: unless-stopped
+    environment:
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+      - MYSQL_ROOT_PASSWORD={{ vault_booklore_db_root_password }}
+      - MYSQL_DATABASE={{ booklore_db_name | default('booklore') }}
+      - MYSQL_USER={{ vault_booklore_db_user }}
+      - MYSQL_PASSWORD={{ vault_booklore_db_password }}
+    volumes:
+      - {{ container_data_root }}/booklore/mariadb:/config
+    networks:
+      - {{ container_network }}
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  {{ container_network }}:
+    external: true

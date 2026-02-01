@@ -1,0 +1,22 @@
+---
+# Deploy Docker containers
+# Usage: ansible-playbook containers.yml --ask-vault-pass
+# Or:    ansible-playbook containers.yml --vault-password-file=../.vault_pass
+
+- name: Deploy Docker Containers
+  hosts: docker_vm
+  vars_files:
+    - vars/vault.yml
+    - vars/users.yml
+    - vars/docker-vars.yml
+
+  pre_tasks:
+    - name: Verify Docker is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+      become: true
+
+  roles:
+    - role: containers
+      become: true

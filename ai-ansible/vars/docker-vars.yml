@@ -1,0 +1,83 @@
+---
+# =============================================================================
+# Docker Container Configuration
+# =============================================================================
+# All configurable settings for deployed containers.
+# Secrets are in vars/vault.yml (encrypted)
+
+# =============================================================================
+# Global Settings
+# =============================================================================
+container_puid: 3000
+container_pgid: 3000
+container_timezone: "{{ timezone }}"
+
+# Paths
+container_data_root: "{{ docker_data_root }}"        # /mnt/docker
+container_media_root: /mnt/media
+
+# SMB Share
+smb_share_path: //10.0.40.2/media
+
+# Theme (for LinuxServer.io containers with ThemePark mod)
+container_theme: nord
+
+# Cloudflare DNS zone for Traefik labels
+cloudflare_dns_zone: silentijsje.com
+
+# Docker network
+container_network: mediastack
+
+# =============================================================================
+# Port Assignments
+# =============================================================================
+# Assign ports for each service here. Internal ports are fixed by the app.
+
+container_ports:
+  # Media Management - *arr stack
+  radarr: 7878           # Movies (internal: 7878)
+  sonarr: 8989           # TV Shows (internal: 8989)
+  # prowlarr: 9696       # Indexers (internal: 9696)
+  # whisparr: 6969       # Adult content (internal: 6969)
+
+  # Books & Documents
+  booklore: 8085         # Book library (internal: configurable)
+  # paperless: 8000      # Documents (internal: 8000)
+
+  # Media Servers & Stats
+  # tautulli: 8181       # Plex stats (internal: 8181)
+  # jellystat: 3000      # Jellyfin stats (internal: 3000)
+  # overseerr: 5055      # Media requests (internal: 5055)
+
+  # Infrastructure
+  # portainer: 9000      # Docker management (internal: 9000)
+  # homepage: 3000       # Dashboard (internal: 3000)
+
+# =============================================================================
+# Service-Specific Settings
+# =============================================================================
+
+# Radarr
+radarr_image: lscr.io/linuxserver/radarr:latest
+radarr_container_name: radarr
+
+# Sonarr
+sonarr_image: lscr.io/linuxserver/sonarr:latest
+sonarr_container_name: sonarr
+
+# Booklore
+booklore_image: booklore/booklore:latest
+booklore_container_name: booklore
+booklore_mariadb_image: lscr.io/linuxserver/mariadb:11.4.5
+booklore_mariadb_container_name: booklore-mariadb
+booklore_db_name: booklore
+
+# =============================================================================
+# Enabled Services
+# =============================================================================
+# Toggle services on/off
+
+enabled_containers:
+  radarr: true
+  sonarr: true
+  booklore: true

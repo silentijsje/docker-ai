@@ -1,0 +1,21 @@
+---
+# Sonarr - TV Series Library Manager
+# https://docs.linuxserver.io/images/docker-sonarr
+
+- name: Ensure Sonarr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/sonarr"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Sonarr docker-compose
+  ansible.builtin.template:
+    src: sonarr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/sonarr/docker-compose.yml"
+    mode: '0644'
+  notify: Restart sonarr
+
+- name: Start Sonarr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/sonarr"
+    state: present

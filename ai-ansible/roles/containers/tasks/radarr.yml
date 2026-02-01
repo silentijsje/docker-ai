@@ -1,0 +1,21 @@
+---
+# Radarr - Movie Library Manager
+# https://docs.linuxserver.io/images/docker-radarr
+
+- name: Ensure Radarr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/radarr"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Radarr docker-compose
+  ansible.builtin.template:
+    src: radarr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/radarr/docker-compose.yml"
+    mode: '0644'
+  notify: Restart radarr
+
+- name: Start Radarr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/radarr"
+    state: present

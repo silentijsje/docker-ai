@@ -1,0 +1,15 @@
+---
+- name: Restart radarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/radarr"
+    state: restarted
+
+- name: Restart sonarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/sonarr"
+    state: restarted
+
+- name: Restart booklore
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/booklore"
+    state: restarted

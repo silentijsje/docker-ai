@@ -23,3 +23,12 @@ smb_credentials:
 
 # CrowdSec configuration
 crowdsec_lapi_key: "{{ vault_crowdsec_lapi_key }}"
+
+# =============================================================================
+# Container Secrets (referenced from vault.yml)
+# =============================================================================
+
+# Booklore MariaDB
+booklore_db_root_password: "{{ vault_booklore_db_root_password }}"
+booklore_db_user: "{{ vault_booklore_db_user }}"
+booklore_db_password: "{{ vault_booklore_db_password }}"
