@@ -12,7 +12,7 @@ head -1 ai-ansible/vars/vault.yml
 
 To encrypt if not encrypted:
 ```bash
-ansible-vault encrypt ai-ansible/vars/vault.yml
+ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
 ```
 
 Never commit plaintext secrets to this repository.
