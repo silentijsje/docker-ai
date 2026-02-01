@@ -1,0 +1,14 @@
+---
+# Master playbook - runs all configurations
+
+- name: Bootstrap all servers
+  ansible.builtin.import_playbook: setup.yml
+
+- name: Configure proxy servers
+  ansible.builtin.import_playbook: proxy.yml
+
+- name: Configure parent proxy servers
+  ansible.builtin.import_playbook: proxy_parent.yml
+
+- name: Configure DNS servers
+  ansible.builtin.import_playbook: dns.yml

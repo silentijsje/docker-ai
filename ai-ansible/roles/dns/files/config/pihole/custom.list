@@ -1,0 +1,14 @@
+# Custom DNS entries for Pi-hole
+# Format: IP_ADDRESS HOSTNAME
+
+10.0.0.1 unifi.lan
+10.0.0.2 truenas.lan
+10.0.0.50 pihole.lan pihole1.lan
+10.0.0.70 pve1.lan
+10.0.0.71 pve2.lan
+10.0.0.75 pbs.lan
+10.0.0.80 media.lan docker.lan
+10.0.0.81 immich.lan
+10.0.20.82 proxy.lan
+10.0.20.85 jellyfin.lan
+10.0.20.91 jellyfin2.lan

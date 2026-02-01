@@ -1,0 +1,9 @@
+---
+- name: Setup proxy servers (Traefik)
+  hosts: proxy
+  become: true
+  vars_files:
+    - vars/vault.yml
+    - vars/users.yml
+  roles:
+    - role: proxy

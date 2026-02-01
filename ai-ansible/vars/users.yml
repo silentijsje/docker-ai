@@ -1,0 +1,25 @@
+---
+users:
+  - name: "stanley"
+    groups: "renfrew,admins,docker,sudo"
+    uid: 3000
+    password: "{{ vault_stanley_password }}"
+  - name: "lando"
+    groups: "renfrew"
+    uid: 3001
+    password: "{{ vault_lando_password }}"
+
+usergroups:
+  - name: "docker"
+    gid: 988
+  - name: "renfrew"
+    gid: 3000
+  - name: "admins"
+    gid: 3001
+
+smb_credentials:
+  username: "{{ vault_smb_username }}"
+  password: "{{ vault_smb_password }}"
+
+# CrowdSec configuration
+crowdsec_lapi_key: "{{ vault_crowdsec_lapi_key }}"

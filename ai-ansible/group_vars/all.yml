@@ -1,0 +1,16 @@
+---
+# Global variables for all hosts
+
+ansible_user: stanley
+ansible_become: true
+ansible_become_method: sudo
+
+# Timezone
+timezone: Europe/Amsterdam
+
+# SSH settings
+ssh_port: 22
+
+# Docker settings
+docker_users:
+  - stanley

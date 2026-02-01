@@ -1,0 +1,31 @@
+# Exclude input folder (contains original files with hardcoded secrets)
+input/
+
+# Ansible vault password files
+.vault_pass
+.vault_password
+*.vault_pass
+
+# OS files
+.DS_Store
+._*
+Thumbs.db
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak

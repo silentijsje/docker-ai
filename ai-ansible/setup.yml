@@ -1,0 +1,45 @@
+---
+- name: Bootstrap all servers
+  hosts: all
+  become: true
+  vars_files:
+    - vars/users.yml
+    - vars/vault.yml
+  roles:
+    - role: bootstrap
+
+- name: Install Docker on VM hosts
+  hosts: docker_vm
+  become: true
+  roles:
+    - role: docker
+
+- name: Mount SMB shares on Docker VMs
+  hosts: docker_vm
+  become: true
+  vars_files:
+    - vars/users.yml
+    - vars/vault.yml
+  tasks:
+    - name: Install cifs-utils
+      ansible.builtin.apt:
+        name: cifs-utils
+        state: present
+
+    - name: Create mount point
+      ansible.builtin.file:
+        path: /mnt/media
+        state: directory
+        mode: '0755'
+
+    - name: Mount SMB share
+      ansible.posix.mount:
+        src: //10.0.30.2/media
+        path: /mnt/media
+        opts: >-
+          rw,vers=3,file_mode=0770,dir_mode=0770,
+          username={{ smb_credentials.username }},
+          password={{ smb_credentials.password }}
+        fstype: cifs
+        boot: true
+        state: mounted

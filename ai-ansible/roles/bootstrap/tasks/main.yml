@@ -1,0 +1,15 @@
+---
+- name: Update OS
+  ansible.builtin.import_tasks: update_os.yml
+
+- name: Configure timezone
+  ansible.builtin.import_tasks: timezone.yml
+
+- name: Harden SSH
+  ansible.builtin.import_tasks: sshd.yml
+
+- name: Configure users and groups
+  ansible.builtin.import_tasks: users.yml
+
+- name: Deploy SSH keys
+  ansible.builtin.import_tasks: ssh_keys.yml

@@ -1,0 +1,4 @@
+---
+traefik_config_src: "./files/"
+traefik_config_dest: "/docker/traefik"
+traefik_compose_dir: "/mnt/docker/proxy"

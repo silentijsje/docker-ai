@@ -1,0 +1,9 @@
+---
+- name: Setup parent proxy servers (Traefik)
+  hosts: proxy_parent
+  become: true
+  vars_files:
+    - vars/vault.yml
+    - vars/users.yml
+  roles:
+    - role: proxy_parent

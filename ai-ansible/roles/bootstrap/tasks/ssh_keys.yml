@@ -1,0 +1,8 @@
+---
+- name: Set authorized keys from GitHub
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: https://github.com/silentijsje.keys
+    exclusive: true
+  loop: "{{ users }}"

@@ -1,0 +1,45 @@
+# Ansible vault password file (NEVER commit this)
+.vault_pass
+.vault_password
+*.vault_pass
+
+# Retry files
+*.retry
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# IDE/Editor
+.idea/
+.vscode/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Local testing
+.molecule/
+.cache/
+
+# Backup files
+*.bak
+*.backup
+
+# SSH keys (if accidentally placed here)
+id_rsa
+id_ed25519
+*.pem

@@ -1,0 +1,26 @@
+---
+- name: Ensure usergroups exist
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+    state: present
+  loop: "{{ usergroups }}"
+
+- name: Create users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    uid: "{{ item.uid }}"
+    append: true
+    password: "{{ item.password }}"
+    shell: /bin/bash
+    state: present
+  loop: "{{ users }}"
+
+- name: Allow sudo group passwordless sudo
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s

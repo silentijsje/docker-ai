@@ -1,0 +1,11 @@
+---
+ssh_port: 22
+timezone: Europe/Amsterdam
+
+base_packages:
+  - qemu-guest-agent
+  - nano
+  - cron
+  - curl
+  - wget
+  - htop

@@ -1,0 +1,20 @@
+---
+# Ansible Vault encrypted secrets
+# Encrypt this file: ansible-vault encrypt vars/vault.yml
+# Edit encrypted:    ansible-vault edit vars/vault.yml
+# View encrypted:    ansible-vault view vars/vault.yml
+
+# User password hashes (SHA-512)
+# Generate with: mkpasswd --method=sha-512
+vault_stanley_password: "CHANGEME_GENERATE_NEW_HASH"
+vault_lando_password: "CHANGEME_GENERATE_NEW_HASH"
+
+# SMB/CIFS credentials
+vault_smb_username: "pve-smb"
+vault_smb_password: "CHANGEME_SMB_PASSWORD"
+
+# CrowdSec LAPI key for Traefik bouncer
+vault_crowdsec_lapi_key: "CHANGEME_CROWDSEC_LAPI_KEY"
+
+# API keys (add as needed)
+vault_api_key: "CHANGEME_API_KEY"
