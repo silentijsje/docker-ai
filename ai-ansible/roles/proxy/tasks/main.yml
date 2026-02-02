@@ -5,14 +5,17 @@
     state: directory
     mode: '0770'
 
-- name: Copy Traefik static configuration files
+- name: Copy Traefik static configuration
   ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ traefik_config_dest }}/"
+    src: files/traefik.yaml
+    dest: "{{ traefik_config_dest }}/traefik.yaml"
     mode: '0660'
-  loop:
-    - files/traefik.yaml
-    - files/internal.yaml
+
+- name: Template Traefik internal routing (contains IPs)
+  ansible.builtin.template:
+    src: internal.yaml.j2
+    dest: "{{ traefik_config_dest }}/internal.yaml"
+    mode: '0660'
 
 - name: Template Traefik dynamic configuration (contains secrets)
   ansible.builtin.template:

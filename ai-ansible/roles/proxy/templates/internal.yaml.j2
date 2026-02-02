@@ -231,127 +231,127 @@ http:
     jellyfin:
       loadBalancer:
         servers:
-          - url: "http://10.0.20.10:8096"
+          - url: "http://{{ vault_ip_jellyfin }}:8096"
         passHostHeader: true
         serversTransport: insecure-no-verify
     jellyfin2:
       loadBalancer:
         servers:
-          - url: "http://10.0.20.91:8096"
+          - url: "http://{{ vault_ip_jellyfin2 }}:8096"
         passHostHeader: true
         serversTransport: insecure-no-verify
     immich:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.81:2283"
+          - url: "http://{{ vault_ip_immich }}:2283"
         passHostHeader: true
         serversTransport: insecure-no-verify
     truenas:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.2"
+          - url: "http://{{ vault_ip_truenas }}"
         passHostHeader: true
         serversTransport: insecure-no-verify
     pihole:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.50"
+          - url: "http://{{ vault_ip_pihole }}"
         passHostHeader: true
         serversTransport: insecure-no-verify
     pve1:
       loadBalancer:
         servers:
-          - url: "https://10.0.0.70:8006"
+          - url: "https://{{ vault_ip_pve1 }}:8006"
         passHostHeader: true
         serversTransport: insecure-no-verify
     pve2:
       loadBalancer:
         servers:
-          - url: "https://10.0.0.71:8006"
+          - url: "https://{{ vault_ip_pve2 }}:8006"
         passHostHeader: true
         serversTransport: insecure-no-verify
     pbs:
       loadBalancer:
         servers:
-          - url: "https://10.0.0.75:8007"
+          - url: "https://{{ vault_ip_pbs }}:8007"
         passHostHeader: true
         serversTransport: insecure-no-verify
     unifi:
       loadBalancer:
         servers:
-          - url: "https://10.0.0.1"
+          - url: "https://{{ vault_ip_unifi }}"
         passHostHeader: true
         serversTransport: insecure-no-verify
     overseerr:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:5055"
+          - url: "http://{{ vault_ip_docker01 }}:5055"
         passHostHeader: true
         serversTransport: insecure-no-verify
     ldap:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:17170"
+          - url: "http://{{ vault_ip_docker01 }}:17170"
         passHostHeader: true
         serversTransport: insecure-no-verify
     sonarr:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:8989"
+          - url: "http://{{ vault_ip_docker01 }}:8989"
         passHostHeader: true
         serversTransport: insecure-no-verify
     radarr:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:7878"
+          - url: "http://{{ vault_ip_docker01 }}:7878"
         passHostHeader: true
         serversTransport: insecure-no-verify
     portainer:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:9000"
+          - url: "http://{{ vault_ip_docker01 }}:9000"
         passHostHeader: true
         serversTransport: insecure-no-verify
     paperless:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:3000"
+          - url: "http://{{ vault_ip_docker01 }}:3000"
         passHostHeader: true
         serversTransport: insecure-no-verify
     qbt:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.89:8090"
+          - url: "http://{{ vault_ip_qbt }}:8090"
         passHostHeader: true
         serversTransport: insecure-no-verify
     nzb:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.88:7777"
+          - url: "http://{{ vault_ip_nzb }}:7777"
         passHostHeader: true
         serversTransport: insecure-no-verify
     wizarr:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:5690"
+          - url: "http://{{ vault_ip_docker01 }}:5690"
         passHostHeader: true
         serversTransport: insecure-no-verify
     tautulli:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:8181"
+          - url: "http://{{ vault_ip_docker01 }}:8181"
         passHostHeader: true
         serversTransport: insecure-no-verify
     booklore:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:6060"
+          - url: "http://{{ vault_ip_docker01 }}:6060"
         passHostHeader: true
         serversTransport: insecure-no-verify
     mealie:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.80:9925"
+          - url: "http://{{ vault_ip_docker01 }}:9925"
         passHostHeader: true
         serversTransport: insecure-no-verify
 
