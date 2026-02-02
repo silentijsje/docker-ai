@@ -111,3 +111,42 @@ jobs:
         run: |
           cd ai-ansible
           ansible-lint --strict
+
+  molecule:
+    name: Molecule Test (${{ matrix.role }})
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        role: [bootstrap]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install ansible-core==2.16.* molecule molecule-plugins[docker] docker
+
+      - name: Install Ansible collections
+        run: |
+          cd ai-ansible
+          ansible-galaxy collection install -r requirements.yml
+
+      - name: Run Molecule tests
+        run: |
+          cd ai-ansible/roles/${{ matrix.role }}
+          molecule test
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecule-logs-${{ matrix.role }}
+          path: ai-ansible/roles/${{ matrix.role }}/molecule/default/.molecule/
