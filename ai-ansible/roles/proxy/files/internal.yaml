@@ -231,7 +231,7 @@ http:
     jellyfin:
       loadBalancer:
         servers:
-          - url: "http://10.0.20.85:8096"
+          - url: "http://10.0.20.10:8096"
         passHostHeader: true
         serversTransport: insecure-no-verify
     jellyfin2:
