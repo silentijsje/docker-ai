@@ -1,0 +1,40 @@
+---
+# Optional pre-commit hooks for local development
+# Install: pip install pre-commit && pre-commit install
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: 'ai-ansible/vars/vault.yml'
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.0
+    hooks:
+      - id: yamllint
+        files: \.(yaml|yml)$
+        args: ['-c', 'ai-ansible/.yamllint']
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.1.1
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$
+        args: ['--strict']
+        additional_dependencies:
+          - 'ansible-core>=2.16'
+
+  - repo: local
+    hooks:
+      - id: vault-encryption-check
+        name: Vault Encryption Check
+        entry: scripts/pre-commit
+        language: script
+        files: 'vault.*\.yml$'
+        pass_filenames: false
+        always_run: false
