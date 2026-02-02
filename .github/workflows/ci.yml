@@ -1,0 +1,66 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'ai-ansible/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vault-check:
+    name: Vault Encryption Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find and verify vault files
+        run: |
+          echo "Searching for vault files..."
+          VAULT_FILES=$(find ai-ansible -type f -name "*vault*.yml" 2>/dev/null || true)
+
+          if [ -z "$VAULT_FILES" ]; then
+            echo "No vault files found"
+            exit 0
+          fi
+
+          echo "Found vault files:"
+          echo "$VAULT_FILES"
+          echo ""
+
+          UNENCRYPTED=""
+          for file in $VAULT_FILES; do
+            if [ -f "$file" ]; then
+              FIRST_LINE=$(head -1 "$file")
+              if ! echo "$FIRST_LINE" | grep -q '^\$ANSIBLE_VAULT'; then
+                UNENCRYPTED="$UNENCRYPTED\n  - $file"
+              else
+                echo "✓ $file is encrypted"
+              fi
+            fi
+          done
+
+          if [ -n "$UNENCRYPTED" ]; then
+            echo ""
+            echo "============================================================"
+            echo "ERROR: Unencrypted vault file(s) detected!"
+            echo "============================================================"
+            echo -e "The following vault files are NOT encrypted:$UNENCRYPTED"
+            echo ""
+            echo "Please encrypt before committing:"
+            echo "  ansible-vault encrypt <file> --vault-password-file=.vault_pass"
+            echo "============================================================"
+            exit 1
+          fi
+
+          echo ""
+          echo "All vault files are properly encrypted ✓"
