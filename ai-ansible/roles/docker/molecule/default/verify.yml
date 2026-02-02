@@ -1,0 +1,53 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Check Docker is installed
+      ansible.builtin.command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Assert Docker is installed
+      ansible.builtin.assert:
+        that:
+          - docker_version.rc == 0
+          - "'Docker version' in docker_version.stdout"
+        fail_msg: "Docker not installed"
+        success_msg: "Docker is installed"
+
+    - name: Check Docker service is running
+      ansible.builtin.service_facts:
+
+    - name: Assert Docker service is running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['docker.service'].state == 'running'
+          - ansible_facts.services['docker.service'].status == 'enabled'
+        fail_msg: "Docker service not running or not enabled"
+        success_msg: "Docker service is running and enabled"
+
+    - name: Check Docker Compose plugin
+      ansible.builtin.command: docker compose version
+      register: compose_version
+      changed_when: false
+
+    - name: Assert Docker Compose is installed
+      ansible.builtin.assert:
+        that:
+          - compose_version.rc == 0
+          - "'Docker Compose version' in compose_version.stdout or 'version' in compose_version.stdout"
+        fail_msg: "Docker Compose not installed"
+        success_msg: "Docker Compose is installed"
+
+    - name: Check testuser is in docker group
+      ansible.builtin.command: groups testuser
+      register: user_groups
+      changed_when: false
+
+    - name: Assert testuser is in docker group
+      ansible.builtin.assert:
+        that:
+          - "'docker' in user_groups.stdout"
+        fail_msg: "Test user not in docker group"
+        success_msg: "Test user is in docker group"

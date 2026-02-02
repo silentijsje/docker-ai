@@ -1,0 +1,26 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    # Mock vault variables
+    vault_docker_users:
+      - testuser
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Create test user
+      ansible.builtin.user:
+        name: testuser
+        uid: 1001
+        shell: /bin/bash
+        create_home: true
+
+  roles:
+    - role: docker
+      vars:
+        docker_users: "{{ vault_docker_users }}"
