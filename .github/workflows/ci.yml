@@ -64,3 +64,36 @@ jobs:
 
           echo ""
           echo "All vault files are properly encrypted ✓"
+
+  lint:
+    name: Lint (yamllint + ansible-lint)
+    runs-on: ubuntu-latest
+    needs: vault-check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install ansible-core==2.16.* ansible-lint yamllint
+
+      - name: Install Ansible collections
+        run: |
+          cd ai-ansible
+          ansible-galaxy collection install -r requirements.yml
+
+      - name: Run yamllint
+        run: |
+          cd ai-ansible
+          yamllint .
+
+      - name: Run ansible-lint
+        run: |
+          cd ai-ansible
+          ansible-lint --strict
