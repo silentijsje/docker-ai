@@ -1,0 +1,57 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  vars:
+    container_network: test_network
+    container_base_dir: /opt/containers
+  tasks:
+    - name: Check Docker network exists
+      community.docker.docker_network_info:
+        name: "{{ container_network }}"
+      register: network_info
+
+    - name: Assert Docker network exists
+      ansible.builtin.assert:
+        that:
+          - network_info.exists
+        fail_msg: "Docker network not created"
+        success_msg: "Docker network exists"
+
+    - name: Check Traefik directory exists
+      ansible.builtin.stat:
+        path: "{{ container_base_dir }}/traefik"
+      register: traefik_dir
+
+    - name: Assert Traefik directory exists
+      ansible.builtin.assert:
+        that:
+          - traefik_dir.stat.exists
+          - traefik_dir.stat.isdir
+        fail_msg: "Traefik directory not created"
+        success_msg: "Traefik directory exists"
+
+    - name: Check docker-compose file exists
+      ansible.builtin.stat:
+        path: "{{ container_base_dir }}/traefik/docker-compose.yml"
+      register: compose_file
+
+    - name: Assert docker-compose file exists
+      ansible.builtin.assert:
+        that:
+          - compose_file.stat.exists
+        fail_msg: "docker-compose.yml not generated"
+        success_msg: "docker-compose.yml exists"
+
+    - name: Validate docker-compose syntax
+      ansible.builtin.command: docker compose -f {{ container_base_dir }}/traefik/docker-compose.yml config
+      register: compose_valid
+      changed_when: false
+      failed_when: false
+
+    - name: Assert docker-compose syntax is valid
+      ansible.builtin.assert:
+        that:
+          - compose_valid.rc == 0
+        fail_msg: "docker-compose.yml syntax invalid"
+        success_msg: "docker-compose.yml syntax is valid"

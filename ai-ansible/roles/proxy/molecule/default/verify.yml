@@ -1,0 +1,55 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  vars:
+    traefik_config_dest: /tmp/test-traefik-config
+  tasks:
+    - name: Check Traefik config directory exists
+      ansible.builtin.stat:
+        path: "{{ traefik_config_dest }}"
+      register: config_dir
+
+    - name: Assert config directory exists
+      ansible.builtin.assert:
+        that:
+          - config_dir.stat.exists
+          - config_dir.stat.isdir
+        fail_msg: "Traefik config directory not created"
+        success_msg: "Traefik config directory exists"
+
+    - name: Check traefik.yaml exists
+      ansible.builtin.stat:
+        path: "{{ traefik_config_dest }}/traefik.yaml"
+      register: traefik_yaml
+
+    - name: Assert traefik.yaml exists
+      ansible.builtin.assert:
+        that:
+          - traefik_yaml.stat.exists
+        fail_msg: "traefik.yaml not copied"
+        success_msg: "traefik.yaml exists"
+
+    - name: Check internal.yaml exists
+      ansible.builtin.stat:
+        path: "{{ traefik_config_dest }}/internal.yaml"
+      register: internal_yaml
+
+    - name: Assert internal.yaml exists
+      ansible.builtin.assert:
+        that:
+          - internal_yaml.stat.exists
+        fail_msg: "internal.yaml not copied"
+        success_msg: "internal.yaml exists"
+
+    - name: Check dynamic.yaml exists
+      ansible.builtin.stat:
+        path: "{{ traefik_config_dest }}/dynamic.yaml"
+      register: dynamic_yaml
+
+    - name: Assert dynamic.yaml exists
+      ansible.builtin.assert:
+        that:
+          - dynamic_yaml.stat.exists
+        fail_msg: "dynamic.yaml not templated"
+        success_msg: "dynamic.yaml exists"

@@ -1,0 +1,42 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Check timezone is set
+      ansible.builtin.command: timedatectl show --property=Timezone --value
+      register: timezone_result
+      changed_when: false
+
+    - name: Assert timezone is correct
+      ansible.builtin.assert:
+        that:
+          - timezone_result.stdout == "Europe/Amsterdam"
+        fail_msg: "Timezone not set correctly"
+        success_msg: "Timezone is correct"
+
+    - name: Check SSH config exists
+      ansible.builtin.stat:
+        path: /etc/ssh/sshd_config
+      register: sshd_config
+
+    - name: Assert SSH config exists
+      ansible.builtin.assert:
+        that:
+          - sshd_config.stat.exists
+        fail_msg: "SSH config not found"
+        success_msg: "SSH config exists"
+
+    - name: Check test user exists
+      ansible.builtin.getent:
+        database: passwd
+        key: testuser
+      register: user_check
+      failed_when: false
+
+    - name: Assert test user was created
+      ansible.builtin.assert:
+        that:
+          - user_check is succeeded
+        fail_msg: "Test user not created"
+        success_msg: "Test user exists"

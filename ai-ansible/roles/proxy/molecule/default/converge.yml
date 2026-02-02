@@ -1,0 +1,49 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    # Mock vault variables
+    vault_cloudflare_api_token: "mock_cloudflare_token_12345678901234567890"
+    vault_traefik_email: "test@example.com"
+
+    # Mock role variables
+    traefik_config_dest: /tmp/test-traefik-config
+    traefik_compose_dir: /tmp/test-traefik-compose
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install Docker (for docker_compose_v2 module)
+      ansible.builtin.apt:
+        name:
+          - docker.io
+        state: present
+
+    - name: Ensure Docker is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+
+    - name: Create docker-compose.yml for testing
+      ansible.builtin.copy:
+        content: |
+          ---
+          services:
+            traefik:
+              image: traefik:latest
+              container_name: traefik
+        dest: "{{ traefik_compose_dir }}/docker-compose.yml"
+        mode: '0644'
+
+    - name: Create compose directory
+      ansible.builtin.file:
+        path: "{{ traefik_compose_dir }}"
+        state: directory
+        mode: '0755'
+
+  roles:
+    - role: proxy

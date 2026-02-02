@@ -1,0 +1,29 @@
+---
+# Ansible-lint configuration
+# https://ansible-lint.readthedocs.io/configuring/
+
+# Enable strict mode (warnings become errors)
+strict: true
+
+# Offline mode - no external lookups in CI
+offline: true
+
+# Require FQCN for non-core modules
+enable_list:
+  - fqcn
+  - no-handler
+
+# Exclude paths
+exclude_paths:
+  - .cache/
+  - .github/
+  - molecule/
+  - input/
+  - tests/
+  - '**/.yamllint'
+
+# Skip specific rules if needed
+skip_list: []
+
+# Warnings only for specific rules
+warn_list: []

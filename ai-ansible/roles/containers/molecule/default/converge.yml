@@ -1,0 +1,43 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    # Mock vault variables for containers
+    vault_cloudflare_api_token: "mock_cloudflare_token_12345678901234567890"
+    vault_traefik_email: "test@example.com"
+    vault_crowdsec_enroll_key: "mock_crowdsec_key_abcdefghijklmnop"
+    vault_samba_username: "mockuser"
+    vault_samba_password: "mockpassword"
+    vault_booklore_db_user: "booklore"
+    vault_booklore_db_password: "mockdbpassword"
+    vault_booklore_db_root_password: "mockrootpassword"
+
+    # Only test Traefik (fastest, most critical)
+    enabled_containers:
+      traefik: true
+      crowdsec: false
+      portainer: false
+      homepage: false
+      radarr: false
+      sonarr: false
+      prowlarr: false
+      sabnzbd: false
+      qbittorrent: false
+      jellyfin: false
+      overseerr: false
+      tautulli: false
+      bazarr: false
+      requestrr: false
+      watchtower: false
+      booklore: false
+      heimdall: false
+
+    # Mock container configuration
+    container_network: test_network
+    container_base_dir: /opt/containers
+    traefik_acme_email: "{{ vault_traefik_email }}"
+    cf_dns_api_token: "{{ vault_cloudflare_api_token }}"
+
+  roles:
+    - role: containers

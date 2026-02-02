@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    # Mock vault variables for testing
+    vault_timezone: Europe/Amsterdam
+    vault_ssh_port: 22
+    vault_users:
+      - username: testuser
+        uid: 1001
+        groups: [sudo]
+        shell: /bin/bash
+    vault_user_passwords:
+      testuser: "$6$rounds=656000$mockpasswordhash"
+    vault_ssh_keys:
+      testuser:
+        - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMockKeyForTesting test@example.com"
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_os_family == 'Debian'
+
+  roles:
+    - role: bootstrap
