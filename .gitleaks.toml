@@ -1,0 +1,51 @@
+# Gitleaks configuration for Ansible repository
+# https://github.com/gitleaks/gitleaks
+
+title = "Gitleaks config for docker-ai Ansible repository"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for encrypted Ansible vaults and false positives"
+paths = [
+  '''.*vault.*\.yml$''',  # Encrypted vault files
+  '''\.vault_pass$''',    # Vault password file (gitignored)
+]
+
+# Allow test/example credentials
+regexes = [
+  '''(test|example|dummy|mock)_password''',
+  '''ansible_connection=local''',
+]
+
+# Custom rules for Ansible-specific secrets
+[[rules]]
+id = "ansible-vault-password"
+description = "Ansible vault password in plaintext"
+regex = '''vault_password\s*[:=]\s*['"]?[\w\d]{16,}['"]?'''
+tags = ["ansible", "vault", "password"]
+
+[[rules]]
+id = "ansible-become-password"
+description = "Ansible become password in plaintext"
+regex = '''ansible_become_pass(word)?\s*[:=]\s*['"]?[\w\d\W]{8,}['"]?'''
+tags = ["ansible", "password"]
+
+[[rules]]
+id = "ssh-private-key"
+description = "SSH private key"
+regex = '''-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----'''
+tags = ["ssh", "private-key"]
+
+[[rules]]
+id = "cloudflare-api-token"
+description = "Cloudflare API token"
+regex = '''(?i)(cloudflare|cf)[_-]?(api|token)[_-]?(key|token)?\s*[:=]\s*['"]?[a-zA-Z0-9_-]{40,}['"]?'''
+tags = ["cloudflare", "api", "token"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API key pattern"
+regex = '''(?i)api[_-]?key\s*[:=]\s*['"]?[a-zA-Z0-9_\-]{32,}['"]?'''
+tags = ["api", "key"]
