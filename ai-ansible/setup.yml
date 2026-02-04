@@ -2,6 +2,9 @@
 - name: Bootstrap all servers
   hosts: all
   become: true
+  remote_user: init
+  vars:
+    ansible_user: init
   vars_files:
     - vars/users.yml
     - vars/vault.yml
