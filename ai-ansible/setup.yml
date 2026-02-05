@@ -1,8 +1,9 @@
 ---
-- name: Bootstrap all servers
+- name: Bootstrap (init user)
   hosts: all
   become: true
   remote_user: init
+  ignore_unreachable: true
   vars:
     ansible_user: init
   vars_files:

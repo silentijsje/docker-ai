@@ -1,5 +1,8 @@
 ---
 users:
+  - name: "init"
+    groups: "renfrew,admins,docker,sudo"
+    uid: 1050
   - name: "stanley"
     groups: "renfrew,admins,docker,sudo"
     uid: 3000

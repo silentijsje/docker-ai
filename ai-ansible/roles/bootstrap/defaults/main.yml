@@ -1,5 +1,5 @@
 ---
-bootstrap_version: "1.00"
+bootstrap_version: "1.01"
 
 ssh_port: 22
 timezone: Europe/Amsterdam
