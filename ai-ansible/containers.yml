@@ -10,13 +10,8 @@
     - vars/users.yml
     - vars/docker-vars.yml
 
-  pre_tasks:
-    - name: Verify Docker is running
-      ansible.builtin.service:
-        name: docker
-        state: started
-      become: true
-
   roles:
+    - role: docker
+      become: true
     - role: containers
       become: true

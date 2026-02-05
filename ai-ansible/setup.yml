@@ -11,12 +11,6 @@
   roles:
     - role: bootstrap
 
-- name: Install Docker on VM hosts
-  hosts: docker_vm
-  become: true
-  roles:
-    - role: docker
-
 - name: Mount SMB shares on Docker VMs
   hosts: docker_vm
   become: true
@@ -25,32 +19,35 @@
     - vars/vault.yml
     - vars/docker-vars.yml
   tasks:
-    - name: Install cifs-utils
-      ansible.builtin.apt:
-        name: cifs-utils
-        state: present
+    - name: Setup SMB mount
+      when: ansible_all_ipv4_addresses | select('match', '^10\\.0\\.50\\.') | list | length > 0
+      block:
+        - name: Install cifs-utils
+          ansible.builtin.apt:
+            name: cifs-utils
+            state: present
 
-    - name: Create SMB credentials file
-      ansible.builtin.copy:
-        dest: /root/.smbcredentials
-        content: |
-          username={{ smb_credentials.username }}
-          password={{ smb_credentials.password }}
-        mode: '0600'
-        owner: root
-        group: root
-      no_log: true
+        - name: Create SMB credentials file
+          ansible.builtin.copy:
+            dest: /root/.smbcredentials
+            content: |
+              username={{ smb_credentials.username }}
+              password={{ smb_credentials.password }}
+            mode: '0600'
+            owner: root
+            group: root
+          no_log: true
 
-    - name: Create mount point
-      ansible.builtin.file:
-        path: "{{ container_media_root }}"
-        state: directory
-        mode: '0755'
+        - name: Create mount point
+          ansible.builtin.file:
+            path: "{{ container_media_root }}"
+            state: directory
+            mode: '0755'
 
-    - name: Mount SMB share via fstab
-      ansible.posix.mount:
-        src: "{{ smb_share_path }}"
-        path: "{{ container_media_root }}"
-        opts: "rw,vers=3,credentials=/root/.smbcredentials,uid={{ container_puid }},gid={{ container_pgid }},file_mode=0770,dir_mode=0770"
-        fstype: cifs
-        state: mounted
+        - name: Mount SMB share via fstab
+          ansible.posix.mount:
+            src: "{{ smb_share_path }}"
+            path: "{{ container_media_root }}"
+            opts: "rw,vers=3,credentials=/root/.smbcredentials,uid={{ container_puid }},gid={{ container_pgid }},file_mode=0770,dir_mode=0770"
+            fstype: cifs
+            state: mounted

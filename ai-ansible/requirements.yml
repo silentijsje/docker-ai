@@ -1,7 +1,8 @@
 ---
 collections:
-  - name: ansible.posix
-    version: ">=1.6.0"
+  - name: https://github.com/ansible-collections/ansible.posix.git
+    type: git
+    version: main
   - name: community.general
     version: ">=9.0.0"
   - name: community.docker

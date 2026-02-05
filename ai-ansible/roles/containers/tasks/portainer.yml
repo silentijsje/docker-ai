@@ -12,7 +12,6 @@
     src: portainer/docker-compose.yml.j2
     dest: "{{ container_data_root }}/portainer/docker-compose.yml"
     mode: '0644'
-  notify: Restart portainer
 
 - name: Start Portainer container
   community.docker.docker_compose_v2:

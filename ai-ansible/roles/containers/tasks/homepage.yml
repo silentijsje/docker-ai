@@ -15,7 +15,6 @@
     src: homepage/docker-compose.yml.j2
     dest: "{{ container_data_root }}/homepage/docker-compose.yml"
     mode: '0644'
-  notify: Restart homepage
 
 - name: Start Homepage container
   community.docker.docker_compose_v2:
