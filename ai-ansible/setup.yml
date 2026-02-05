@@ -3,9 +3,8 @@
   hosts: all
   become: true
   remote_user: init
-  ignore_unreachable: true
   vars:
-    ansible_user: init
+    ansible_user: stanley
   vars_files:
     - vars/users.yml
     - vars/vault.yml
