@@ -2,6 +2,8 @@
 - name: Update all servers
   hosts: all
   become: true
+  roles:
+    - role: docker
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:

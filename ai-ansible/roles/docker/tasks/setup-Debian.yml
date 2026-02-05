@@ -4,6 +4,14 @@
     name: "{{ docker_obsolete_packages }}"
     state: absent
 
+- name: Remove stale Docker repo before cache update
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/apt/sources.list.d/docker.list
+    - /etc/apt/sources.list.d/docker.sources
+
 - name: Ensure dependencies are installed
   ansible.builtin.apt:
     name:
