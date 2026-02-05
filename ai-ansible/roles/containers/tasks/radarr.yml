@@ -13,7 +13,6 @@
     src: radarr/docker-compose.yml.j2
     dest: "{{ container_data_root }}/radarr/docker-compose.yml"
     mode: '0644'
-  notify: Restart radarr
 
 - name: Start Radarr container
   community.docker.docker_compose_v2:

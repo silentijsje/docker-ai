@@ -17,7 +17,6 @@
     src: booklore/docker-compose.yml.j2
     dest: "{{ container_data_root }}/booklore/docker-compose.yml"
     mode: '0644'
-  notify: Restart booklore
 
 - name: Start Booklore containers
   community.docker.docker_compose_v2:

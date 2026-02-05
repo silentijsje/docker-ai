@@ -18,14 +18,12 @@
     src: traefik/traefik.yml.j2
     dest: "{{ container_data_root }}/traefik/traefik.yml"
     mode: '0644'
-  notify: Restart traefik
 
 - name: Deploy Traefik docker-compose
   ansible.builtin.template:
     src: traefik/docker-compose.yml.j2
     dest: "{{ container_data_root }}/traefik/docker-compose.yml"
     mode: '0644'
-  notify: Restart traefik
 
 - name: Start Traefik container
   community.docker.docker_compose_v2:

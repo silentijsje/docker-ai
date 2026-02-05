@@ -1,15 +1,49 @@
 ---
+- name: Check bootstrap version
+  ansible.builtin.slurp:
+    src: /etc/ansible/bootstrap_version
+  register: current_version
+  failed_when: false
+
+- name: Set version fact
+  ansible.builtin.set_fact:
+    bootstrap_needed: "{{ current_version.content is not defined or
+                         (current_version.content | b64decode | trim) != bootstrap_version }}"
+
 - name: Update OS
   ansible.builtin.import_tasks: update_os.yml
+  when: bootstrap_needed
 
 - name: Configure timezone
   ansible.builtin.import_tasks: timezone.yml
+  when: bootstrap_needed
 
 - name: Harden SSH
   ansible.builtin.import_tasks: sshd.yml
+  when: bootstrap_needed
 
 - name: Configure users and groups
   ansible.builtin.import_tasks: users.yml
+  when: bootstrap_needed
 
 - name: Deploy SSH keys
   ansible.builtin.import_tasks: ssh_keys.yml
+  when: bootstrap_needed
+
+- name: Ensure version directory exists
+  ansible.builtin.file:
+    path: /etc/ansible
+    state: directory
+    mode: '0755'
+  when: bootstrap_needed
+
+- name: Write bootstrap version
+  ansible.builtin.copy:
+    content: "{{ bootstrap_version }}"
+    dest: /etc/ansible/bootstrap_version
+    mode: '0644'
+  when: bootstrap_needed
+
+# Changelog
+# ---------
+# 1.00 - Initial version: update_os, timezone, sshd, users, ssh_keys

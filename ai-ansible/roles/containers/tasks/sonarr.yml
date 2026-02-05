@@ -13,7 +13,6 @@
     src: sonarr/docker-compose.yml.j2
     dest: "{{ container_data_root }}/sonarr/docker-compose.yml"
     mode: '0644'
-  notify: Restart sonarr
 
 - name: Start Sonarr container
   community.docker.docker_compose_v2:
