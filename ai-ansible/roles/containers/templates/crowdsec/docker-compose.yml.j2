@@ -20,8 +20,6 @@ services:
       - "{{ container_ports.crowdsec_waf }}:7422"
     networks:
       - {{ container_network }}
-    depends_on:
-      - traefik
 
 networks:
   {{ container_network }}:

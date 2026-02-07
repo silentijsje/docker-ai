@@ -1,0 +1,71 @@
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: always
+    networks:
+      - proxy
+#    user: ${PUID:?err}:${PGID:?err}
+    environment:
+      - TZ=${TIMEZONE:?err}
+    ports:
+      - 127.0.0.1:${CROWDSEC_PORT:?err}:8080
+      - 6060:6060        # Provides Metrics for Prometheus
+      - 7422:7422        # Provides WAF AppSec
+    depends_on:
+      - traefik
+    volumes:
+      - ${FOLDER_FOR_DATA:?err}/crowdsec:/etc/crowdsec
+      - ${FOLDER_FOR_DATA:?err}/crowdsec/data:/var/lib/crowdsec/data/
+      - ${FOLDER_FOR_DATA:?err}/logs:/logs:ro
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - TZ=${TIMEZONE:?err}
+      - CF_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN:?err}
+    ports:
+      - ${REVERSE_PROXY_PORT_HTTP:?err}:80
+      - ${REVERSE_PROXY_PORT_HTTPS:?err}:443
+      - ${WEBUI_PORT_TRAEFIK:?err}:8080
+      - ${METRICS_PORT_TRAEFIK:?err}:8082
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${FOLDER_FOR_DATA:?err}/logs/traefik:/var/log
+      - ${FOLDER_FOR_DATA:?err}/traefik:/etc/traefik
+      - ${FOLDER_FOR_DATA:?err}/traefik/letsencrypt:/letsencrypt
+    labels:
+      - traefik.enable=true
+    # ROUTERS
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.rule=Host(`traefik.${CLOUDFLARE_DNS_ZONE:?err}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.traefik.entrypoints=secureweb
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+      - traefik.http.routers.traefik.tls.domains[0].main=silentijsje.com
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.silentijsje.com
+      - traefik.http.routers.radartraefikr.middlewares=security-headers@file,traefik-bouncer@file
+    # SERVICES
+      - traefik.http.services.traefik.loadbalancer.server.scheme=http
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+    # MIDDLEWARES
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    command:
+      - --cleanup=true
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  proxy:
+    name: proxy
+    driver: bridge
+    ipam:
+      driver: default

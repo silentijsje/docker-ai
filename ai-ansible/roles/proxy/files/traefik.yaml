@@ -27,11 +27,6 @@ entryPoints:
     http:
       tls:
         options: default
-        certResolver: letsencrypt
-        domains:
-          - main: silentijsje.com
-            sans:
-              - "*.silentijsje.com"
   metrics:
     address: :8082
 
@@ -57,6 +52,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
+      email: stanley@silentijsje.com
       storage: /letsencrypt/acme.json
       keyType: EC384
       caServer: https://acme-v02.api.letsencrypt.org/directory

@@ -5,8 +5,7 @@ http:
       service: jellyfin
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -15,8 +14,7 @@ http:
       service: jellyfin2
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -25,8 +23,7 @@ http:
       service: paperless
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -35,8 +32,7 @@ http:
       service: immich
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -45,8 +41,7 @@ http:
       service: truenas
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -56,8 +51,7 @@ http:
       service: pihole
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -67,8 +61,7 @@ http:
       service: pve1
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -78,8 +71,7 @@ http:
       service: pve2
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -89,8 +81,7 @@ http:
       service: pbs
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -100,8 +91,7 @@ http:
       service: unifi
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -111,8 +101,7 @@ http:
       service: overseerr
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -121,30 +110,7 @@ http:
       service: ldap
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
-    sonarr:
-      rule: "Host(`sonarr.silentijsje.com`)"
-      service: sonarr
-      entryPoints:
-        - secureweb
-      tls:
-        certResolver: letsencrypt
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
-    radarr:
-      rule: "Host(`radarr.silentijsje.com`)"
-      service: radarr
-      entryPoints:
-        - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -154,8 +120,7 @@ http:
       service: qbt
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -165,19 +130,7 @@ http:
       service: nzb
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
-    portainer:
-      rule: "Host(`portainer.silentijsje.com`)"
-      service: portainer
-      entryPoints:
-        - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -187,8 +140,7 @@ http:
       service: wizarr
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -198,8 +150,7 @@ http:
       service: tautulli
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -209,8 +160,7 @@ http:
       service: booklore
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -220,8 +170,37 @@ http:
       service: mealie
       entryPoints:
         - secureweb
-      tls:
-        certResolver: letsencrypt
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    termix:
+      rule: "Host(`termix.silentijsje.com`)"
+      service: termix
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    portainer-ssh:
+      rule: "Host(`portainer-ssh.silentijsje.com`)"
+      service: portainer-ssh
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    radarr:
+      rule: "Host(`radarr.silentijsje.com`)"
+      service: radarr
+      entryPoints:
+        - secureweb
+      tls: {}
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
@@ -294,24 +273,6 @@ http:
           - url: "http://{{ vault_ip_docker01 }}:17170"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    sonarr:
-      loadBalancer:
-        servers:
-          - url: "http://{{ vault_ip_docker01 }}:8989"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
-    radarr:
-      loadBalancer:
-        servers:
-          - url: "http://{{ vault_ip_docker01 }}:7878"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
-    portainer:
-      loadBalancer:
-        servers:
-          - url: "http://{{ vault_ip_docker01 }}:9000"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
     paperless:
       loadBalancer:
         servers:
@@ -352,6 +313,24 @@ http:
       loadBalancer:
         servers:
           - url: "http://{{ vault_ip_docker01 }}:9925"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    termix:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_ssh }}:8080"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    portainer-ssh:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_ssh }}:9000"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    radarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.30.80:7878"
         passHostHeader: true
         serversTransport: insecure-no-verify
 

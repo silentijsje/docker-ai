@@ -23,6 +23,12 @@
     dest: "{{ traefik_config_dest }}/dynamic.yaml"
     mode: '0660'
 
+- name: Template Docker Compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ traefik_compose_dir }}/docker-compose.yml"
+    mode: '0660'
+
 - name: Deploy Docker Compose stack
   community.docker.docker_compose_v2:
     project_src: "{{ traefik_compose_dir }}"
