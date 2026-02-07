@@ -205,6 +205,16 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
+    radarr:
+      rule: "Host(`sonarr.silentijsje.com`)"
+      service: radarr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
 
   services:
     jellyfin:
@@ -331,6 +341,12 @@ http:
       loadBalancer:
         servers:
           - url: "http://10.0.30.80:7878"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    radarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.30.80:8989"
         passHostHeader: true
         serversTransport: insecure-no-verify
 

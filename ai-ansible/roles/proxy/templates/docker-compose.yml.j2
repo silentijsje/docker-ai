@@ -5,19 +5,18 @@ services:
     restart: always
     networks:
       - proxy
-#    user: ${PUID:?err}:${PGID:?err}
     environment:
-      - TZ=${TIMEZONE:?err}
+      - TZ={{ timezone }}
     ports:
-      - 127.0.0.1:${CROWDSEC_PORT:?err}:8080
+      - 127.0.0.1:8081:8080
       - 6060:6060        # Provides Metrics for Prometheus
       - 7422:7422        # Provides WAF AppSec
     depends_on:
       - traefik
     volumes:
-      - ${FOLDER_FOR_DATA:?err}/crowdsec:/etc/crowdsec
-      - ${FOLDER_FOR_DATA:?err}/crowdsec/data:/var/lib/crowdsec/data/
-      - ${FOLDER_FOR_DATA:?err}/logs:/logs:ro
+      - {{ docker_data_root }}/crowdsec:/etc/crowdsec
+      - {{ docker_data_root }}/crowdsec/data:/var/lib/crowdsec/data/
+      - {{ docker_data_root }}/logs:/logs:ro
 
   traefik:
     image: traefik:latest
@@ -26,28 +25,28 @@ services:
     networks:
       - proxy
     environment:
-      - TZ=${TIMEZONE:?err}
-      - CF_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN:?err}
+      - TZ={{ timezone }}
+      - CF_DNS_API_TOKEN={{ vault_cloudflare_api_token }}
     ports:
-      - ${REVERSE_PROXY_PORT_HTTP:?err}:80
-      - ${REVERSE_PROXY_PORT_HTTPS:?err}:443
-      - ${WEBUI_PORT_TRAEFIK:?err}:8080
-      - ${METRICS_PORT_TRAEFIK:?err}:8082
+      - 80:80
+      - 443:443
+      - 8080:8080
+      - 8082:8082
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${FOLDER_FOR_DATA:?err}/logs/traefik:/var/log
-      - ${FOLDER_FOR_DATA:?err}/traefik:/etc/traefik
-      - ${FOLDER_FOR_DATA:?err}/traefik/letsencrypt:/letsencrypt
+      - {{ docker_data_root }}/logs/traefik:/var/log
+      - {{ traefik_config_dest }}:/etc/traefik
+      - {{ docker_data_root }}/traefik/letsencrypt:/letsencrypt
     labels:
       - traefik.enable=true
     # ROUTERS
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.rule=Host(`traefik.${CLOUDFLARE_DNS_ZONE:?err}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.traefik.rule=Host(`traefik.{{ vault_cloudflare_dns_zone }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       - traefik.http.routers.traefik.entrypoints=secureweb
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.tls.domains[0].main=silentijsje.com
-      - traefik.http.routers.traefik.tls.domains[0].sans=*.silentijsje.com
+      - traefik.http.routers.traefik.tls.domains[0].main={{ vault_cloudflare_dns_zone }}
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.{{ vault_cloudflare_dns_zone }}
       - traefik.http.routers.radartraefikr.middlewares=security-headers@file,traefik-bouncer@file
     # SERVICES
       - traefik.http.services.traefik.loadbalancer.server.scheme=http
