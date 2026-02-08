@@ -15,3 +15,16 @@
       become: true
     - role: containers
       become: true
+
+- name: Deploy SSH Server Containers
+  hosts: ssh
+  vars_files:
+    - vars/vault.yml
+    - vars/users.yml
+    - vars/docker-vars.yml
+
+  roles:
+    - role: docker
+      become: true
+    - role: ssh_containers
+      become: true

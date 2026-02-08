@@ -12,7 +12,7 @@
     groups: "{{ item.groups }}"
     uid: "{{ item.uid }}"
     append: true
-    password: "{{ item.password }}"
+    password: "{{ item.password | default(omit) }}"
     shell: /bin/bash
     state: present
   loop: "{{ users }}"

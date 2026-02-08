@@ -1,0 +1,22 @@
+---
+# Ensure Docker network exists (MUST BE FIRST)
+- name: Ensure Docker network exists
+  community.docker.docker_network:
+    name: "{{ container_network }}"
+    state: present
+
+# Deploy Portainer for Docker management
+- name: Deploy Portainer
+  ansible.builtin.include_tasks: portainer.yml
+  when: enabled_containers.portainer | default(false)
+  tags:
+    - infrastructure
+    - portainer
+
+# Deploy Termix SSH management
+- name: Deploy Termix
+  ansible.builtin.include_tasks: termix.yml
+  when: enabled_containers.termix | default(false)
+  tags:
+    - ssh_management
+    - termix

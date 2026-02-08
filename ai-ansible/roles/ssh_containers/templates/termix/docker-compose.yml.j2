@@ -1,0 +1,17 @@
+services:
+  termix:
+    image: {{ termix_image }}
+    container_name: {{ termix_container_name }}
+    restart: unless-stopped
+    environment:
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_data_root }}/termix:/app/data
+    ports:
+      - "{{ container_ports.termix }}:8080"
+    networks:
+      - {{ container_network }}
+
+networks:
+  {{ container_network }}:
+    external: true

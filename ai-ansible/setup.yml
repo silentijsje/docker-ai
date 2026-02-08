@@ -3,9 +3,8 @@
   hosts: all
   become: true
   remote_user: init
-  ignore_unreachable: true
   vars:
-    ansible_user: init
+    ansible_user: stanley
   vars_files:
     - vars/users.yml
     - vars/vault.yml
@@ -20,8 +19,7 @@
     - vars/vault.yml
     - vars/docker-vars.yml
   tasks:
-    - name: Setup SMB mount
-      when: ansible_all_ipv4_addresses | select('match', '^10\\.0\\.50\\.') | list | length > 0
+    - name: Setup SMB mounts
       block:
         - name: Install cifs-utils
           ansible.builtin.apt:
@@ -39,16 +37,41 @@
             group: root
           no_log: true
 
-        - name: Create mount point
+        - name: Create media mount point
           ansible.builtin.file:
             path: "{{ container_media_root }}"
             state: directory
             mode: '0755'
 
-        - name: Mount SMB share via fstab
+        - name: Create temporary mount point
+          ansible.builtin.file:
+            path: "{{ container_temp_root }}"
+            state: directory
+            mode: '0755'
+
+        - name: Mount media share via fstab
           ansible.posix.mount:
-            src: "{{ smb_share_path }}"
+            src: "{{ smb_media_path }}"
             path: "{{ container_media_root }}"
             opts: "rw,vers=3,credentials=/root/.smbcredentials,uid={{ container_puid }},gid={{ container_pgid }},file_mode=0770,dir_mode=0770"
             fstype: cifs
             state: mounted
+
+        - name: Mount temporary share via fstab
+          ansible.posix.mount:
+            src: "{{ smb_temp_path }}"
+            path: "{{ container_temp_root }}"
+            opts: "rw,vers=3,credentials=/root/.smbcredentials,uid={{ container_puid }},gid={{ container_pgid }},file_mode=0770,dir_mode=0770"
+            fstype: cifs
+            state: mounted
+
+        - name: Create required subdirectories on temporary share
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+            owner: "{{ container_puid }}"
+            group: "{{ container_pgid }}"
+            mode: '0770'
+          loop:
+            - "{{ container_temp_root }}/sabnzbd"
+            - "{{ container_temp_root }}/qbittorrent"

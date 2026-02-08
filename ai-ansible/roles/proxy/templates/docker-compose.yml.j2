@@ -1,0 +1,70 @@
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: always
+    networks:
+      - proxy
+    environment:
+      - TZ={{ timezone }}
+    ports:
+      - 127.0.0.1:8081:8080
+      - 6060:6060        # Provides Metrics for Prometheus
+      - 7422:7422        # Provides WAF AppSec
+    depends_on:
+      - traefik
+    volumes:
+      - {{ docker_data_root }}/crowdsec:/etc/crowdsec
+      - {{ docker_data_root }}/crowdsec/data:/var/lib/crowdsec/data/
+      - {{ docker_data_root }}/logs:/logs:ro
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - TZ={{ timezone }}
+      - CF_DNS_API_TOKEN={{ vault_cloudflare_api_token }}
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+      - 8082:8082
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - {{ docker_data_root }}/logs/traefik:/var/log
+      - {{ traefik_config_dest }}:/etc/traefik
+      - {{ docker_data_root }}/traefik/letsencrypt:/letsencrypt
+    labels:
+      - traefik.enable=true
+    # ROUTERS
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.rule=Host(`traefik.{{ vault_cloudflare_dns_zone }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.traefik.entrypoints=secureweb
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+      - traefik.http.routers.traefik.tls.domains[0].main={{ vault_cloudflare_dns_zone }}
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.{{ vault_cloudflare_dns_zone }}
+      - traefik.http.routers.radartraefikr.middlewares=security-headers@file,traefik-bouncer@file
+    # SERVICES
+      - traefik.http.services.traefik.loadbalancer.server.scheme=http
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+    # MIDDLEWARES
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    command:
+      - --cleanup=true
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  proxy:
+    name: proxy
+    driver: bridge
+    ipam:
+      driver: default

@@ -1,0 +1,20 @@
+---
+# SABnzbd - Usenet Download Client
+# https://docs.linuxserver.io/images/docker-sabnzbd
+
+- name: Ensure SABnzbd directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/sabnzbd"
+    state: directory
+    mode: '0755'
+
+- name: Deploy SABnzbd docker-compose
+  ansible.builtin.template:
+    src: sabnzbd/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/sabnzbd/docker-compose.yml"
+    mode: '0644'
+
+- name: Start SABnzbd container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/sabnzbd"
+    state: present
