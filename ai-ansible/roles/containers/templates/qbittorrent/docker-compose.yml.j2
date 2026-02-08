@@ -15,8 +15,6 @@ services:
       - PGID={{ container_pgid }}
       - TZ={{ container_timezone }}
       - WEBUI_PORT=8080
-      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:qbittorrent
-      - TP_THEME={{ container_theme }}
     volumes:
       - {{ container_data_root }}/qbittorrent:/config
       - {{ container_media_root }}/Downloads:/downloads

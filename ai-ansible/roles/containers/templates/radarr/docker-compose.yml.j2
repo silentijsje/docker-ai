@@ -14,8 +14,6 @@ services:
       - PUID={{ container_puid }}
       - PGID={{ container_pgid }}
       - TZ={{ container_timezone }}
-      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
-      - TP_THEME={{ container_theme }}
     volumes:
       - {{ container_media_root }}:/mnt/media
       - {{ container_data_root }}/radarr:/config

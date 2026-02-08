@@ -5,7 +5,6 @@
 container_puid: 1000
 container_pgid: 1000
 container_timezone: Europe/Amsterdam
-container_theme: nord
 container_network: mediastack
 
 container_data_root: /mnt/docker

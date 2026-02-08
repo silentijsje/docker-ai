@@ -135,6 +135,16 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
+    sabnzbd:
+      rule: "Host(`sabnzbd.silentijsje.com`)"
+      service: sabnzbd
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
     wizarr:
       rule: "Host(`wizarr.silentijsje.com`)"
       service: wizarr
@@ -301,6 +311,12 @@ http:
           - url: "http://{{ vault_ip_nzb }}:7777"
         passHostHeader: true
         serversTransport: insecure-no-verify
+    sabnzbd:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8083"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
     wizarr:
       loadBalancer:
         servers:
@@ -340,13 +356,13 @@ http:
     radarr:
       loadBalancer:
         servers:
-          - url: "http://10.0.30.80:7878"
+          - url: "http://{{ vault_ip_prod_docker01 }}:7878"
         passHostHeader: true
         serversTransport: insecure-no-verify
     sonarr:
       loadBalancer:
         servers:
-          - url: "http://10.0.30.80:8989"
+          - url: "http://{{ vault_ip_prod_docker01 }}:8989"
         passHostHeader: true
         serversTransport: insecure-no-verify
 
