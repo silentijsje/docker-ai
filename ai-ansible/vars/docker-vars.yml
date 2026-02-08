@@ -13,11 +13,13 @@ container_pgid: 3000
 container_timezone: "{{ timezone }}"
 
 # Paths
-container_data_root: "{{ docker_data_root }}"        # /mnt/docker
+container_data_root: "{{ docker_data_root }}"        # /docker
 container_media_root: /mnt/media
+container_temp_root: /mnt/temporary
 
-# SMB Share (from vault for security)
-smb_share_path: "{{ vault_smb_share_path }}"
+# SMB Share paths (from vault for security)
+smb_media_path: "{{ vault_smb_media_share_path }}"
+smb_temp_path: "{{ vault_smb_temp_share_path }}"
 
 # Theme (for LinuxServer.io containers with ThemePark mod)
 container_theme: nord
@@ -56,6 +58,11 @@ container_ports:
   booklore: 8085         # Book library (internal: configurable)
   # paperless: 8000      # Documents (internal: 8000)
 
+  # Download Clients
+  sabnzbd: 8083          # Usenet (internal: 8080)
+  qbittorrent: 8084      # Torrents WebUI (internal: 8080)
+  qbittorrent_bt: 6881   # BitTorrent protocol
+
   # Media Servers & Stats
   # tautulli: 8181       # Plex stats (internal: 8181)
   # jellystat: 3000      # Jellyfin stats (internal: 3000)
@@ -72,6 +79,14 @@ radarr_container_name: radarr
 # Sonarr
 sonarr_image: lscr.io/linuxserver/sonarr:latest
 sonarr_container_name: sonarr
+
+# SABnzbd
+sabnzbd_image: lscr.io/linuxserver/sabnzbd:latest
+sabnzbd_container_name: sabnzbd
+
+# qBittorrent
+qbittorrent_image: lscr.io/linuxserver/qbittorrent:latest
+qbittorrent_container_name: qbittorrent
 
 # Booklore
 booklore_image: booklore/booklore:latest
@@ -115,6 +130,10 @@ enabled_containers:
   radarr: true
   sonarr: true
   booklore: true
+
+  # Download Clients
+  sabnzbd: true
+  qbittorrent: true
 
   # SSH Management (ssh hosts only)
   termix: true
