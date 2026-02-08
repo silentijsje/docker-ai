@@ -195,6 +195,16 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
+    portainer:
+      rule: "Host(`portainer.silentijsje.com`)"
+      service: portainer
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
     portainer-ssh:
       rule: "Host(`portainer-ssh.silentijsje.com`)"
       service: portainer-ssh
@@ -345,6 +355,12 @@ http:
       loadBalancer:
         servers:
           - url: "http://{{ vault_ip_ssh }}:8080"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9000"
         passHostHeader: true
         serversTransport: insecure-no-verify
     portainer-ssh:
