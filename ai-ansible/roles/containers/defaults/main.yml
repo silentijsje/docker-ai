@@ -11,7 +11,7 @@ container_network: mediastack
 container_data_root: /mnt/docker
 container_media_root: /mnt/media
 
-cloudflare_dns_zone: example.com
+cloudflare_dns_zone: silentijsje.com
 
 container_ports:
   radarr: 7878

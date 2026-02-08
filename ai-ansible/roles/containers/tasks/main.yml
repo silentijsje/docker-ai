@@ -13,20 +13,6 @@
 # =============================================================================
 # Traefik MUST be first - all other services depend on it
 
-- name: Deploy Traefik reverse proxy
-  ansible.builtin.include_tasks: traefik.yml
-  when: enabled_containers.traefik | default(false)
-  tags:
-    - infrastructure
-    - traefik
-
-- name: Deploy CrowdSec WAF
-  ansible.builtin.include_tasks: crowdsec.yml
-  when: enabled_containers.crowdsec | default(false)
-  tags:
-    - infrastructure
-    - crowdsec
-
 - name: Deploy Portainer
   ansible.builtin.include_tasks: portainer.yml
   when: enabled_containers.portainer | default(false)
@@ -58,6 +44,20 @@
   tags:
     - media_management
     - sonarr
+
+- name: Deploy SABnzbd
+  ansible.builtin.include_tasks: sabnzbd.yml
+  when: enabled_containers.sabnzbd | default(false)
+  tags:
+    - download_clients
+    - sabnzbd
+
+- name: Deploy qBittorrent
+  ansible.builtin.include_tasks: qbittorrent.yml
+  when: enabled_containers.qbittorrent | default(false)
+  tags:
+    - download_clients
+    - qbittorrent
 
 - name: Deploy Booklore
   ansible.builtin.include_tasks: booklore.yml

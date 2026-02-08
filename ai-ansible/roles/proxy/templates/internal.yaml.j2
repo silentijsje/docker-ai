@@ -205,9 +205,9 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
-    radarr:
+    sonarr:
       rule: "Host(`sonarr.silentijsje.com`)"
-      service: radarr
+      service: sonarr
       entryPoints:
         - secureweb
       tls: {}
@@ -343,7 +343,7 @@ http:
           - url: "http://10.0.30.80:7878"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    radarr:
+    sonarr:
       loadBalancer:
         servers:
           - url: "http://10.0.30.80:8989"

@@ -18,11 +18,11 @@ services:
       - TP_THEME={{ container_theme }}
     volumes:
       - {{ container_data_root }}/sabnzbd:/config
-      - {{ container_media_root }}/Downloads:/downloads
-      - {{ container_temp_root }}:/temporary
+      - {{ container_media_root }}:/mnt/media
+      - {{ container_temp_root }}:/mnt/temporary
     ports:
-      - "{{ container_ports.sabnzbd }}:8080"
-    networks:
+      - "{{ container_ports.sabnzbd }}:7777"
+    networai-ansible/roles/containers/templates/portainerks:
       - {{ container_network }}
     labels:
       - traefik.enable=true
@@ -33,7 +33,7 @@ services:
       - traefik.http.routers.sabnzbd.middlewares=security-headers@file,traefik-bouncer@file
       # Service
       - traefik.http.services.sabnzbd.loadbalancer.server.scheme=http
-      - traefik.http.services.sabnzbd.loadbalancer.server.port=8080
+      - traefik.http.services.sabnzbd.loadbalancer.server.port=7777
 
 networks:
   {{ container_network }}:
