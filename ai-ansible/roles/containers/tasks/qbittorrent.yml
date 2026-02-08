@@ -1,0 +1,20 @@
+---
+# qBittorrent - Torrent Download Client
+# https://docs.linuxserver.io/images/docker-qbittorrent
+
+- name: Ensure qBittorrent directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/qbittorrent"
+    state: directory
+    mode: '0755'
+
+- name: Deploy qBittorrent docker-compose
+  ansible.builtin.template:
+    src: qbittorrent/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/qbittorrent/docker-compose.yml"
+    mode: '0644'
+
+- name: Start qBittorrent container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/qbittorrent"
+    state: present

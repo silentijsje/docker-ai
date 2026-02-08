@@ -64,3 +64,14 @@
             opts: "rw,vers=3,credentials=/root/.smbcredentials,uid={{ container_puid }},gid={{ container_pgid }},file_mode=0770,dir_mode=0770"
             fstype: cifs
             state: mounted
+
+        - name: Create required subdirectories on temporary share
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+            owner: "{{ container_puid }}"
+            group: "{{ container_pgid }}"
+            mode: '0770'
+          loop:
+            - "{{ container_temp_root }}/sabnzbd"
+            - "{{ container_temp_root }}/qbittorrent"

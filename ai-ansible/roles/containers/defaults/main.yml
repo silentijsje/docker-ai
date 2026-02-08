@@ -17,8 +17,13 @@ container_ports:
   radarr: 7878
   sonarr: 8989
   booklore: 8085
+  sabnzbd: 8083
+  qbittorrent: 8084
+  qbittorrent_bt: 6881
 
 enabled_containers:
   radarr: true
   sonarr: true
   booklore: true
+  sabnzbd: true
+  qbittorrent: true
