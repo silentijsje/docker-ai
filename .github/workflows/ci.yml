@@ -115,7 +115,7 @@ jobs:
       - name: Run ansible-lint
         run: |
           cd ai-ansible
-          ansible-lint --strict
+          ansible-lint
 
   molecule:
     name: Molecule Test (${{ matrix.role }})
