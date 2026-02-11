@@ -115,7 +115,10 @@ jobs:
       - name: Run ansible-lint
         run: |
           cd ai-ansible
+          # Create dummy vault pass for syntax checks
+          echo "dummy" > .vault_pass
           ansible-lint
+          rm .vault_pass
 
   molecule:
     name: Molecule Test (${{ matrix.role }})
