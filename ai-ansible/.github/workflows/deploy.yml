@@ -1,0 +1,66 @@
+---
+name: Deploy Ansible
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Ansible
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install ansible ansible-lint
+
+      - name: Run ansible-lint
+        run: ansible-lint
+
+      - name: Check syntax
+        run: |
+          ansible-playbook --syntax-check site.yml
+          ansible-playbook --syntax-check update.yml
+          ansible-playbook --syntax-check containers.yml
+
+      - name: Check vault encryption
+        run: |
+          if ! head -1 vars/vault.yml | grep -q '$ANSIBLE_VAULT'; then
+            echo "ERROR: vault.yml is not encrypted!"
+            exit 1
+          fi
+          echo "Vault is properly encrypted"
+
+  deploy:
+    name: Deploy to Servers
+    runs-on: self-hosted
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up credentials
+        run: |
+          echo "${{ secrets.VAULT_PASSWORD }}" > .vault_pass
+          chmod 600 .vault_pass
+          # Copy runner SSH key to workspace
+          cp ~/.ssh/github_runner_ed25519 ./.ssh_key
+          chmod 600 ./.ssh_key
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook site.yml \
+            --vault-password-file=.vault_pass \
+            --private-key=./.ssh_key
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f .vault_pass .ssh_key
