@@ -324,7 +324,7 @@ http:
     sabnzbd:
       loadBalancer:
         servers:
-          - url: "http://{{ vault_ip_prod_docker01 }}:8083"
+          - url: "http://127.0.0.1:8083"
         passHostHeader: true
         serversTransport: insecure-no-verify
     wizarr:
@@ -360,7 +360,7 @@ http:
     portainer:
       loadBalancer:
         servers:
-          - url: "http://{{ vault_ip_prod_docker01 }}:9000"
+          - url: "http://127.0.0.1:9000"
         passHostHeader: true
         serversTransport: insecure-no-verify
     portainer-ssh:
@@ -372,13 +372,13 @@ http:
     radarr:
       loadBalancer:
         servers:
-          - url: "http://{{ vault_ip_prod_docker01 }}:7878"
+          - url: "http://127.0.0.1:7878"
         passHostHeader: true
         serversTransport: insecure-no-verify
     sonarr:
       loadBalancer:
         servers:
-          - url: "http://{{ vault_ip_prod_docker01 }}:8989"
+          - url: "http://127.0.0.1:8989"
         passHostHeader: true
         serversTransport: insecure-no-verify
 

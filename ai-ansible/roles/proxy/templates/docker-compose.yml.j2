@@ -53,15 +53,6 @@ services:
       - traefik.http.services.traefik.loadbalancer.server.port=8080
     # MIDDLEWARES
 
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    command:
-      - --cleanup=true
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
 networks:
   proxy:
     name: proxy

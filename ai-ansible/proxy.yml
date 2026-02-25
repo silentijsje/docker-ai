@@ -1,6 +1,6 @@
 ---
 - name: Setup proxy servers (Traefik)
-  hosts: proxy
+  hosts: docker01.prod.lan
   become: true
   vars_files:
     - vars/vault.yml
