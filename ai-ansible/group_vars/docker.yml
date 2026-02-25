@@ -2,4 +2,4 @@
 # Variables specific to docker hosts
 
 docker_compose_version: "v2.32.1"
-docker_data_root: /mnt/docker
+docker_data_root: /docker

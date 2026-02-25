@@ -33,3 +33,36 @@
         post_reboot_delay: 30
         test_command: uptime
       when: reboot_required_file.stat.exists
+
+- name: Update Docker containers
+  hosts: docker
+  become: true
+  tasks:
+    - name: Find all docker-compose files
+      ansible.builtin.find:
+        paths: /docker
+        patterns: "docker-compose.yml"
+        recurse: yes
+      register: compose_files
+
+    - name: Pull and update docker containers
+      community.docker.docker_compose_v2:
+        project_src: "{{ item.path | dirname }}"
+        pull: always
+        state: present
+        recreate: always
+      loop: "{{ compose_files.files }}"
+      when: compose_files.files | length > 0
+      register: compose_update_results
+      ignore_errors: yes
+
+    - name: Prune unused Docker images
+      community.docker.docker_prune:
+        images: yes
+        images_filters:
+          dangling: false
+
+    - name: Report container updates
+      ansible.builtin.debug:
+        msg: "Updated {{ compose_files.files | length }} docker-compose stacks"
+      when: compose_files.files | length > 0

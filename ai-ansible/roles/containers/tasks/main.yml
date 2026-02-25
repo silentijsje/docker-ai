@@ -20,6 +20,13 @@
     - infrastructure
     - portainer
 
+- name: Deploy Watchtower
+  ansible.builtin.include_tasks: watchtower.yml
+  when: enabled_containers.watchtower | default(false)
+  tags:
+    - infrastructure
+    - watchtower
+
 - name: Deploy Homepage
   ansible.builtin.include_tasks: homepage.yml
   when: enabled_containers.homepage | default(false)

@@ -1,0 +1,17 @@
+---
+- name: Create Watchtower directory
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/watchtower"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Watchtower docker-compose file
+  ansible.builtin.template:
+    src: watchtower/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/watchtower/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Watchtower
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/watchtower"
+    state: present

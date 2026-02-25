@@ -106,6 +106,12 @@ portainer_image: "portainer/portainer-ce:latest"
 # Homepage - Dashboard
 homepage_image: "ghcr.io/gethomepage/homepage:latest"
 
+# Watchtower - Automatic Container Updates
+watchtower_image: "containrrr/watchtower:latest"
+watchtower_schedule: "0 0 4 * * *"  # Daily at 4 AM
+watchtower_cleanup: true
+watchtower_include_stopped: false
+
 # Termix - Web SSH Management (ssh hosts only)
 termix_image: ghcr.io/lukegus/termix:latest
 termix_container_name: termix
@@ -122,6 +128,7 @@ enabled_containers:
   crowdsec: true
   portainer: true
   homepage: true
+  watchtower: true
 
   # Media Management
   radarr: true

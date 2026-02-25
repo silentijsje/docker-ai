@@ -1,0 +1,18 @@
+services:
+  watchtower:
+    image: {{ watchtower_image }}
+    container_name: watchtower
+    restart: unless-stopped
+    environment:
+      - TZ={{ container_timezone }}
+      - WATCHTOWER_CLEANUP={{ watchtower_cleanup | lower }}
+      - WATCHTOWER_INCLUDE_STOPPED={{ watchtower_include_stopped | lower }}
+      - WATCHTOWER_SCHEDULE={{ watchtower_schedule }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - {{ container_network }}
+
+networks:
+  {{ container_network }}:
+    external: true
