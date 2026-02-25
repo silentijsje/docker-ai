@@ -124,8 +124,6 @@ termix_domain: termix  # Subdomain (full: termix.{{ cloudflare_dns_zone }})
 
 enabled_containers:
   # Infrastructure (Phase 1)
-  traefik: true
-  crowdsec: true
   portainer: true
   homepage: true
   watchtower: true

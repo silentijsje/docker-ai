@@ -2,6 +2,12 @@
 # Main entry point for containers role
 # Deploys enabled containers from the enabled_containers variable
 
+# Remove stale crowdsec dir left from previous deployments (no traefik on these hosts)
+- name: Remove stale crowdsec directory
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/crowdsec"
+    state: absent
+
 # Ensure Docker network exists (MUST BE FIRST)
 - name: Ensure Docker network exists
   community.docker.docker_network:
