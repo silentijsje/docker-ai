@@ -26,14 +26,14 @@ git checkout -b Stanley/fix-bug-name
 **Test Ansible syntax:**
 ```bash
 # Lint playbooks
-ansible-lint ai-ansible/playbooks/*.yml
+ansible-lint ai-ansible/*.yml
 
 # Check playbook syntax
-ansible-playbook ai-ansible/playbooks/site.yml --syntax-check
+ansible-playbook ai-ansible/site.yml --syntax-check
 
 # Dry-run (check mode)
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass \
   --check
 ```
@@ -96,8 +96,8 @@ vim ai-ansible/roles/containers/tasks/main.yml
 vim docs/SERVICES.md
 
 # 5. Test
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/containers.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/containers.yml \
   --vault-password-file=.vault_pass \
   --tags=myservice
 ```
@@ -195,7 +195,7 @@ chmod +x .git/hooks/pre-commit
 yamllint ai-ansible/
 
 # Ansible lint
-ansible-lint ai-ansible/playbooks/*.yml
+ansible-lint ai-ansible/*.yml
 
 # Secret scan
 gitleaks detect --source . --verbose
@@ -323,8 +323,8 @@ ansible-vault encrypt_string 'secret_value' --name 'vault_var_name'
 ansible-vault edit ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Test role on specific host
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass \
   --tags=docker \
   --limit=docker01.ota.lan

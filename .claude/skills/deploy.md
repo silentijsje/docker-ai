@@ -13,9 +13,7 @@ Run Ansible playbooks from the ai-ansible directory.
 - `setup.yml` - Initial server setup
 - `site.yml` - Full site deployment
 - `update.yml` - Update existing deployments
-- `dns.yml` - DNS configuration
 - `proxy.yml` - Proxy configuration
-- `proxy_parent.yml` - Parent proxy configuration
 
 ## Instructions
 

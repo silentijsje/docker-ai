@@ -7,7 +7,7 @@ Common issues & solutions.
 ### Ansible Connection Failed
 ```bash
 # Test connectivity
-ansible -i ai-ansible/inventory.ini docker_hosts -m ping
+ansible -i ai-ansible/hosts.ini docker_hosts -m ping
 
 # Common causes:
 # - SSH key not copied: ssh-copy-id user@host
@@ -32,14 +32,14 @@ ansible-vault view ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
 ### Playbook Task Failed
 ```bash
 # Re-run with verbose output
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass \
   -vvv
 
 # Check specific host
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass \
   --limit=docker01.ota.lan
 ```
@@ -284,8 +284,8 @@ docker stop <service>
 docker rm <service>
 
 # Re-deploy via Ansible
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/containers.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/containers.yml \
   --vault-password-file=.vault_pass \
   --tags=<service>
 ```
@@ -296,8 +296,8 @@ ansible-playbook -i ai-ansible/inventory.ini \
 docker compose -f input/docker/*/docker-compose.*.yml down
 
 # Re-deploy
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/containers.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/containers.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -310,8 +310,8 @@ docker volume prune -f
 docker network prune -f
 
 # Re-deploy from scratch
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 

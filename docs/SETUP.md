@@ -15,7 +15,7 @@ Complete deployment walkthrough for docker-ai infrastructure.
 **1. Inventory setup:**
 ```bash
 # Edit inventory
-vim ai-ansible/inventory.ini
+vim ai-ansible/hosts.ini
 
 # Add target host
 [docker_hosts]
@@ -28,7 +28,7 @@ docker01.ota.lan ansible_host=10.0.0.80 ansible_user=stanley
 ssh-copy-id stanley@docker01.ota.lan
 
 # Test connection
-ansible -i ai-ansible/inventory.ini docker_hosts -m ping
+ansible -i ai-ansible/hosts.ini docker_hosts -m ping
 ```
 
 ## Vault Configuration
@@ -73,31 +73,26 @@ chmod +x .git/hooks/pre-commit
 **6. Run full deployment:**
 ```bash
 # Bootstrap + Docker + Proxy + Containers
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 
 **Phase-by-phase alternative:**
 ```bash
-# 1. Bootstrap (OS hardening, users)
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/bootstrap.yml \
+# 1. Bootstrap + SMB mounts
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/setup.yml \
   --vault-password-file=.vault_pass
 
-# 2. Docker engine
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/docker.yml \
+# 2. Traefik proxy
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/proxy.yml \
   --vault-password-file=.vault_pass
 
-# 3. Traefik proxy
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/proxy.yml \
-  --vault-password-file=.vault_pass
-
-# 4. All containers
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/containers.yml \
+# 3. All containers
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/containers.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -162,8 +157,8 @@ df -h | grep media
 **Re-deploy specific role:**
 ```bash
 # Update containers only
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/containers.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/containers.yml \
   --vault-password-file=.vault_pass \
   --tags=radarr  # Optional: specific service
 ```

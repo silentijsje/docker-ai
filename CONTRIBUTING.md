@@ -81,10 +81,10 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 ### Before PR
 ```bash
 # 1. Syntax check
-ansible-playbook ai-ansible/playbooks/site.yml --syntax-check
+ansible-playbook ai-ansible/site.yml --syntax-check
 
 # 2. Lint
-ansible-lint ai-ansible/playbooks/*.yml
+ansible-lint ai-ansible/*.yml
 
 # 3. Molecule test (if role changed)
 cd ai-ansible/roles/<role> && molecule test

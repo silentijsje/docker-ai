@@ -27,10 +27,10 @@ Ansible-based IaC for media management & hosting ecosystem on Docker.
 cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 
 # Run full deployment
-ansible-playbook -i ai-ansible/inventory.ini ai-ansible/playbooks/site.yml --vault-password-file=.vault_pass
+ansible-playbook -i ai-ansible/hosts.ini ai-ansible/site.yml --vault-password-file=.vault_pass
 
 # Deploy specific roles
-ansible-playbook -i ai-ansible/inventory.ini ai-ansible/playbooks/containers.yml --vault-password-file=.vault_pass
+ansible-playbook -i ai-ansible/hosts.ini ai-ansible/containers.yml --vault-password-file=.vault_pass
 ```
 
 ## Vault Management

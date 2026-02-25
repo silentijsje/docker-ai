@@ -182,8 +182,8 @@ tar -xzf /mnt/backups/docker/docker-data-YYYYMMDD-HHMMSS.tar.gz
 
 # Restart containers
 cd /opt/docker-ai
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/containers.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/containers.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -235,8 +235,8 @@ echo "password" > .vault_pass
 chmod 600 .vault_pass
 
 # Deploy
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 

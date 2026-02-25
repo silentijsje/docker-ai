@@ -195,8 +195,8 @@ vim ai-ansible/vars/vault.yml
 ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Re-deploy
-ansible-playbook -i ai-ansible/inventory.ini \
-  ai-ansible/playbooks/site.yml \
+ansible-playbook -i ai-ansible/hosts.ini \
+  ai-ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -345,7 +345,7 @@ docker compose up -d
 ansible-galaxy collection install -r requirements.yml --force
 
 # Update OS packages
-ansible -i ai-ansible/inventory.ini docker_hosts \
+ansible -i ai-ansible/hosts.ini docker_hosts \
   -m apt -a "upgrade=dist" --become
 ```
 
@@ -355,7 +355,7 @@ ansible -i ai-ansible/inventory.ini docker_hosts \
 docker scan <image>
 
 # Scan Ansible playbooks
-ansible-lint ai-ansible/playbooks/*.yml
+ansible-lint ai-ansible/*.yml
 
 # Secret scanning
 gitleaks detect --source . --verbose
