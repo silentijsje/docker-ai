@@ -21,13 +21,19 @@ services:
       - "{{ container_ports.sonarr }}:8989"
     networks:
       - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
     labels:
       - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
       # Router
       - traefik.http.routers.sonarr.service=sonarr
       - traefik.http.routers.sonarr.rule=Host(`sonarr.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.sonarr.entrypoints=secureweb
-      - traefik.http.routers.sonarr.middlewares=security-headers@file,traefik-bouncer@file
+      - traefik.http.routers.sonarr.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
       # Service
       - traefik.http.services.sonarr.loadbalancer.server.scheme=http
       - traefik.http.services.sonarr.loadbalancer.server.port=8989
@@ -35,3 +41,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

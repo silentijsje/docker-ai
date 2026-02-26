@@ -135,16 +135,6 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
-    sabnzbd:
-      rule: "Host(`sabnzbd.silentijsje.com`)"
-      service: sabnzbd
-      entryPoints:
-        - secureweb
-      tls: {}
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
     wizarr:
       rule: "Host(`wizarr.silentijsje.com`)"
       service: wizarr
@@ -215,27 +205,6 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
-    radarr:
-      rule: "Host(`radarr.silentijsje.com`)"
-      service: radarr
-      entryPoints:
-        - secureweb
-      tls: {}
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
-    sonarr:
-      rule: "Host(`sonarr.silentijsje.com`)"
-      service: sonarr
-      entryPoints:
-        - secureweb
-      tls: {}
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
-
   services:
     jellyfin:
       loadBalancer:
@@ -321,12 +290,6 @@ http:
           - url: "http://{{ vault_ip_nzb }}:7777"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    sabnzbd:
-      loadBalancer:
-        servers:
-          - url: "http://127.0.0.1:8083"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
     wizarr:
       loadBalancer:
         servers:
@@ -369,19 +332,6 @@ http:
           - url: "http://{{ vault_ip_ssh }}:9000"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    radarr:
-      loadBalancer:
-        servers:
-          - url: "http://127.0.0.1:7878"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
-    sonarr:
-      loadBalancer:
-        servers:
-          - url: "http://127.0.0.1:8989"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
-
   serversTransports:
     insecure-no-verify:
       insecureSkipVerify: true

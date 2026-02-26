@@ -21,13 +21,19 @@ services:
       - "{{ container_ports.radarr }}:7878"
     networks:
       - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
     labels:
       - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
       # Router
       - traefik.http.routers.radarr.service=radarr
       - traefik.http.routers.radarr.rule=Host(`radarr.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.radarr.entrypoints=secureweb
-      - traefik.http.routers.radarr.middlewares=security-headers@file,traefik-bouncer@file
+      - traefik.http.routers.radarr.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
       # Service
       - traefik.http.services.radarr.loadbalancer.server.scheme=http
       - traefik.http.services.radarr.loadbalancer.server.port=7878
@@ -35,3 +41,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}
