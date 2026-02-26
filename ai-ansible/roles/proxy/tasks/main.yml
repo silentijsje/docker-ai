@@ -23,6 +23,12 @@
     dest: "{{ traefik_config_dest }}/dynamic.yaml"
     mode: '0660'
 
+- name: Ensure compose directory exists
+  ansible.builtin.file:
+    path: "{{ traefik_compose_dir }}"
+    state: directory
+    mode: '0770'
+
 - name: Template Docker Compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
