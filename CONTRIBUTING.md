@@ -81,16 +81,16 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 ### Before PR
 ```bash
 # 1. Syntax check
-ansible-playbook ai-ansible/site.yml --syntax-check
+ansible-playbook ansible/site.yml --syntax-check
 
 # 2. Lint
-ansible-lint ai-ansible/*.yml
+ansible-lint ansible/*.yml
 
 # 3. Molecule test (if role changed)
-cd ai-ansible/roles/<role> && molecule test
+cd ansible/roles/<role> && molecule test
 
 # 4. Vault encrypted
-head -1 ai-ansible/vars/vault.yml
+head -1 ansible/vars/vault.yml
 # Must show: $ANSIBLE_VAULT;1.1;AES256
 ```
 
@@ -141,7 +141,7 @@ What this PR does
 
 **Checklist:**
 1. Create `input/docker/<service>/docker-compose.<service>.yml`
-2. Add task in `ai-ansible/roles/containers/tasks/`
+2. Add task in `ansible/roles/containers/tasks/`
 3. Update `docs/SERVICES.md`
 4. Test deployment
 5. Update `README.md` if needed
@@ -152,16 +152,16 @@ What this PR does
 
 ```bash
 # Decrypt
-ansible-vault decrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault decrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Edit
-vim ai-ansible/vars/vault.yml
+vim ansible/vars/vault.yml
 
 # ALWAYS re-encrypt
-ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Verify
-head -1 ai-ansible/vars/vault.yml
+head -1 ansible/vars/vault.yml
 ```
 
 **Pre-commit hook blocks unencrypted commits.**

@@ -7,7 +7,7 @@ Common issues & solutions.
 ### Ansible Connection Failed
 ```bash
 # Test connectivity
-ansible -i ai-ansible/hosts.ini docker_hosts -m ping
+ansible -i ansible/hosts.ini docker_hosts -m ping
 
 # Common causes:
 # - SSH key not copied: ssh-copy-id user@host
@@ -22,24 +22,24 @@ ansible -i ai-ansible/hosts.ini docker_hosts -m ping
 ls -la .vault_pass
 
 # Verify vault is encrypted
-head -1 ai-ansible/vars/vault.yml
+head -1 ansible/vars/vault.yml
 # Should show: $ANSIBLE_VAULT;1.1;AES256
 
 # Manual decrypt test
-ansible-vault view ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault view ansible/vars/vault.yml --vault-password-file=.vault_pass
 ```
 
 ### Playbook Task Failed
 ```bash
 # Re-run with verbose output
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass \
   -vvv
 
 # Check specific host
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass \
   --limit=docker01.ota.lan
 ```
@@ -158,7 +158,7 @@ df -h | grep media
 smbclient //10.0.40.2/media -U pve-smb
 
 # Check credentials in vault
-ansible-vault view ai-ansible/vars/vault.yml --vault-password-file=.vault_pass | grep smb
+ansible-vault view ansible/vars/vault.yml --vault-password-file=.vault_pass | grep smb
 
 # Remount manually
 umount /mnt/media
@@ -284,8 +284,8 @@ docker stop <service>
 docker rm <service>
 
 # Re-deploy via Ansible
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/containers.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/containers.yml \
   --vault-password-file=.vault_pass \
   --tags=<service>
 ```
@@ -296,8 +296,8 @@ ansible-playbook -i ai-ansible/hosts.ini \
 docker compose -f input/docker/*/docker-compose.*.yml down
 
 # Re-deploy
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/containers.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/containers.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -310,8 +310,8 @@ docker volume prune -f
 docker network prune -f
 
 # Re-deploy from scratch
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 

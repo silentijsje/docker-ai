@@ -27,24 +27,24 @@ Ansible-based IaC for media management & hosting ecosystem on Docker.
 cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 
 # Run full deployment
-ansible-playbook -i ai-ansible/hosts.ini ai-ansible/site.yml --vault-password-file=.vault_pass
+ansible-playbook -i ansible/hosts.ini ansible/site.yml --vault-password-file=.vault_pass
 
 # Deploy specific roles
-ansible-playbook -i ai-ansible/hosts.ini ai-ansible/containers.yml --vault-password-file=.vault_pass
+ansible-playbook -i ansible/hosts.ini ansible/containers.yml --vault-password-file=.vault_pass
 ```
 
 ## Vault Management
 
 **Check encryption:**
 ```bash
-head -1 ai-ansible/vars/vault.yml  # Should show: $ANSIBLE_VAULT;1.1;AES256
+head -1 ansible/vars/vault.yml  # Should show: $ANSIBLE_VAULT;1.1;AES256
 ```
 
 **Edit secrets:**
 ```bash
-ansible-vault decrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault decrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 # Edit file
-ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 ```
 
 ## CI/CD
@@ -66,7 +66,7 @@ GitHub Actions pipeline:
 ## Directory Structure
 
 ```
-ai-ansible/         # Playbooks & roles
+ansible/         # Playbooks & roles
 input/docker/       # Compose service modules
 roles/              # Molecule test scenarios
 scripts/            # Pre-commit hook

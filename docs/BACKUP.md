@@ -6,7 +6,7 @@ Data protection strategies.
 
 ### Critical Data
 **1. Vault secrets:**
-- `ai-ansible/vars/vault.yml` (encrypted)
+- `ansible/vars/vault.yml` (encrypted)
 - `.vault_pass` (KEEP SECURE - offline storage)
 
 **2. Docker data:**
@@ -182,8 +182,8 @@ tar -xzf /mnt/backups/docker/docker-data-YYYYMMDD-HHMMSS.tar.gz
 
 # Restart containers
 cd /opt/docker-ai
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/containers.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/containers.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -211,7 +211,7 @@ docker exec -i booklore-db mysql -u booklore -p booklore < \
 **From encrypted backup:**
 ```bash
 # Restore vault file
-cp /mnt/backups/vault/vault.yml.backup ai-ansible/vars/vault.yml
+cp /mnt/backups/vault/vault.yml.backup ansible/vars/vault.yml
 
 # Restore vault password
 # (retrieve from password manager/offline storage)
@@ -219,7 +219,7 @@ echo "password" > .vault_pass
 chmod 600 .vault_pass
 
 # Verify
-ansible-vault view ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault view ansible/vars/vault.yml --vault-password-file=.vault_pass
 ```
 
 ### 5. Config-only Restore
@@ -235,8 +235,8 @@ echo "password" > .vault_pass
 chmod 600 .vault_pass
 
 # Deploy
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 

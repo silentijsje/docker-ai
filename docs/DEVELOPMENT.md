@@ -26,14 +26,14 @@ git checkout -b Stanley/fix-bug-name
 **Test Ansible syntax:**
 ```bash
 # Lint playbooks
-ansible-lint ai-ansible/*.yml
+ansible-lint ansible/*.yml
 
 # Check playbook syntax
-ansible-playbook ai-ansible/site.yml --syntax-check
+ansible-playbook ansible/site.yml --syntax-check
 
 # Dry-run (check mode)
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass \
   --check
 ```
@@ -44,11 +44,11 @@ ansible-playbook -i ai-ansible/hosts.ini \
 pip install molecule molecule-plugins[docker]
 
 # Test specific role
-cd ai-ansible/roles/docker
+cd ansible/roles/docker
 molecule test
 
 # Test all roles
-for role in ai-ansible/roles/*/; do
+for role in ansible/roles/*/; do
   cd "$role" && molecule test && cd -
 done
 ```
@@ -89,15 +89,15 @@ services:
 EOF
 
 # 3. Add to containers role tasks
-vim ai-ansible/roles/containers/tasks/main.yml
+vim ansible/roles/containers/tasks/main.yml
 # Add include task for myservice
 
 # 4. Update docs/SERVICES.md
 vim docs/SERVICES.md
 
 # 5. Test
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/containers.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/containers.yml \
   --vault-password-file=.vault_pass \
   --tags=myservice
 ```
@@ -107,16 +107,16 @@ ansible-playbook -i ai-ansible/hosts.ini \
 **Create new role:**
 ```bash
 # Generate role structure
-ansible-galaxy init ai-ansible/roles/myrole
+ansible-galaxy init ansible/roles/myrole
 
 # Add Molecule scenario
-cd ai-ansible/roles/myrole
+cd ansible/roles/myrole
 molecule init scenario default
 ```
 
 **Role structure:**
 ```
-ai-ansible/roles/myrole/
+ansible/roles/myrole/
 ├── tasks/
 │   └── main.yml          # Main tasks
 ├── templates/
@@ -138,16 +138,16 @@ ai-ansible/roles/myrole/
 **Add new secrets:**
 ```bash
 # Decrypt
-ansible-vault decrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault decrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Edit
-vim ai-ansible/vars/vault.yml
+vim ansible/vars/vault.yml
 
 # Add variable with vault_ prefix
 vault_new_secret: "secret_value"
 
 # Encrypt
-ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # NEVER commit unencrypted vault!
 ```
@@ -192,10 +192,10 @@ chmod +x .git/hooks/pre-commit
 **Run locally:**
 ```bash
 # YAML lint
-yamllint ai-ansible/
+yamllint ansible/
 
 # Ansible lint
-ansible-lint ai-ansible/*.yml
+ansible-lint ansible/*.yml
 
 # Secret scan
 gitleaks detect --source . --verbose
@@ -314,17 +314,17 @@ git push origin v1.0.0
 
 ```bash
 # Show all vault variables
-ansible-vault view ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault view ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Encrypt single string
 ansible-vault encrypt_string 'secret_value' --name 'vault_var_name'
 
 # Decrypt and edit in one command
-ansible-vault edit ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault edit ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Test role on specific host
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass \
   --tags=docker \
   --limit=docker01.ota.lan

@@ -14,12 +14,6 @@ container_timezone: "{{ timezone }}"
 
 # Paths
 container_data_root: "{{ docker_data_root }}"        # /docker
-container_media_root: /mnt/media
-container_temp_root: /mnt/temporary
-
-# SMB Share paths (from vault for security)
-smb_media_path: "{{ vault_smb_media_share_path }}"
-smb_temp_path: "{{ vault_smb_temp_share_path }}"
 
 # Cloudflare DNS zone for Traefik labels (from vault for security)
 cloudflare_dns_zone: "{{ vault_cloudflare_dns_zone }}"

@@ -16,6 +16,7 @@
     shell: /bin/bash
     state: present
   loop: "{{ users }}"
+  when: item.name != ansible_user
 
 - name: Allow sudo group passwordless sudo
   ansible.builtin.lineinfile:

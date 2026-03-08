@@ -3,7 +3,7 @@
   description: Encrypt or decrypt the Ansible vault                               
   ---                                                                             
                                                                                   
-  Check and manage ai-ansible/vars/vault.yml encryption status.                   
+  Check and manage ansible/vars/vault.yml encryption status.                   
   - If user says "encrypt": run ansible-vault encrypt                             
   - If user says "decrypt": run ansible-vault decrypt                             
   - If user says "status": check if file is encrypted                             

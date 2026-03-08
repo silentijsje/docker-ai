@@ -1,0 +1,5 @@
+---
+smb_media_path: "{{ vault_smb_media_share_path }}"
+smb_temp_path: "{{ vault_smb_temp_share_path }}"
+container_media_root: /mnt/media
+container_temp_root: /mnt/temporary

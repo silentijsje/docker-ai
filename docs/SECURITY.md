@@ -141,7 +141,7 @@ docker exec crowdsec cscli metrics
 **Encrypted secrets:**
 ```bash
 # Check encryption status
-head -1 ai-ansible/vars/vault.yml
+head -1 ansible/vars/vault.yml
 # Must show: $ANSIBLE_VAULT;1.1;AES256
 ```
 
@@ -190,13 +190,13 @@ DATABASE_PASSWORD=xxx
 **After rotation:**
 ```bash
 # Update vault
-ansible-vault decrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
-vim ai-ansible/vars/vault.yml
-ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault decrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
+vim ansible/vars/vault.yml
+ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Re-deploy
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -345,7 +345,7 @@ docker compose up -d
 ansible-galaxy collection install -r requirements.yml --force
 
 # Update OS packages
-ansible -i ai-ansible/hosts.ini docker_hosts \
+ansible -i ansible/hosts.ini docker_hosts \
   -m apt -a "upgrade=dist" --become
 ```
 
@@ -355,7 +355,7 @@ ansible -i ai-ansible/hosts.ini docker_hosts \
 docker scan <image>
 
 # Scan Ansible playbooks
-ansible-lint ai-ansible/*.yml
+ansible-lint ansible/*.yml
 
 # Secret scanning
 gitleaks detect --source . --verbose

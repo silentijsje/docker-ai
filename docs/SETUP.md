@@ -15,7 +15,7 @@ Complete deployment walkthrough for docker-ai infrastructure.
 **1. Inventory setup:**
 ```bash
 # Edit inventory
-vim ai-ansible/hosts.ini
+vim ansible/hosts.ini
 
 # Add target host
 [docker_hosts]
@@ -28,7 +28,7 @@ docker01.ota.lan ansible_host=10.0.0.80 ansible_user=stanley
 ssh-copy-id stanley@docker01.ota.lan
 
 # Test connection
-ansible -i ai-ansible/hosts.ini docker_hosts -m ping
+ansible -i ansible/hosts.ini docker_hosts -m ping
 ```
 
 ## Vault Configuration
@@ -36,7 +36,7 @@ ansible -i ai-ansible/hosts.ini docker_hosts -m ping
 **3. Configure secrets:**
 ```bash
 # Decrypt vault
-ansible-vault decrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault decrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 
 # Edit required secrets:
 # - vault_cloudflare_api_token
@@ -45,7 +45,7 @@ ansible-vault decrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pas
 # - vault_ip_* (if IPs changed)
 
 # Re-encrypt
-ansible-vault encrypt ai-ansible/vars/vault.yml --vault-password-file=.vault_pass
+ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
 ```
 
 ## Environment File
@@ -73,26 +73,26 @@ chmod +x .git/hooks/pre-commit
 **6. Run full deployment:**
 ```bash
 # Bootstrap + Docker + Proxy + Containers
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/site.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/site.yml \
   --vault-password-file=.vault_pass
 ```
 
 **Phase-by-phase alternative:**
 ```bash
 # 1. Bootstrap + SMB mounts
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/setup.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/setup.yml \
   --vault-password-file=.vault_pass
 
 # 2. Traefik proxy
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/proxy.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/proxy.yml \
   --vault-password-file=.vault_pass
 
 # 3. All containers
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/containers.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/containers.yml \
   --vault-password-file=.vault_pass
 ```
 
@@ -157,8 +157,8 @@ df -h | grep media
 **Re-deploy specific role:**
 ```bash
 # Update containers only
-ansible-playbook -i ai-ansible/hosts.ini \
-  ai-ansible/containers.yml \
+ansible-playbook -i ansible/hosts.ini \
+  ansible/containers.yml \
   --vault-password-file=.vault_pass \
   --tags=radarr  # Optional: specific service
 ```

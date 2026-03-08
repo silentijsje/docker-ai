@@ -5,7 +5,7 @@ description: Run Ansible playbooks to deploy and manage infrastructure
 
 # Deploy Skill
 
-Run Ansible playbooks from the ai-ansible directory.
+Run Ansible playbooks from the ansible directory.
 
 ## Available Playbooks
 
@@ -17,7 +17,7 @@ Run Ansible playbooks from the ai-ansible directory.
 
 ## Instructions
 
-1. Change to the ai-ansible directory first
+1. Change to the ansible directory first
 2. Always use `--vault-password-file=.vault_pass` for vault decryption
 3. Use inventory file: `-i hosts.ini`
 
@@ -31,12 +31,12 @@ Run Ansible playbooks from the ai-ansible directory.
 
 Dry-run:
 ```bash
-cd /mnt/project/docker-ai/ai-ansible && ansible-playbook -i hosts.ini <playbook>.yml --vault-password-file=../.vault_pass --check --diff
+cd /mnt/docker-ai/ansible && ansible-playbook -i hosts.ini <playbook>.yml --vault-password-file=../.vault_pass --check --diff
 ```
 
 Execute:
 ```bash
-cd /mnt/project/docker-ai/ai-ansible && ansible-playbook -i hosts.ini <playbook>.yml --vault-password-file=../.vault_pass
+cd /mnt/docker-ai/ansible && ansible-playbook -i hosts.ini <playbook>.yml --vault-password-file=../.vault_pass
 ```
 
 ## Limit to Specific Hosts
