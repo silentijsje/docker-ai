@@ -18,6 +18,26 @@ http:
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
+    dns01:
+      rule: "Host(`dns01.silentijsje.com`)"
+      service: dns01
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    dns02:
+      rule: "Host(`dns02.silentijsje.com`)"
+      service: dns02
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
     paperless:
       rule: "Host(`paperless.silentijsje.com`)"
       service: paperless
@@ -46,16 +66,6 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
-    pihole:
-      rule: "Host(`pihole.silentijsje.com`)"
-      service: pihole
-      entryPoints:
-        - secureweb
-      tls: {}
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
     pve1:
       rule: "Host(`pve1.silentijsje.com`)"
       service: pve1
@@ -69,6 +79,16 @@ http:
     pve2:
       rule: "Host(`pve2.silentijsje.com`)"
       service: pve2
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    pdm:
+      rule: "Host(`pdm.silentijsje.com`)"
+      service: pdm
       entryPoints:
         - secureweb
       tls: {}
@@ -180,11 +200,6 @@ http:
       service: termix
       entryPoints:
         - secureweb
-      tls: {}
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
     portainer:
       rule: "Host(`portainer.silentijsje.com`)"
       service: portainer
@@ -230,12 +245,6 @@ http:
           - url: "http://{{ vault_ip_truenas }}"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    pihole:
-      loadBalancer:
-        servers:
-          - url: "http://{{ vault_ip_pihole }}"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
     pve1:
       loadBalancer:
         servers:
@@ -246,6 +255,12 @@ http:
       loadBalancer:
         servers:
           - url: "https://{{ vault_ip_pve2 }}:8006"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    pdm:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_pdm }}:8443"
         passHostHeader: true
         serversTransport: insecure-no-verify
     pbs:
@@ -323,13 +338,25 @@ http:
     portainer:
       loadBalancer:
         servers:
-          - url: "http://10.0.30.80:9000"
+          - url: "http://{{ vault_ip_docker01 }}:9000"
         passHostHeader: true
         serversTransport: insecure-no-verify
     portainer-ssh:
       loadBalancer:
         servers:
           - url: "http://{{ vault_ip_ssh }}:9000"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    dns01:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_dns01 }}:5380"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    dns02:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_dns02 }}:5380"
         passHostHeader: true
         serversTransport: insecure-no-verify
   serversTransports:
