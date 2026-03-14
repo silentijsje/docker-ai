@@ -1,0 +1,38 @@
+#!/bin/bash
+# Vaultwarden Backup Script
+# Deployed by Ansible - Do not edit manually
+# Runs daily via cron, retains 30 days
+
+set -euo pipefail
+
+DATA_DIR="{{ container_data_root }}/vaultwarden/data"
+BACKUP_DIR="{{ container_data_root }}/vaultwarden/backup"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="${BACKUP_DIR}/vaultwarden_${TIMESTAMP}.tar.gz"
+RETENTION_DAYS=14
+OFFSITE_DIR="{{ container_media_root }}/backup/vaultwarden"
+
+# Consistent SQLite backup
+if [ -f "${DATA_DIR}/db.sqlite3" ]; then
+    sqlite3 "${DATA_DIR}/db.sqlite3" ".backup '${BACKUP_DIR}/db_${TIMESTAMP}.sqlite3'"
+fi
+
+# Compress full data dir + clean db snapshot
+tar -czf "${BACKUP_FILE}" \
+    -C "{{ container_data_root }}/vaultwarden" data \
+    -C "${BACKUP_DIR}" "db_${TIMESTAMP}.sqlite3" 2>/dev/null || \
+tar -czf "${BACKUP_FILE}" \
+    -C "{{ container_data_root }}/vaultwarden" data
+
+# Cleanup temp db snapshot
+rm -f "${BACKUP_DIR}/db_${TIMESTAMP}.sqlite3"
+
+# Remove backups older than retention period
+find "${BACKUP_DIR}" -name "vaultwarden_*.tar.gz" -mtime +${RETENTION_DAYS} -delete
+
+# Copy to offsite dir
+mkdir -p "${OFFSITE_DIR}"
+cp "${BACKUP_FILE}" "${OFFSITE_DIR}/"
+find "${OFFSITE_DIR}" -name "vaultwarden_*.tar.gz" -mtime +${RETENTION_DAYS} -delete
+
+echo "Backup complete: ${BACKUP_FILE}"

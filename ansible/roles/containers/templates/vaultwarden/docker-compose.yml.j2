@@ -1,0 +1,52 @@
+---
+###########################################################################
+# Vaultwarden - Password Manager
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/dani-garcia/vaultwarden
+###########################################################################
+
+services:
+  vaultwarden:
+    image: {{ vaultwarden_image | default('vaultwarden/server:latest') }}
+    container_name: {{ vaultwarden_container_name | default('vaultwarden') }}
+    restart: unless-stopped
+    environment:
+      - TZ={{ container_timezone }}
+      - DOMAIN=https://vaultwarden.{{ cloudflare_dns_zone }}
+      - ADMIN_TOKEN={{ vault_vaultwarden_admin_token }}
+      - SIGNUPS_ALLOWED=false
+    volumes:
+      - {{ container_data_root }}/vaultwarden/data:/data
+    ports:
+      - "{{ container_ports.vaultwarden }}:80"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.vaultwarden.service=vaultwarden
+      - traefik.http.routers.vaultwarden.rule=Host(`vault.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.vaultwarden.entrypoints=secureweb
+      - traefik.http.routers.vaultwarden.middlewares=security-headers@file,traefik-bouncer@file
+      # Service
+      - traefik.http.services.vaultwarden.loadbalancer.server.scheme=http
+      - traefik.http.services.vaultwarden.loadbalancer.server.port=80
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/alive"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

@@ -49,6 +49,15 @@ container_ports:
   booklore: 8085         # Book library (internal: configurable)
   # paperless: 8000      # Documents (internal: 8000)
 
+  # Security
+  vaultwarden: 8086      # Password manager (internal: 80)
+
+  # Monitoring
+  prometheus: 9090       # Metrics (internal: 9090)
+  grafana: 3000          # Dashboards (internal: 3000)
+  node_exporter: 9100    # Host metrics (internal: 9100)
+  loki: 3100             # Log aggregation (internal: 3100)
+
   # Download Clients
   sabnzbd: 8083          # Usenet (internal: 8080)
   qbittorrent: 8084      # Torrents WebUI (internal: 8080)
@@ -111,6 +120,17 @@ termix_image: ghcr.io/lukegus/termix:latest
 termix_container_name: termix
 termix_domain: termix  # Subdomain (full: termix.{{ cloudflare_dns_zone }})
 
+# Vaultwarden - Password Manager
+vaultwarden_image: vaultwarden/server:latest
+vaultwarden_container_name: vaultwarden
+
+# Monitoring Stack
+prometheus_image: prom/prometheus:latest
+grafana_image: grafana/grafana:latest
+node_exporter_image: prom/node-exporter:latest
+loki_image: grafana/loki:latest
+promtail_image: grafana/promtail:latest
+
 # =============================================================================
 # Enabled Services
 # =============================================================================
@@ -130,6 +150,12 @@ enabled_containers:
   # Download Clients
   sabnzbd: true
   qbittorrent: true
+
+  # Security
+  vaultwarden: true
+
+  # Monitoring
+  monitoring: true
 
   # SSH Management (ssh hosts only)
   termix: true

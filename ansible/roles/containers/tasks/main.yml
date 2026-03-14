@@ -78,3 +78,24 @@
   tags:
     - content
     - booklore
+
+# =============================================================================
+# Security Services
+# =============================================================================
+
+- name: Deploy Vaultwarden
+  ansible.builtin.import_tasks: vaultwarden.yml
+  when: enabled_containers.vaultwarden | default(false)
+  tags:
+    - security
+    - vaultwarden
+
+# =============================================================================
+# PHASE 3: Monitoring
+# =============================================================================
+
+- name: Deploy Monitoring Stack
+  ansible.builtin.import_tasks: monitoring.yml
+  when: enabled_containers.monitoring | default(false)
+  tags:
+    - monitoring

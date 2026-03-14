@@ -1,0 +1,88 @@
+---
+# Monitoring Stack - Prometheus, Grafana, Loki, Promtail, Node Exporter
+
+- name: Ensure monitoring directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/monitoring"
+    - "{{ container_data_root }}/monitoring/prometheus"
+    - "{{ container_data_root }}/monitoring/prometheus/data"
+    - "{{ container_data_root }}/monitoring/grafana"
+    - "{{ container_data_root }}/monitoring/loki"
+    - "{{ container_data_root }}/monitoring/loki/data"
+    - "{{ container_data_root }}/monitoring/promtail"
+
+- name: Set grafana data dir ownership (runs as UID 472)
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/monitoring/grafana"
+    owner: "472"
+    group: "472"
+    recurse: true
+
+- name: Deploy Prometheus config
+  ansible.builtin.template:
+    src: monitoring/prometheus.yml.j2
+    dest: "{{ container_data_root }}/monitoring/prometheus/prometheus.yml"
+    mode: '0644'
+
+- name: Deploy Loki config
+  ansible.builtin.template:
+    src: monitoring/loki-config.yml.j2
+    dest: "{{ container_data_root }}/monitoring/loki/loki-config.yml"
+    mode: '0644'
+
+- name: Deploy Promtail config
+  ansible.builtin.template:
+    src: monitoring/promtail-config.yml.j2
+    dest: "{{ container_data_root }}/monitoring/promtail/promtail-config.yml"
+    mode: '0644'
+
+- name: Deploy monitoring docker-compose
+  ansible.builtin.template:
+    src: monitoring/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/monitoring/docker-compose.yml"
+    mode: '0644'
+
+- name: Ensure provisioning directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "472"
+    group: "472"
+  loop:
+    - "{{ container_data_root }}/monitoring/grafana/provisioning"
+    - "{{ container_data_root }}/monitoring/grafana/provisioning/datasources"
+    - "{{ container_data_root }}/monitoring/grafana/provisioning/dashboards"
+
+- name: Deploy Grafana datasources config
+  ansible.builtin.template:
+    src: monitoring/provisioning/datasources/datasources.yml.j2
+    dest: "{{ container_data_root }}/monitoring/grafana/provisioning/datasources/datasources.yml"
+    owner: "472"
+    group: "472"
+    mode: '0644'
+
+- name: Deploy Grafana dashboard provider config
+  ansible.builtin.template:
+    src: monitoring/provisioning/dashboards/provider.yml.j2
+    dest: "{{ container_data_root }}/monitoring/grafana/provisioning/dashboards/provider.yml"
+    owner: "472"
+    group: "472"
+    mode: '0644'
+
+- name: Deploy security-logs dashboard
+  ansible.builtin.template:
+    src: monitoring/provisioning/dashboards/security-logs.json.j2
+    dest: "{{ container_data_root }}/monitoring/grafana/provisioning/dashboards/security-logs.json"
+    owner: "472"
+    group: "472"
+    mode: '0644'
+
+- name: Start monitoring stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/monitoring"
+    state: present

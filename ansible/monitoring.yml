@@ -1,0 +1,16 @@
+---
+# Deploy monitoring stack to OTA test VMs
+# Usage: ansible-playbook monitoring.yml --vault-password-file=../.vault_pass
+
+- name: Deploy Monitoring Stack
+  hosts: docker_OTA
+  become: true
+  vars_files:
+    - vars/vault.yml
+    - vars/users.yml
+    - vars/docker-vars.yml
+
+  roles:
+    - role: docker
+    - role: containers
+      tags: monitoring

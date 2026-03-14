@@ -1,0 +1,49 @@
+---
+# Vaultwarden - Password Manager
+# https://github.com/dani-garcia/vaultwarden
+
+- name: Ensure sqlite3 is installed
+  ansible.builtin.package:
+    name: sqlite3
+    state: present
+
+- name: Ensure Vaultwarden directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/vaultwarden"
+    - "{{ container_data_root }}/vaultwarden/data"
+    - "{{ container_data_root }}/vaultwarden/backup"
+
+- name: Deploy Vaultwarden docker-compose
+  ansible.builtin.template:
+    src: vaultwarden/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/vaultwarden/docker-compose.yml"
+    mode: '0644'
+
+- name: Deploy Vaultwarden backup script
+  ansible.builtin.template:
+    src: vaultwarden/backup-vaultwarden.sh.j2
+    dest: "{{ container_data_root }}/vaultwarden/backup-vaultwarden.sh"
+    mode: '0755'
+
+- name: Deploy Vaultwarden restore script
+  ansible.builtin.template:
+    src: vaultwarden/restore-vaultwarden.sh.j2
+    dest: "{{ container_data_root }}/vaultwarden/restore-vaultwarden.sh"
+    mode: '0755'
+
+- name: Schedule daily Vaultwarden backup
+  ansible.builtin.cron:
+    name: "Vaultwarden backup"
+    minute: "0"
+    hour: "3"
+    job: "{{ container_data_root }}/vaultwarden/backup-vaultwarden.sh"
+    user: root
+
+- name: Start Vaultwarden container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/vaultwarden"
+    state: present

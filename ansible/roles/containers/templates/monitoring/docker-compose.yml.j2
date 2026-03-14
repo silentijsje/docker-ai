@@ -1,0 +1,111 @@
+---
+###########################################################################
+# Monitoring Stack - Prometheus, Grafana, Loki, Promtail, Node Exporter
+# Deployed by Ansible - Do not edit manually
+###########################################################################
+
+services:
+  prometheus:
+    image: {{ prometheus_image | default('prom/prometheus:latest') }}
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    volumes:
+      - {{ container_data_root }}/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - {{ container_data_root }}/monitoring/prometheus/data:/prometheus
+    ports:
+      - "{{ container_ports.prometheus }}:9090"
+    networks:
+      - {{ container_network }}
+
+  grafana:
+    image: {{ grafana_image | default('grafana/grafana:latest') }}
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD={{ vault_grafana_admin_password }}
+      - GF_SERVER_ROOT_URL=https://grafana.{{ cloudflare_dns_zone }}
+    volumes:
+      - {{ container_data_root }}/monitoring/grafana:/var/lib/grafana
+      - {{ container_data_root }}/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "{{ container_ports.grafana }}:3000"
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.grafana.service=grafana
+      - traefik.http.routers.grafana.rule=Host(`grafana.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.grafana.entrypoints=secureweb
+      - traefik.http.routers.grafana.middlewares=security-headers@file,traefik-bouncer@file
+      # Service
+      - traefik.http.services.grafana.loadbalancer.server.scheme=http
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+  node-exporter:
+    image: {{ node_exporter_image | default('prom/node-exporter:latest') }}
+    container_name: node-exporter
+    restart: unless-stopped
+    pid: host
+    command:
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro
+    ports:
+      - "{{ container_ports.node_exporter }}:9100"
+    networks:
+      - {{ container_network }}
+
+  loki:
+    image: {{ loki_image | default('grafana/loki:latest') }}
+    container_name: loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/loki-config.yml
+    volumes:
+      - {{ container_data_root }}/monitoring/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - {{ container_data_root }}/monitoring/loki/data:/loki
+    ports:
+      - "{{ container_ports.loki }}:3100"
+    networks:
+      - {{ container_network }}
+
+  promtail:
+    image: {{ promtail_image | default('grafana/promtail:latest') }}
+    container_name: promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/promtail-config.yml
+    volumes:
+      - {{ container_data_root }}/monitoring/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      - loki
+    networks:
+      - {{ container_network }}
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

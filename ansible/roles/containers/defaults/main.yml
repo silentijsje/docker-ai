@@ -26,3 +26,5 @@ enabled_containers:
   booklore: true
   sabnzbd: true
   qbittorrent: true
+  vaultwarden: false
+  monitoring: false
