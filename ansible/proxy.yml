@@ -5,5 +5,6 @@
   vars_files:
     - vars/vault.yml
     - vars/users.yml
+    - vars/docker-vars.yml
   roles:
     - role: proxy
