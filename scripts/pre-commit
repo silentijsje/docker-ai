@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Pre-commit hook: block unencrypted vault files and run gitleaks if available
+set -euo pipefail
+
+FAILED=0
+
+# Check all staged vault files are encrypted
+for file in $(git diff --cached --name-only | grep -i 'vault.*\.yml$' || true); do
+  if [ -f "$file" ]; then
+    header=$(head -1 "$file")
+    if [ "$header" != '$ANSIBLE_VAULT;1.1;AES256' ]; then
+      echo "ERROR: $file is NOT encrypted. Encrypt before committing:"
+      echo "  ansible-vault encrypt $file --vault-password-file=.vault_pass"
+      FAILED=1
+    fi
+  fi
+done
+
+# Run gitleaks if available
+if command -v gitleaks &>/dev/null; then
+  echo "Running gitleaks..."
+  if ! gitleaks protect --staged --no-banner; then
+    echo "ERROR: gitleaks found secrets in staged changes"
+    FAILED=1
+  fi
+fi
+
+if [ "$FAILED" -eq 1 ]; then
+  echo "Pre-commit checks failed. Commit aborted."
+  exit 1
+fi

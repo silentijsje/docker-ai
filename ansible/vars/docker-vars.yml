@@ -132,6 +132,29 @@ loki_image: grafana/loki:latest
 promtail_image: grafana/promtail:latest
 
 # =============================================================================
+# Resource Limits
+# =============================================================================
+resource_limits:
+  traefik: { memory: "512M", cpus: "1.0" }
+  crowdsec: { memory: "512M", cpus: "0.5" }
+  portainer: { memory: "256M", cpus: "0.5" }
+  grafana: { memory: "512M", cpus: "1.0" }
+  prometheus: { memory: "1G", cpus: "1.0" }
+  node_exporter: { memory: "128M", cpus: "0.25" }
+  loki: { memory: "512M", cpus: "0.5" }
+  promtail: { memory: "256M", cpus: "0.25" }
+  vaultwarden: { memory: "256M", cpus: "0.5" }
+  radarr: { memory: "1G", cpus: "1.0" }
+  sonarr: { memory: "1G", cpus: "1.0" }
+  sabnzbd: { memory: "2G", cpus: "2.0" }
+  qbittorrent: { memory: "1G", cpus: "1.0" }
+  booklore: { memory: "512M", cpus: "0.5" }
+  booklore_mariadb: { memory: "256M", cpus: "0.5" }
+  homepage: { memory: "256M", cpus: "0.5" }
+  watchtower: { memory: "128M", cpus: "0.25" }
+  termix: { memory: "128M", cpus: "0.25" }
+
+# =============================================================================
 # Enabled Services
 # =============================================================================
 # Toggle services on/off

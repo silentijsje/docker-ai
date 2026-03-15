@@ -200,6 +200,11 @@ http:
       service: termix
       entryPoints:
         - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
     portainer:
       rule: "Host(`portainer.silentijsje.com`)"
       service: portainer

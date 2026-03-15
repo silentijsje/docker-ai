@@ -3,6 +3,13 @@ services:
     image: crowdsecurity/crowdsec:latest
     container_name: crowdsec
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.crowdsec.memory }}
+          cpus: "{{ resource_limits.crowdsec.cpus }}"
     networks:
       - proxy
     environment:
@@ -22,6 +29,13 @@ services:
     image: traefik:latest
     container_name: traefik
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.traefik.memory }}
+          cpus: "{{ resource_limits.traefik.cpus }}"
     networks:
       - proxy
     environment:
@@ -30,8 +44,7 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 8080:8080
-      - 8082:8082
+      - 127.0.0.1:8082:8082
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - {{ docker_data_root }}/logs/traefik:/var/log
@@ -47,7 +60,7 @@ services:
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
       - traefik.http.routers.traefik.tls.domains[0].main={{ vault_cloudflare_dns_zone }}
       - traefik.http.routers.traefik.tls.domains[0].sans=*.{{ vault_cloudflare_dns_zone }}
-      - traefik.http.routers.radartraefikr.middlewares=security-headers@file,traefik-bouncer@file
+      - traefik.http.routers.traefik.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
     # SERVICES
       - traefik.http.services.traefik.loadbalancer.server.scheme=http
       - traefik.http.services.traefik.loadbalancer.server.port=8080

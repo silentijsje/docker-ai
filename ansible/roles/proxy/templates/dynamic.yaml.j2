@@ -67,7 +67,7 @@ http:
           enabled: true
           defaultDecisionSeconds: 60
           crowdsecMode: live
-          crowdsecAppsecEnabled: false
+          crowdsecAppsecEnabled: true
           crowdsecAppsecHost: crowdsec:7422
           crowdsecAppsecFailureBlock: true
           crowdsecAppsecUnreachableBlock: true
@@ -98,6 +98,12 @@ http:
             - 104.24.0.0/14
             - 172.64.0.0/13
             - 131.0.72.0/22
+
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 200
+        period: 1s
 
     ipAllowList:
       ipAllowList:

@@ -9,6 +9,13 @@ services:
     image: {{ prometheus_image | default('prom/prometheus:latest') }}
     container_name: prometheus
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.prometheus.memory }}
+          cpus: "{{ resource_limits.prometheus.cpus }}"
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -17,7 +24,7 @@ services:
       - {{ container_data_root }}/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - {{ container_data_root }}/monitoring/prometheus/data:/prometheus
     ports:
-      - "{{ container_ports.prometheus }}:9090"
+      - "127.0.0.1:{{ container_ports.prometheus }}:9090"
     networks:
       - {{ container_network }}
 
@@ -25,6 +32,13 @@ services:
     image: {{ grafana_image | default('grafana/grafana:latest') }}
     container_name: grafana
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.grafana.memory }}
+          cpus: "{{ resource_limits.grafana.cpus }}"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD={{ vault_grafana_admin_password }}
@@ -51,7 +65,7 @@ services:
       - traefik.http.routers.grafana.service=grafana
       - traefik.http.routers.grafana.rule=Host(`grafana.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.grafana.entrypoints=secureweb
-      - traefik.http.routers.grafana.middlewares=security-headers@file,traefik-bouncer@file
+      - traefik.http.routers.grafana.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
       # Service
       - traefik.http.services.grafana.loadbalancer.server.scheme=http
       - traefik.http.services.grafana.loadbalancer.server.port=3000
@@ -60,6 +74,13 @@ services:
     image: {{ node_exporter_image | default('prom/node-exporter:latest') }}
     container_name: node-exporter
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.node_exporter.memory }}
+          cpus: "{{ resource_limits.node_exporter.cpus }}"
     pid: host
     command:
       - '--path.rootfs=/host'
@@ -71,7 +92,7 @@ services:
       - /sys:/host/sys:ro
       - /:/host:ro
     ports:
-      - "{{ container_ports.node_exporter }}:9100"
+      - "127.0.0.1:{{ container_ports.node_exporter }}:9100"
     networks:
       - {{ container_network }}
 
@@ -79,12 +100,19 @@ services:
     image: {{ loki_image | default('grafana/loki:latest') }}
     container_name: loki
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.loki.memory }}
+          cpus: "{{ resource_limits.loki.cpus }}"
     command: -config.file=/etc/loki/loki-config.yml
     volumes:
       - {{ container_data_root }}/monitoring/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
       - {{ container_data_root }}/monitoring/loki/data:/loki
     ports:
-      - "{{ container_ports.loki }}:3100"
+      - "127.0.0.1:{{ container_ports.loki }}:3100"
     networks:
       - {{ container_network }}
 
@@ -92,6 +120,13 @@ services:
     image: {{ promtail_image | default('grafana/promtail:latest') }}
     container_name: promtail
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.promtail.memory }}
+          cpus: "{{ resource_limits.promtail.cpus }}"
     command: -config.file=/etc/promtail/promtail-config.yml
     volumes:
       - {{ container_data_root }}/monitoring/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml:ro

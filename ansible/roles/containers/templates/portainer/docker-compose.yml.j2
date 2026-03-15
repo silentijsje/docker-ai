@@ -3,6 +3,13 @@ services:
     image: {{ portainer_image }}
     container_name: portainer
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.portainer.memory }}
+          cpus: "{{ resource_limits.portainer.cpus }}"
     environment:
       - TZ={{ container_timezone }}
     volumes:
@@ -18,6 +25,7 @@ services:
       - "traefik.http.routers.portainer.rule=Host(`portainer.{{ cloudflare_dns_zone }}`)"
       - "traefik.http.routers.portainer.service=portainer"
       - "traefik.http.services.portainer.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.portainer.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 networks:

@@ -3,6 +3,13 @@ services:
     image: {{ watchtower_image }}
     container_name: watchtower
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.watchtower.memory }}
+          cpus: "{{ resource_limits.watchtower.cpus }}"
     environment:
       - TZ={{ container_timezone }}
       - WATCHTOWER_CLEANUP={{ watchtower_cleanup | lower }}

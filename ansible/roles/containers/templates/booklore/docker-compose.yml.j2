@@ -9,6 +9,13 @@ services:
     image: {{ booklore_image | default('booklore/booklore:latest') }}
     container_name: {{ booklore_container_name | default('booklore') }}
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.booklore.memory }}
+          cpus: "{{ resource_limits.booklore.cpus }}"
     environment:
       - USER_ID={{ container_puid }}
       - GROUP_ID={{ container_pgid }}
@@ -33,6 +40,13 @@ services:
     image: {{ booklore_mariadb_image | default('lscr.io/linuxserver/mariadb:11.4.5') }}
     container_name: {{ booklore_mariadb_container_name | default('booklore-mariadb') }}
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.booklore_mariadb.memory }}
+          cpus: "{{ resource_limits.booklore_mariadb.cpus }}"
     environment:
       - PUID={{ container_puid }}
       - PGID={{ container_pgid }}

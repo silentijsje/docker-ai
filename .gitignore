@@ -1,6 +1,8 @@
 # Exclude input folder (contains original files with hardcoded secrets)
 input/
 
+org-compose
+
 # Ansible vault password files
 .vault_pass
 .vault_password
