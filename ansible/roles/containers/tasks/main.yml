@@ -34,7 +34,7 @@
     - watchtower
 
 - name: Deploy Homepage
-  ansible.builtin.include_tasks: homepage.yml
+  ansible.builtin.import_tasks: homepage.yml
   when: enabled_containers.homepage | default(false)
   tags:
     - infrastructure

@@ -1,0 +1,232 @@
+{% raw %}
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+
+- Top Services:
+    - Vaultwarden:
+        icon: vaultwarden.svg
+        href: "https://vault.silentijsje.com"
+        description: passwords
+    - Termix:
+        icon: console.svg
+        href: "https://termix.silentijsje.com"
+        description: terminal
+    - Proxmox-1:
+        icon: proxmox.png
+        href: "{{HOMEPAGE_VAR_PROXMOX_1_URL}}"
+        description: Proxmox VE 1
+        widget:
+            type: proxmox
+            url: "{{HOMEPAGE_VAR_PROXMOX_1_API_URL}}"
+            username: "{{HOMEPAGE_VAR_PROXMOX_1_USER}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_1_API_KEY}}"
+            node: pve
+    - Proxmox-2:
+        icon: proxmox.png
+        href: "{{HOMEPAGE_VAR_PROXMOX_2_URL}}"
+        description: Proxmox VE 2
+        widget:
+            type: proxmox
+            url: "{{HOMEPAGE_VAR_PROXMOX_2_API_URL}}"
+            username: "{{HOMEPAGE_VAR_PROXMOX_2_USER}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_2_PASSWORD}}"
+            node: pve
+    - PBS:
+        icon: proxmox.png
+        href: "{{HOMEPAGE_VAR_PBS_URL}}"
+        description: Proxmox Backup Server
+        widget:
+            type: proxmoxbackupserver
+            url: "{{HOMEPAGE_VAR_PBS_API_URL}}"
+            username: "{{HOMEPAGE_VAR_PBS_API_TOKEN_ID}}"
+            password: "{{HOMEPAGE_VAR_PBS_API_TOKEN_SECRET}}"
+    - Portainer:
+        icon: portainer.svg
+        href: "{{HOMEPAGE_VAR_PORTAINER_URL}}"
+        description: docker
+        widget:
+            type: portainer
+            url: "{{HOMEPAGE_VAR_PORTAINER_API_URL}}"
+            env: 2
+            key: "{{HOMEPAGE_VAR_PORTAINER_API_KEY}}"
+
+- Network:
+    - UniFi:
+        icon: unifi.svg
+        href: "{{HOMEPAGE_VAR_UNIFI_NETWORK_URL}}"
+        description: network
+        widget:
+            type: unifi
+            url: "{{HOMEPAGE_VAR_UNIFI_NETWORK_API_URL}}"
+            username: "{{HOMEPAGE_VAR_UNIFI_NETWORK_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_UNIFI_NETWORK_PASSWORD}}"
+
+- Infrastructure:
+    - Traefik:
+        icon: traefik.svg
+        href: "{{HOMEPAGE_VAR_TRAEFIK_URL}}"
+        description: reverse proxy
+        widget:
+            type: traefik
+            url: "{{HOMEPAGE_VAR_TRAEFIK_API_URL}}"
+    - CrowdSec:
+        icon: crowdsec.png
+        href: "{{HOMEPAGE_VAR_CROWDSEC_URL}}"
+        description: security
+        widget:
+            type: crowdsec
+            url: "{{HOMEPAGE_VAR_CROWDSEC_API_URL}}"
+            username: "{{HOMEPAGE_VAR_CROWDSEC_API_KEY}}"
+            password: ""
+
+- Storage:
+    - TrueNAS:
+        icon: truenas.svg
+        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+        description: scale
+        widget:
+            type: truenas
+            url: "{{HOMEPAGE_VAR_TRUENAS_API_URL}}"
+            key: "{{HOMEPAGE_VAR_TRUENAS_API_KEY}}"
+
+- Media:
+    - Plex:
+        icon: plex.svg
+        href: "{{HOMEPAGE_VAR_PLEX_URL}}"
+        description: media server
+        widget:
+            type: plex
+            url: "{{HOMEPAGE_VAR_PLEX_API_URL}}"
+            key: "{{HOMEPAGE_VAR_PLEX_API_TOKEN}}"
+    - Jellyfin:
+        icon: jellyfin.svg
+        href: "{{HOMEPAGE_VAR_JELLYFIN_URL}}"
+        description: media server
+        widget:
+            type: jellyfin
+            url: "{{HOMEPAGE_VAR_JELLYFIN_API_URL}}"
+            key: "{{HOMEPAGE_VAR_JELLYFIN_API_KEY}}"
+            enableBlocks: true
+    - Jellyfin-2:
+        icon: jellyfin.svg
+        href: "{{HOMEPAGE_VAR_JELLYFIN2_URL}}"
+        description: media server 2
+        widget:
+            type: jellyfin
+            url: "{{HOMEPAGE_VAR_JELLYFIN2_API_URL}}"
+            key: "{{HOMEPAGE_VAR_JELLYFIN2_API_KEY}}"
+            enableBlocks: true
+    - Immich:
+        icon: immich.svg
+        href: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+        description: photos
+        widget:
+            type: immich
+            url: "{{HOMEPAGE_VAR_IMMICH_API_URL}}"
+            key: "{{HOMEPAGE_VAR_IMMICH_API_KEY}}"
+    - Overseerr:
+        icon: overseerr.svg
+        href: "{{HOMEPAGE_VAR_OVERSEERR_URL}}"
+        description: requests
+        widget:
+            type: overseerr
+            url: "{{HOMEPAGE_VAR_OVERSEERR_API_URL}}"
+            key: "{{HOMEPAGE_VAR_OVERSEERR_API_KEY}}"
+    - Tautulli:
+        icon: tautulli.svg
+        href: "{{HOMEPAGE_VAR_TAUTULLI_URL}}"
+        description: plex stats
+        widget:
+            type: tautulli
+            url: "{{HOMEPAGE_VAR_TAUTULLI_API_URL}}"
+            key: "{{HOMEPAGE_VAR_TAUTULLI_API_KEY}}"
+
+- Downloads:
+    - Radarr:
+        icon: radarr.svg
+        href: "{{HOMEPAGE_VAR_RADARR_URL}}"
+        description: movies
+        widget:
+            type: radarr
+            url: "{{HOMEPAGE_VAR_RADARR_API_URL}}"
+            key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
+    - Sonarr:
+        icon: sonarr.svg
+        href: "{{HOMEPAGE_VAR_SONARR_URL}}"
+        description: tv shows
+        widget:
+            type: sonarr
+            url: "{{HOMEPAGE_VAR_SONARR_API_URL}}"
+            key: "{{HOMEPAGE_VAR_SONARR_API_KEY}}"
+    - SABnzbd:
+        icon: sabnzbd.svg
+        href: "{{HOMEPAGE_VAR_SABNZBD_URL}}"
+        description: usenet
+        widget:
+            type: sabnzbd
+            url: "{{HOMEPAGE_VAR_SABNZBD_API_URL}}"
+            key: "{{HOMEPAGE_VAR_SABNZBD_API_KEY}}"
+    - qBittorrent:
+        icon: qbittorrent.svg
+        href: "{{HOMEPAGE_VAR_QBITTORRENT_URL}}"
+        description: torrents
+        widget:
+            type: qbittorrent
+            url: "{{HOMEPAGE_VAR_QBITTORRENT_API_URL}}"
+            username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
+
+- Services:
+    - Paperless:
+        icon: paperless-ngx.svg
+        href: "{{HOMEPAGE_VAR_PAPERLESS_URL}}"
+        description: documents
+        widget:
+            type: paperlessngx
+            url: "{{HOMEPAGE_VAR_PAPERLESS_API_URL}}"
+            key: "{{HOMEPAGE_VAR_PAPERLESS_API_KEY}}"
+    - Grafana:
+        icon: grafana.svg
+        href: "{{HOMEPAGE_VAR_GRAFANA_URL}}"
+        description: monitoring
+        widget:
+            type: grafana
+            url: "{{HOMEPAGE_VAR_GRAFANA_API_URL}}"
+            username: "{{HOMEPAGE_VAR_GRAFANA_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
+
+- DNS:
+    - DNS01:
+        icon: technitium.png
+        href: "{{HOMEPAGE_VAR_DNS01_URL}}"
+        description: primary dns
+        widget:
+            type: technitium
+            url: "{{HOMEPAGE_VAR_DNS01_API_URL}}"
+            key: "{{HOMEPAGE_VAR_DNS01_API_KEY}}"
+    - DNS02:
+        icon: technitium.png
+        href: "{{HOMEPAGE_VAR_DNS02_URL}}"
+        description: secondary dns
+        widget:
+            type: technitium
+            url: "{{HOMEPAGE_VAR_DNS02_API_URL}}"
+            key: "{{HOMEPAGE_VAR_DNS02_API_KEY}}"
+
+- Home Automation:
+    - Home Assistant:
+        icon: home-assistant.svg
+        href: "{{HOMEPAGE_VAR_HOME_ASSISTANT_URL}}"
+        description: home
+        widget:
+            type: homeassistant
+            url: "{{HOMEPAGE_VAR_HOME_ASSISTANT_API_URL}}"
+            key: "{{HOMEPAGE_VAR_HOME_ASSISTANT_API_KEY}}"
+
+- Tools:
+    - Wizarr:
+        icon: wizarr.svg
+        href: "https://wizarr.silentijsje.com"
+        description: user management
+{% endraw %}

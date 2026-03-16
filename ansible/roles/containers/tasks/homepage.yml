@@ -16,6 +16,30 @@
     dest: "{{ container_data_root }}/homepage/docker-compose.yml"
     mode: '0644'
 
+- name: Deploy Homepage env
+  ansible.builtin.template:
+    src: homepage/env.j2
+    dest: "{{ container_data_root }}/homepage/.env"
+    mode: '0600'
+
+- name: Deploy Homepage services.yaml
+  ansible.builtin.template:
+    src: homepage/services.yaml.j2
+    dest: "{{ container_data_root }}/homepage/config/services.yaml"
+    mode: '0644'
+
+- name: Deploy Homepage widgets.yaml
+  ansible.builtin.template:
+    src: homepage/widgets.yaml.j2
+    dest: "{{ container_data_root }}/homepage/config/widgets.yaml"
+    mode: '0644'
+
+- name: Deploy Homepage settings.yaml
+  ansible.builtin.template:
+    src: homepage/settings.yaml.j2
+    dest: "{{ container_data_root }}/homepage/config/settings.yaml"
+    mode: '0644'
+
 - name: Start Homepage container
   community.docker.docker_compose_v2:
     project_src: "{{ container_data_root }}/homepage"

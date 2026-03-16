@@ -2,7 +2,6 @@
 # Master playbook - deploy entire stack
 # Usage: ansible-playbook site.yml --vault-password-file=../.vault_pass
 
-- import_playbook: setup.yml
 - import_playbook: proxy.yml
 - import_playbook: containers.yml
 - import_playbook: monitoring.yml
