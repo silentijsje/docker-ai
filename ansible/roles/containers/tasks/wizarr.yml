@@ -1,0 +1,20 @@
+---
+# Wizarr - Media Server Invitation Manager
+# https://github.com/Wizarrrr/wizarr
+
+- name: Ensure Wizarr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/wizarr"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Wizarr docker-compose
+  ansible.builtin.template:
+    src: wizarr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/wizarr/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Wizarr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/wizarr"
+    state: present

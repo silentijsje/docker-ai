@@ -1,0 +1,54 @@
+---
+###########################################################################
+# Notifiarr - Notification & Integration Manager
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/Notifiarr/notifiarr
+###########################################################################
+
+services:
+  notifiarr:
+    image: {{ notifiarr_image | default('golift/notifiarr:latest') }}
+    container_name: {{ notifiarr_container_name | default('notifiarr') }}
+    hostname: notifiarr
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.notifiarr.memory }}
+          cpus: "{{ resource_limits.notifiarr.cpus }}"
+    environment:
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_data_root }}/notifiarr:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id:ro
+    ports:
+      - "{{ container_ports.notifiarr }}:5454"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.notifiarr.service=notifiarr
+      - traefik.http.routers.notifiarr.rule=Host(`notifiarr.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.notifiarr.entrypoints=secureweb
+      - traefik.http.routers.notifiarr.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+      # Service
+      - traefik.http.services.notifiarr.loadbalancer.server.scheme=http
+      - traefik.http.services.notifiarr.loadbalancer.server.port=5454
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

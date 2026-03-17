@@ -1,0 +1,4 @@
+---
+# Variables specific to cloud hosts
+container_data_root: /opt/stacks
+container_network: pangolin

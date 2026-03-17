@@ -1,0 +1,54 @@
+---
+###########################################################################
+# Whisparr - Adult Content Library Manager
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/hotio/whisparr
+###########################################################################
+
+services:
+  whisparr:
+    image: {{ whisparr_image | default('ghcr.io/hotio/whisparr:latest') }}
+    container_name: {{ whisparr_container_name | default('whisparr') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.whisparr.memory }}
+          cpus: "{{ resource_limits.whisparr.cpus }}"
+    environment:
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_media_root }}:/mnt/media
+      - {{ container_data_root }}/whisparr:/config
+    ports:
+      - "{{ container_ports.whisparr }}:6969"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.whisparr.service=whisparr
+      - traefik.http.routers.whisparr.rule=Host(`whisparr.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.whisparr.entrypoints=secureweb
+      - traefik.http.routers.whisparr.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+      # Service
+      - traefik.http.services.whisparr.loadbalancer.server.scheme=http
+      - traefik.http.services.whisparr.loadbalancer.server.port=6969
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

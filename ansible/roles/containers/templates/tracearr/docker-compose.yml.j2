@@ -1,0 +1,61 @@
+---
+###########################################################################
+# Tracearr - Media Tracking (Supervised)
+# Deployed by Ansible - Do not edit manually
+# Includes built-in TimescaleDB + Redis
+###########################################################################
+
+services:
+  tracearr:
+    image: {{ tracearr_image | default('ghcr.io/connorgallopo/tracearr:supervised') }}
+    container_name: {{ tracearr_container_name | default('tracearr') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.tracearr.memory }}
+          cpus: "{{ resource_limits.tracearr.cpus }}"
+    shm_size: 256mb
+    environment:
+      - TZ={{ container_timezone }}
+      - LOG_LEVEL=info
+    volumes:
+      - {{ container_data_root }}/tracearr/db:/data/postgres
+      - {{ container_data_root }}/tracearr/redis:/data/redis
+      - {{ container_data_root }}/tracearr/data:/data/tracearr
+    ports:
+      - "{{ container_ports.tracearr }}:3000"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.tracearr.service=tracearr
+      - traefik.http.routers.tracearr.rule=Host(`tracearr.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.tracearr.entrypoints=secureweb
+      - traefik.http.routers.tracearr.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+      # Service
+      - traefik.http.services.tracearr.loadbalancer.server.scheme=http
+      - traefik.http.services.tracearr.loadbalancer.server.port=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

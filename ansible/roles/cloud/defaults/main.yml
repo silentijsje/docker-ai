@@ -1,0 +1,67 @@
+---
+# =============================================================================
+# Cloud Role Defaults
+# =============================================================================
+
+# Pangolin stack
+pangolin_image: fosrl/pangolin:latest
+pangolin_container_name: pangolin
+gerbil_image: fosrl/gerbil:latest
+gerbil_container_name: gerbil
+traefik_cloud_image: traefik:latest
+traefik_cloud_container_name: traefik
+
+# Authentik
+authentik_image: ghcr.io/goauthentik/server:2025.8.4
+authentik_pg_image: postgres:16-alpine
+authentik_redis_image: redis:alpine
+authentik_pg_container_name: authentik-postgresql
+authentik_redis_container_name: authentik-redis
+authentik_server_container_name: authentik-server
+authentik_worker_container_name: authentik-worker
+
+# Newt
+newt_image: fosrl/newt:latest
+newt_container_name: newt
+
+# Notifiarr
+notifiarr_image: golift/notifiarr:latest
+notifiarr_container_name: notifiarr
+
+# Watchtower
+watchtower_image: nickfedor/watchtower:latest
+watchtower_container_name: watchtower
+watchtower_schedule: "0 0 3 * * *"
+
+# Uptime Kuma
+uptime_kuma_image: louislam/uptime-kuma:1
+uptime_kuma_container_name: uptime-kuma
+
+# Portainer Agent
+portainer_agent_image: portainer/agent:2.33.6
+portainer_agent_container_name: portainer_agent
+
+# =============================================================================
+# Port Assignments
+# =============================================================================
+cloud_ports:
+  notifiarr: 5454
+  uptime_kuma: 3001
+  portainer_agent: 9001
+
+# =============================================================================
+# Resource Limits
+# =============================================================================
+cloud_resource_limits:
+  pangolin: { memory: "512M", cpus: "1.0" }
+  gerbil: { memory: "256M", cpus: "0.5" }
+  traefik: { memory: "512M", cpus: "1.0" }
+  authentik_pg: { memory: "512M", cpus: "0.5" }
+  authentik_redis: { memory: "256M", cpus: "0.25" }
+  authentik_server: { memory: "1G", cpus: "1.0" }
+  authentik_worker: { memory: "1G", cpus: "1.0" }
+  newt: { memory: "128M", cpus: "0.25" }
+  notifiarr: { memory: "256M", cpus: "0.5" }
+  watchtower: { memory: "128M", cpus: "0.25" }
+  uptime_kuma: { memory: "256M", cpus: "0.5" }
+  portainer_agent: { memory: "128M", cpus: "0.25" }

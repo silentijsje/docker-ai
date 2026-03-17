@@ -1,0 +1,21 @@
+---
+###########################################################################
+# Uptime Kuma - Status monitoring
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/louislam/uptime-kuma
+###########################################################################
+
+services:
+  uptime-kuma:
+    image: {{ uptime_kuma_image | default('louislam/uptime-kuma:1') }}
+    container_name: {{ uptime_kuma_container_name | default('uptime-kuma') }}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.uptime_kuma.memory }}
+          cpus: "{{ cloud_resource_limits.uptime_kuma.cpus }}"
+    volumes:
+      - {{ container_data_root }}/uptime-kuma/data:/app/data
+    ports:
+      - "{{ cloud_ports.uptime_kuma }}:3001"

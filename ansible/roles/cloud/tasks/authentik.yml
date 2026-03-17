@@ -1,0 +1,26 @@
+---
+# Authentik - Identity Provider (cloud.lan instance)
+# https://goauthentik.io/docs
+
+- name: Ensure Authentik directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/authentik"
+    - "{{ container_data_root }}/authentik/media"
+    - "{{ container_data_root }}/authentik/certs"
+    - "{{ container_data_root }}/authentik/custom-templates"
+
+- name: Deploy Authentik docker-compose
+  ansible.builtin.template:
+    src: authentik/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/authentik/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Authentik containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/authentik"
+    remove_orphans: true
+    state: present

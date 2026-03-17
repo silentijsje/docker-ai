@@ -1,0 +1,13 @@
+{
+  "settings": [
+    {
+      "provider": "cloudflare",
+      "zone_identifier": "{{ vault_ddns_cloudflare_zone_id }}",
+      "domain": "vpn.{{ cloudflare_dns_zone }}",
+      "ttl": 600,
+      "token": "{{ vault_ddns_cloudflare_token }}",
+      "ip_version": "ipv4",
+      "ipv6_suffix": ""
+    }
+  ]
+}

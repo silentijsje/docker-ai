@@ -1,0 +1,133 @@
+---
+###########################################################################
+# Authentik - Identity Provider (cloud.lan instance)
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://goauthentik.io/docs
+###########################################################################
+
+services:
+  authentik-postgresql:
+    image: {{ authentik_pg_image | default('postgres:16-alpine') }}
+    container_name: {{ authentik_pg_container_name | default('authentik-postgresql') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.authentik_pg.memory }}
+          cpus: "{{ cloud_resource_limits.authentik_pg.cpus }}"
+    environment:
+      - POSTGRES_DB=authentik
+      - POSTGRES_USER=authentik
+      - POSTGRES_PASSWORD={{ vault_authentik_pg_pass }}
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - {{ container_network }}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d authentik -U authentik"]
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
+
+  authentik-redis:
+    image: {{ authentik_redis_image | default('redis:alpine') }}
+    container_name: {{ authentik_redis_container_name | default('authentik-redis') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.authentik_redis.memory }}
+          cpus: "{{ cloud_resource_limits.authentik_redis.cpus }}"
+    command: --save 60 1 --loglevel warning
+    volumes:
+      - redis:/data
+    networks:
+      - {{ container_network }}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      timeout: 3s
+
+  authentik-server:
+    image: {{ authentik_image | default('ghcr.io/goauthentik/server:2025.8.4') }}
+    container_name: {{ authentik_server_container_name | default('authentik-server') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.authentik_server.memory }}
+          cpus: "{{ cloud_resource_limits.authentik_server.cpus }}"
+    command: server
+    environment:
+      - AUTHENTIK_POSTGRESQL__HOST=authentik-postgresql
+      - AUTHENTIK_POSTGRESQL__NAME=authentik
+      - AUTHENTIK_POSTGRESQL__USER=authentik
+      - AUTHENTIK_POSTGRESQL__PASSWORD={{ vault_authentik_pg_pass }}
+      - AUTHENTIK_REDIS__HOST=authentik-redis
+      - AUTHENTIK_SECRET_KEY={{ vault_authentik_secret_key }}
+      - AUTHENTIK_ERROR_REPORTING__ENABLED=true
+    volumes:
+      - {{ container_data_root }}/authentik/media:/media
+      - {{ container_data_root }}/authentik/custom-templates:/templates
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+    networks:
+      - {{ container_network }}
+
+  authentik-worker:
+    image: {{ authentik_image | default('ghcr.io/goauthentik/server:2025.8.4') }}
+    container_name: {{ authentik_worker_container_name | default('authentik-worker') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.authentik_worker.memory }}
+          cpus: "{{ cloud_resource_limits.authentik_worker.cpus }}"
+    command: worker
+    user: root
+    environment:
+      - AUTHENTIK_POSTGRESQL__HOST=authentik-postgresql
+      - AUTHENTIK_POSTGRESQL__NAME=authentik
+      - AUTHENTIK_POSTGRESQL__USER=authentik
+      - AUTHENTIK_POSTGRESQL__PASSWORD={{ vault_authentik_pg_pass }}
+      - AUTHENTIK_REDIS__HOST=authentik-redis
+      - AUTHENTIK_SECRET_KEY={{ vault_authentik_secret_key }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ container_data_root }}/authentik/media:/media
+      - {{ container_data_root }}/authentik/certs:/certs
+      - {{ container_data_root }}/authentik/custom-templates:/templates
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+    networks:
+      - {{ container_network }}
+
+volumes:
+  database:
+    driver: local
+  redis:
+    driver: local
+
+networks:
+  {{ container_network }}:
+    external: true

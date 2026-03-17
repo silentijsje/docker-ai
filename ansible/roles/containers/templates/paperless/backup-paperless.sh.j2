@@ -1,0 +1,4 @@
+#!/bin/bash
+# Paperless-NGX backup script - Deployed by Ansible
+cd {{ container_data_root }}/paperless || { echo "Directory not found"; exit 1; }
+docker compose exec -T paperless-webserver document_exporter ../export

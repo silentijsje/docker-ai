@@ -1,0 +1,26 @@
+---
+###########################################################################
+# Notifiarr - Notification & Integration Manager (cloud.lan instance)
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/Notifiarr/notifiarr
+###########################################################################
+
+services:
+  notifiarr:
+    image: {{ notifiarr_image | default('golift/notifiarr:latest') }}
+    container_name: {{ notifiarr_container_name | default('notifiarr') }}
+    hostname: notifiarr
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.notifiarr.memory }}
+          cpus: "{{ cloud_resource_limits.notifiarr.cpus }}"
+    ports:
+      - "{{ cloud_ports.notifiarr }}:5454"
+    volumes:
+      - {{ container_data_root }}/notifiarr/data:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id:ro

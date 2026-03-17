@@ -1,0 +1,26 @@
+---
+# Portainer Agent - Remote Docker management
+# https://docs.portainer.io/admin/environments/add/docker/agent
+
+- name: Ensure Portainer Agent directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/portainer-agent"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Portainer Agent docker-compose
+  ansible.builtin.template:
+    src: portainer_agent/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/portainer-agent/docker-compose.yml"
+    mode: '0644'
+
+- name: Remove standalone portainer_agent container if present
+  community.docker.docker_container:
+    name: portainer_agent
+    state: absent
+    force_kill: true
+
+- name: Start Portainer Agent container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/portainer-agent"
+    state: present

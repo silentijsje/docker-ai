@@ -1,0 +1,75 @@
+---
+###########################################################################
+# Mealie - Recipe Manager
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/mealie-recipes/mealie
+###########################################################################
+
+services:
+  mealie:
+    image: {{ mealie_image | default('ghcr.io/mealie-recipes/mealie:latest') }}
+    container_name: {{ mealie_container_name | default('mealie') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.mealie.memory }}
+          cpus: "{{ resource_limits.mealie.cpus }}"
+    environment:
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+      - ALLOW_SIGNUP=false
+      - OPENAI_API_KEY={{ vault_mealie_openai_api_key }}
+      - DEFAULT_GROUP=Family
+      - DEFAULT_HOUSEHOLD=Renfrew
+      - BASE_URL=https://mealie.{{ cloudflare_dns_zone }}
+      - OIDC_AUTH_ENABLED=true
+      - OIDC_PROVIDER_NAME=authentik
+      - OIDC_CONFIGURATION_URL=https://auth.{{ cloudflare_dns_zone }}/application/o/mealie/.well-known/openid-configuration
+      - OIDC_CLIENT_ID={{ vault_mealie_oidc_client_id }}
+      - OIDC_CLIENT_SECRET={{ vault_mealie_oidc_client_secret }}
+      - OIDC_SIGNUP_ENABLED=true
+      - OIDC_USER_GROUP=mealie-users
+      - OIDC_ADMIN_GROUP=mealie-admins
+      - OIDC_AUTO_REDIRECT=false
+      - OIDC_REMEMBER_ME=true
+      - SMTP_HOST=smtp.fastmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=info@silentijsje.com
+      - SMTP_PASSWORD={{ vault_mealie_smtp_password }}
+      - SMTP_FROM_NAME=Stanley Renfrew
+      - SMTP_AUTH_STRATEGY=TLS
+      - SMTP_FROM_EMAIL=mealie@silentijsje.com
+    volumes:
+      - {{ container_data_root }}/mealie/data:/app/data/
+    ports:
+      - "{{ container_ports.mealie }}:9000"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.mealie.service=mealie
+      - traefik.http.routers.mealie.rule=Host(`mealie.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.mealie.entrypoints=secureweb
+      - traefik.http.routers.mealie.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+      # Service
+      - traefik.http.services.mealie.loadbalancer.server.scheme=http
+      - traefik.http.services.mealie.loadbalancer.server.port=9000
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

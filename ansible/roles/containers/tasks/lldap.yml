@@ -1,0 +1,20 @@
+---
+# LLDAP - Lightweight LDAP Server
+# https://github.com/lldap/lldap
+
+- name: Ensure LLDAP directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/lldap"
+    state: directory
+    mode: '0755'
+
+- name: Deploy LLDAP docker-compose
+  ansible.builtin.template:
+    src: lldap/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/lldap/docker-compose.yml"
+    mode: '0644'
+
+- name: Start LLDAP container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/lldap"
+    state: present

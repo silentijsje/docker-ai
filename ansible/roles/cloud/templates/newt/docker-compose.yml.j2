@@ -1,0 +1,29 @@
+---
+###########################################################################
+# Newt - Pangolin tunnel client (cloud.lan instance)
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/fosrl/newt
+###########################################################################
+
+services:
+  newt:
+    image: {{ newt_image | default('fosrl/newt:latest') }}
+    container_name: {{ newt_container_name | default('newt') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.newt.memory }}
+          cpus: "{{ cloud_resource_limits.newt.cpus }}"
+    environment:
+      - PANGOLIN_ENDPOINT=https://pangolin.{{ vault_cloudflare_dns_zone }}
+      - NEWT_ID={{ vault_cloud_newt_id }}
+      - NEWT_SECRET={{ vault_cloud_newt_secret }}
+    networks:
+      - {{ container_network }}
+
+networks:
+  {{ container_network }}:
+    external: true

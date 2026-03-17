@@ -1,0 +1,47 @@
+---
+# Cloud role - deploys all services on cloud.lan
+
+- name: Configure UFW firewall
+  ansible.builtin.include_tasks: ufw.yml
+  tags: [ufw]
+
+- name: Ensure /opt/stacks directory exists
+  ansible.builtin.file:
+    path: /opt/stacks
+    state: directory
+    mode: '0755'
+
+- name: Ensure pangolin Docker network exists
+  community.docker.docker_network:
+    name: "{{ container_network }}"
+    enable_ipv6: true
+    state: present
+
+# Pangolin MUST be first — creates network + proxy
+- name: Deploy Pangolin stack
+  ansible.builtin.include_tasks: pangolin.yml
+  tags: [pangolin]
+
+- name: Deploy Authentik
+  ansible.builtin.include_tasks: authentik.yml
+  tags: [authentik]
+
+- name: Deploy Newt
+  ansible.builtin.include_tasks: newt.yml
+  tags: [newt]
+
+- name: Deploy Notifiarr
+  ansible.builtin.include_tasks: notifiarr.yml
+  tags: [notifiarr]
+
+- name: Deploy Watchtower
+  ansible.builtin.include_tasks: watchtower.yml
+  tags: [watchtower]
+
+- name: Deploy Uptime Kuma
+  ansible.builtin.include_tasks: uptime_kuma.yml
+  tags: [uptime_kuma]
+
+- name: Deploy Portainer Agent
+  ansible.builtin.include_tasks: portainer_agent.yml
+  tags: [portainer_agent]

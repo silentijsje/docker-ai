@@ -1,0 +1,25 @@
+---
+# Tracearr - Media Tracking
+# https://github.com/connorgallopo/tracearr
+
+- name: Ensure Tracearr directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/tracearr"
+    - "{{ container_data_root }}/tracearr/db"
+    - "{{ container_data_root }}/tracearr/redis"
+    - "{{ container_data_root }}/tracearr/data"
+
+- name: Deploy Tracearr docker-compose
+  ansible.builtin.template:
+    src: tracearr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/tracearr/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Tracearr containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/tracearr"
+    state: present

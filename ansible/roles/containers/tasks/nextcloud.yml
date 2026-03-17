@@ -1,0 +1,24 @@
+---
+# Nextcloud - Self-hosted Cloud Storage
+# https://docs.linuxserver.io/images/docker-nextcloud
+
+- name: Ensure Nextcloud directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/nextcloud"
+    - "{{ container_data_root }}/nextcloud/config"
+    - "{{ container_data_root }}/nextcloud/postgresql"
+
+- name: Deploy Nextcloud docker-compose
+  ansible.builtin.template:
+    src: nextcloud/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/nextcloud/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Nextcloud containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/nextcloud"
+    state: present
