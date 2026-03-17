@@ -21,6 +21,7 @@
 To check if vault is encrypted:
 ```bash
 head -1 ansible/vars/vault.yml
+head -1 ansible/vars/ufw-vault.yml
 # Should show: $ANSIBLE_VAULT;1.1;AES256
 ```
 
