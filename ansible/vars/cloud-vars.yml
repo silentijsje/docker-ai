@@ -1,0 +1,6 @@
+---
+# Cloud.lan variable overrides
+# Loaded after docker-vars.yml to override defaults
+
+container_data_root: /opt/stacks
+container_network: pangolin

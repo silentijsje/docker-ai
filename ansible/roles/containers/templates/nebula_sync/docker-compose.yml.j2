@@ -1,0 +1,48 @@
+---
+###########################################################################
+# Nebula-Sync - PiHole/Gravity Sync
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/lovelaze/nebula-sync
+###########################################################################
+
+services:
+  nebula-sync:
+    image: {{ nebula_sync_image | default('ghcr.io/lovelaze/nebula-sync:latest') }}
+    container_name: {{ nebula_sync_container_name | default('nebula-sync') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.nebula_sync.memory }}
+          cpus: "{{ resource_limits.nebula_sync.cpus }}"
+    environment:
+      - PRIMARY={{ vault_nebula_sync_primary }}
+      - REPLICAS={{ vault_nebula_sync_replicas }}
+      - FULL_SYNC=false
+      - RUN_GRAVITY=false
+      - CRON=*/15 * * * *
+      - CLIENT_SKIP_TLS_VERIFICATION=true
+      - TZ={{ container_timezone }}
+      - SYNC_CONFIG_DNS=true
+      - SYNC_CONFIG_DHCP=false
+      - SYNC_CONFIG_NTP=false
+      - SYNC_CONFIG_RESOLVER=false
+      - SYNC_CONFIG_DATABASE=false
+      - SYNC_CONFIG_MISC=false
+      - SYNC_CONFIG_DEBUG=false
+      - SYNC_GRAVITY_DHCP_LEASES=false
+      - SYNC_GRAVITY_GROUP=false
+      - SYNC_GRAVITY_AD_LIST=true
+      - SYNC_GRAVITY_AD_LIST_BY_GROUP=true
+      - SYNC_GRAVITY_DOMAIN_LIST=true
+      - SYNC_GRAVITY_DOMAIN_LIST_BY_GROUP=true
+      - SYNC_GRAVITY_CLIENT=false
+      - SYNC_GRAVITY_CLIENT_BY_GROUP=false
+    networks:
+      - {{ container_network }}
+
+networks:
+  {{ container_network }}:
+    external: true

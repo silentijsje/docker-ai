@@ -1,0 +1,53 @@
+---
+###########################################################################
+# Prowlarr - Indexer Manager
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://docs.linuxserver.io/images/docker-prowlarr
+###########################################################################
+
+services:
+  prowlarr:
+    image: {{ prowlarr_image | default('lscr.io/linuxserver/prowlarr:latest') }}
+    container_name: {{ prowlarr_container_name | default('prowlarr') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.prowlarr.memory }}
+          cpus: "{{ resource_limits.prowlarr.cpus }}"
+    environment:
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_data_root }}/prowlarr:/config
+    ports:
+      - "{{ container_ports.prowlarr }}:9696"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.prowlarr.service=prowlarr
+      - traefik.http.routers.prowlarr.rule=Host(`prowlarr.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.prowlarr.entrypoints=secureweb
+      - traefik.http.routers.prowlarr.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+      # Service
+      - traefik.http.services.prowlarr.loadbalancer.server.scheme=http
+      - traefik.http.services.prowlarr.loadbalancer.server.port=9696
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

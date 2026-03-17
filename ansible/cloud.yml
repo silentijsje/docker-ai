@@ -1,0 +1,17 @@
+---
+# Deploy cloud.lan (Pangolin tunneling stack + identity/monitoring)
+# Usage: ansible-playbook cloud.yml --vault-password-file=.vault_pass
+
+- name: Deploy cloud.lan
+  hosts: cloud
+  vars_files:
+    - vars/vault.yml
+    - vars/ufw-vault.yml
+    - vars/docker-vars.yml
+    - vars/cloud-vars.yml
+
+  roles:
+    - role: docker
+      become: true
+    - role: cloud
+      become: true

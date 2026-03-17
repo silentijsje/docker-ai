@@ -1,0 +1,20 @@
+---
+# Uptime Kuma - Status monitoring
+# https://github.com/louislam/uptime-kuma
+
+- name: Ensure Uptime Kuma directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/uptime-kuma"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Uptime Kuma docker-compose
+  ansible.builtin.template:
+    src: uptime_kuma/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/uptime-kuma/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Uptime Kuma container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/uptime-kuma"
+    state: present

@@ -1,0 +1,25 @@
+---
+# DDNS Updater - Dynamic DNS Updater
+
+- name: Ensure DDNS Updater directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/ddns-updater"
+    state: directory
+    mode: '0755'
+
+- name: Deploy DDNS Updater config
+  ansible.builtin.template:
+    src: ddns_updater/config.json.j2
+    dest: "{{ container_data_root }}/ddns-updater/config.json"
+    mode: '0644'
+
+- name: Deploy DDNS Updater docker-compose
+  ansible.builtin.template:
+    src: ddns_updater/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/ddns-updater/docker-compose.yml"
+    mode: '0644'
+
+- name: Start DDNS Updater container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/ddns-updater"
+    state: present

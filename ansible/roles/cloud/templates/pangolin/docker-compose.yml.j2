@@ -1,0 +1,83 @@
+---
+###########################################################################
+# Pangolin Stack - Tunneling proxy (pangolin + gerbil + traefik)
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/fosrl/pangolin
+###########################################################################
+
+name: pangolin
+
+services:
+  pangolin:
+    image: {{ pangolin_image | default('fosrl/pangolin:latest') }}
+    container_name: {{ pangolin_container_name | default('pangolin') }}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.pangolin.memory }}
+          cpus: "{{ cloud_resource_limits.pangolin.cpus }}"
+    volumes:
+      - ./config:/app/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+
+  gerbil:
+    image: {{ gerbil_image | default('fosrl/gerbil:latest') }}
+    container_name: {{ gerbil_container_name | default('gerbil') }}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.gerbil.memory }}
+          cpus: "{{ cloud_resource_limits.gerbil.cpus }}"
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --reachableAt=http://gerbil:3004
+      - --generateAndSaveKeyTo=/var/config/key
+      - --remoteConfig=http://pangolin:3001/api/v1/
+    volumes:
+      - ./config/:/var/config
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - 51820:51820/udp
+      - 21820:21820/udp
+      - 443:443
+      - 80:80
+
+  traefik:
+    image: {{ traefik_cloud_image | default('traefik:latest') }}
+    container_name: {{ traefik_cloud_container_name | default('traefik') }}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.traefik.memory }}
+          cpus: "{{ cloud_resource_limits.traefik.cpus }}"
+    environment:
+      CLOUDFLARE_DNS_API_TOKEN: "{{ vault_cloudflare_api_token }}"
+      TRAEFIK_EXPERIMENTAL_LOCALPLUGINS_BADGER_MODULENAME: github.com/fosrl/badger
+    network_mode: service:gerbil
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --configFile=/etc/traefik/traefik_config.yml
+    volumes:
+      - ./config/traefik:/etc/traefik:ro
+      - ./config/letsencrypt:/letsencrypt
+      - ./config/traefik/logs:/var/log/traefik
+      - ./config/traefik/plugins-local:/plugins-local
+
+networks:
+  default:
+    driver: bridge
+    name: pangolin
+    enable_ipv6: true

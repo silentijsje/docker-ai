@@ -1,0 +1,20 @@
+---
+# Mealie - Recipe Manager
+# https://github.com/mealie-recipes/mealie
+
+- name: Ensure Mealie directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/mealie"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Mealie docker-compose
+  ansible.builtin.template:
+    src: mealie/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/mealie/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Mealie container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/mealie"
+    state: present

@@ -1,0 +1,20 @@
+---
+# Whisparr - Adult Content Library Manager
+# https://github.com/hotio/whisparr
+
+- name: Ensure Whisparr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/whisparr"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Whisparr docker-compose
+  ansible.builtin.template:
+    src: whisparr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/whisparr/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Whisparr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/whisparr"
+    state: present

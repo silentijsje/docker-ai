@@ -1,0 +1,32 @@
+---
+# Paperless-NGX - Document Management System
+# https://docs.paperless-ngx.com
+
+- name: Ensure Paperless directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/paperless"
+    - "{{ container_data_root }}/paperless/pgdata"
+    - "{{ container_data_root }}/paperless/data"
+    - "{{ container_data_root }}/paperless/media"
+    - "{{ container_data_root }}/paperless/ai-data"
+
+- name: Deploy Paperless docker-compose
+  ansible.builtin.template:
+    src: paperless/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/paperless/docker-compose.yml"
+    mode: '0644'
+
+- name: Deploy Paperless backup script
+  ansible.builtin.template:
+    src: paperless/backup-paperless.sh.j2
+    dest: "{{ container_data_root }}/paperless/backup-paperless.sh"
+    mode: '0755'
+
+- name: Start Paperless containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/paperless"
+    state: present

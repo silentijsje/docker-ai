@@ -42,31 +42,44 @@ container_ports:
   # Media Management - *arr stack
   radarr: 7878           # Movies (internal: 7878)
   sonarr: 8989           # TV Shows (internal: 8989)
-  # prowlarr: 9696       # Indexers (internal: 9696)
-  # whisparr: 6969       # Adult content (internal: 6969)
+  prowlarr: 9696         # Indexers (internal: 9696)
+  whisparr: 6969         # Adult content (internal: 6969)
+  overseerr: 5055        # Media requests (internal: 5055)
+  tautulli: 8181         # Plex stats (internal: 8181)
+  tracearr: 3070         # Media tracking (internal: 3000)
+  wizarr: 5690           # Invite management (internal: 5690)
 
   # Books & Documents
   booklore: 8085         # Book library (internal: configurable)
-  # paperless: 8000      # Documents (internal: 8000)
+  paperless: 8000        # Documents (internal: 8000)
+  paperless_ai: 3060     # Paperless AI (internal: 3000)
 
   # Security
   vaultwarden: 8086      # Password manager (internal: 80)
+  authentik_http: 9001   # Authentik HTTP (internal: 9000)
+  authentik_https: 9443  # Authentik HTTPS (internal: 9443)
+  lldap_web: 17170       # LLDAP Web UI (internal: 17170)
+  lldap_ldap: 3890       # LLDAP LDAP (internal: 3890)
 
   # Monitoring
   prometheus: 9090       # Metrics (internal: 9090)
   grafana: 3000          # Dashboards (internal: 3000)
   node_exporter: 9100    # Host metrics (internal: 9100)
   loki: 3100             # Log aggregation (internal: 3100)
+  jellystat: 3050        # Jellyfin stats (internal: 3000)
+  notifiarr: 5454        # Notifiarr (internal: 5454)
 
   # Download Clients
   sabnzbd: 8083          # Usenet (internal: 8080)
   qbittorrent: 8084      # Torrents WebUI (internal: 8080)
   qbittorrent_bt: 6881   # BitTorrent protocol
 
-  # Media Servers & Stats
-  # tautulli: 8181       # Plex stats (internal: 8181)
-  # jellystat: 3000      # Jellyfin stats (internal: 3000)
-  # overseerr: 5055      # Media requests (internal: 5055)
+  # Content
+  mealie: 9002           # Recipe manager (internal: 9000)
+  nextcloud: 8443        # Cloud storage (internal: 443)
+
+  # Infrastructure (no Traefik)
+  ddns_updater: 8087     # DDNS Updater (internal: 8000)
 
 # =============================================================================
 # Service-Specific Settings
@@ -124,6 +137,89 @@ termix_domain: termix  # Subdomain (full: termix.{{ cloudflare_dns_zone }})
 vaultwarden_image: vaultwarden/server:latest
 vaultwarden_container_name: vaultwarden
 
+# Prowlarr
+prowlarr_image: lscr.io/linuxserver/prowlarr:latest
+prowlarr_container_name: prowlarr
+
+# Whisparr
+whisparr_image: ghcr.io/hotio/whisparr:latest
+whisparr_container_name: whisparr
+
+# Overseerr
+overseerr_image: lscr.io/linuxserver/overseerr:latest
+overseerr_container_name: overseerr
+
+# Tautulli
+tautulli_image: ghcr.io/tautulli/tautulli:latest
+tautulli_container_name: tautulli
+
+# Tracearr
+tracearr_image: ghcr.io/connorgallopo/tracearr:supervised
+tracearr_container_name: tracearr
+
+# Wizarr
+wizarr_image: ghcr.io/wizarrrr/wizarr:latest
+wizarr_container_name: wizarr
+
+# Notifiarr
+notifiarr_image: golift/notifiarr:latest
+notifiarr_container_name: notifiarr
+
+# LLDAP
+lldap_image: lldap/lldap:stable
+lldap_container_name: lldap
+
+# Mealie
+mealie_image: ghcr.io/mealie-recipes/mealie:latest
+mealie_container_name: mealie
+
+# Authentik
+authentik_image: ghcr.io/goauthentik/server:2025.8.4
+authentik_pg_image: postgres:16-alpine
+authentik_redis_image: redis:alpine
+authentik_pg_container_name: authentik-postgresql
+authentik_redis_container_name: authentik-redis
+authentik_server_container_name: authentik-server
+authentik_worker_container_name: authentik-worker
+
+# Jellystat
+jellystat_image: cyfershepard/jellystat:latest
+jellystat_container_name: jellystat
+jellystat_db_image: postgres:15.2
+jellystat_db_container_name: jellystat-db
+
+# Nextcloud
+nextcloud_image: lscr.io/linuxserver/nextcloud:latest
+nextcloud_container_name: nextcloud
+nextcloud_pg_image: postgres:16-alpine
+nextcloud_pg_container_name: nextcloud-postgresql
+
+# Paperless-NGX
+paperless_image: ghcr.io/paperless-ngx/paperless-ngx:latest
+paperless_container_name: paperless-webserver
+paperless_redis_image: redis:8
+paperless_redis_container_name: paperless-redis
+paperless_db_image: postgres:17
+paperless_db_container_name: paperless-db
+paperless_gotenberg_image: gotenberg/gotenberg:8.20
+paperless_gotenberg_container_name: paperless-gotenberg
+paperless_tika_image: apache/tika:latest
+paperless_tika_container_name: paperless-tika
+paperless_ai_image: clusterzx/paperless-ai:latest
+paperless_ai_container_name: paperless-ai
+
+# DDNS Updater
+ddns_updater_image: qmcgaw/ddns-updater:latest
+ddns_updater_container_name: ddns-updater
+
+# Nebula-Sync
+nebula_sync_image: ghcr.io/lovelaze/nebula-sync:latest
+nebula_sync_container_name: nebula-sync
+
+# Newt
+newt_image: fosrl/newt:latest
+newt_container_name: newt
+
 # Monitoring Stack
 prometheus_image: prom/prometheus:latest
 grafana_image: grafana/grafana:latest
@@ -153,6 +249,37 @@ resource_limits:
   homepage: { memory: "256M", cpus: "0.5" }
   watchtower: { memory: "128M", cpus: "0.25" }
   termix: { memory: "128M", cpus: "0.25" }
+  # Media Management
+  prowlarr: { memory: "512M", cpus: "0.5" }
+  whisparr: { memory: "1G", cpus: "1.0" }
+  overseerr: { memory: "512M", cpus: "0.5" }
+  tautulli: { memory: "512M", cpus: "0.5" }
+  tracearr: { memory: "1G", cpus: "1.0" }
+  wizarr: { memory: "256M", cpus: "0.25" }
+  # Monitoring
+  notifiarr: { memory: "256M", cpus: "0.5" }
+  jellystat: { memory: "512M", cpus: "0.5" }
+  jellystat_db: { memory: "256M", cpus: "0.5" }
+  # Security
+  authentik_pg: { memory: "512M", cpus: "0.5" }
+  authentik_redis: { memory: "256M", cpus: "0.25" }
+  authentik_server: { memory: "1G", cpus: "1.0" }
+  authentik_worker: { memory: "1G", cpus: "1.0" }
+  lldap: { memory: "256M", cpus: "0.25" }
+  # Content
+  mealie: { memory: "1G", cpus: "0.5" }
+  nextcloud: { memory: "1G", cpus: "1.0" }
+  nextcloud_pg: { memory: "256M", cpus: "0.5" }
+  paperless_redis: { memory: "256M", cpus: "0.25" }
+  paperless_db: { memory: "512M", cpus: "0.5" }
+  paperless_web: { memory: "2G", cpus: "2.0" }
+  paperless_gotenberg: { memory: "512M", cpus: "0.5" }
+  paperless_tika: { memory: "512M", cpus: "0.5" }
+  paperless_ai: { memory: "512M", cpus: "0.5" }
+  # Infrastructure
+  ddns_updater: { memory: "128M", cpus: "0.25" }
+  nebula_sync: { memory: "128M", cpus: "0.25" }
+  newt: { memory: "128M", cpus: "0.25" }
 
 # =============================================================================
 # Enabled Services
@@ -179,6 +306,32 @@ enabled_containers:
 
   # Monitoring
   monitoring: true
+
+  # Media Management (new)
+  prowlarr: false
+  whisparr: false
+  overseerr: false
+  tautulli: false
+  tracearr: false
+  wizarr: false
+
+  # Content (new)
+  mealie: false
+  nextcloud: false
+  paperless: false
+
+  # Security (new)
+  authentik: false
+  lldap: false
+
+  # Monitoring (new)
+  jellystat: false
+  notifiarr: false
+
+  # Infrastructure (new)
+  ddns_updater: false
+  nebula_sync: false
+  newt: false
 
   # SSH Management (ssh hosts only)
   termix: true

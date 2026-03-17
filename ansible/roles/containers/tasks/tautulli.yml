@@ -1,0 +1,20 @@
+---
+# Tautulli - Plex Media Server Monitor
+# https://github.com/Tautulli/Tautulli
+
+- name: Ensure Tautulli directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/tautulli"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Tautulli docker-compose
+  ansible.builtin.template:
+    src: tautulli/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/tautulli/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Tautulli container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/tautulli"
+    state: present

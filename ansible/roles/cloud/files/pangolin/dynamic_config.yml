@@ -1,0 +1,91 @@
+http:
+  middlewares:
+    badger:
+      plugin:
+        badger:
+          disableForwardAuth: true
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+
+  routers:
+    # HTTP to HTTPS redirect router
+    main-app-router-redirect:
+      rule: "Host(`pangolin.silentijsje.com`)"
+      service: next-service
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+        # - badger
+
+    # Next.js router (handles everything except API and WebSocket paths)
+    next-router:
+      rule: "Host(`pangolin.silentijsje.com`) && !PathPrefix(`/api/v1`)"
+      service: next-service
+      entryPoints:
+        - websecure
+      middlewares:
+        # - badger
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "silentijsje.com"
+            sans:
+              - "*.silentijsje.com"
+
+    # API router (handles /api/v1 paths)
+    api-router:
+      rule: "Host(`pangolin.silentijsje.com`) && PathPrefix(`/api/v1`)"
+      service: api-service
+      entryPoints:
+        - websecure
+      middlewares:
+        # - badger
+      tls:
+        certResolver: letsencrypt
+
+    # WebSocket router
+    ws-router:
+      rule: "Host(`pangolin.silentijsje.com`)"
+      service: api-service
+      entryPoints:
+        - websecure
+      middlewares:
+        # - badger
+      tls:
+        certResolver: letsencrypt
+
+    authentik:
+      rule: "Host(`auth.silentijsje.com`)"
+      service: authentik
+      entryPoints:
+        - websecure
+      middlewares:
+        # - badger
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    next-service:
+      loadBalancer:
+        servers:
+          - url: "http://pangolin:3002"  # Next.js server
+
+    api-service:
+      loadBalancer:
+        servers:
+          - url: "http://pangolin:3000"  # API/WebSocket server
+
+    authentik:
+      loadBalancer:
+        servers:
+          - url: "https://authentik-server:9443"  # Authentik server
+tcp:
+  serversTransports:
+    pp-transport-v1:
+      proxyProtocol:
+        version: 1
+    pp-transport-v2:
+      proxyProtocol:
+        version: 2

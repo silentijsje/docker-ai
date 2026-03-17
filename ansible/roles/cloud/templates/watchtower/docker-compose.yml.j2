@@ -1,0 +1,23 @@
+---
+###########################################################################
+# Watchtower - Automatic container updates (cloud.lan instance)
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/nickfedor/watchtower
+###########################################################################
+
+services:
+  watchtower:
+    image: {{ watchtower_image | default('nickfedor/watchtower:latest') }}
+    container_name: {{ watchtower_container_name | default('watchtower') }}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.watchtower.memory }}
+          cpus: "{{ cloud_resource_limits.watchtower.cpus }}"
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_INCLUDE_STOPPED: "true"
+      WATCHTOWER_SCHEDULE: "{{ watchtower_schedule | default('0 0 3 * * *') }}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

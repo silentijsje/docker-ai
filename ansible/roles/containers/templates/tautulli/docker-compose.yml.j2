@@ -1,0 +1,53 @@
+---
+###########################################################################
+# Tautulli - Plex Media Server Monitor
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/Tautulli/Tautulli
+###########################################################################
+
+services:
+  tautulli:
+    image: {{ tautulli_image | default('ghcr.io/tautulli/tautulli:latest') }}
+    container_name: {{ tautulli_container_name | default('tautulli') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.tautulli.memory }}
+          cpus: "{{ resource_limits.tautulli.cpus }}"
+    environment:
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_data_root }}/tautulli:/config
+    ports:
+      - "{{ container_ports.tautulli }}:8181"
+    networks:
+      - {{ container_network }}
+{% if inventory_hostname in groups['proxy'] %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if inventory_hostname in groups['proxy'] %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.tautulli.service=tautulli
+      - traefik.http.routers.tautulli.rule=Host(`tautulli.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.tautulli.entrypoints=secureweb
+      - traefik.http.routers.tautulli.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+      # Service
+      - traefik.http.services.tautulli.loadbalancer.server.scheme=http
+      - traefik.http.services.tautulli.loadbalancer.server.port=8181
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if inventory_hostname in groups['proxy'] %}
+  proxy:
+    external: true
+{% endif %}

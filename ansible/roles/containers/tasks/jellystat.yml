@@ -1,0 +1,24 @@
+---
+# Jellystat - Jellyfin Statistics
+# https://github.com/CyferShepard/Jellystat
+
+- name: Ensure Jellystat directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/jellystat"
+    - "{{ container_data_root }}/jellystat/pgdata"
+    - "{{ container_data_root }}/jellystat/backup-data"
+
+- name: Deploy Jellystat docker-compose
+  ansible.builtin.template:
+    src: jellystat/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/jellystat/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Jellystat containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/jellystat"
+    state: present

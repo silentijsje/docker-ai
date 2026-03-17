@@ -1,0 +1,19 @@
+---
+# Newt - Pangolin Tunnel Client
+
+- name: Ensure Newt directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/newt"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Newt docker-compose
+  ansible.builtin.template:
+    src: newt/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/newt/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Newt container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/newt"
+    state: present

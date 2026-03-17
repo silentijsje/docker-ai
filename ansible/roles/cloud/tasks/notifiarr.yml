@@ -1,0 +1,20 @@
+---
+# Notifiarr - Notification & Integration Manager
+# https://github.com/Notifiarr/notifiarr
+
+- name: Ensure Notifiarr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/notifiarr"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Notifiarr docker-compose
+  ansible.builtin.template:
+    src: notifiarr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/notifiarr/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Notifiarr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/notifiarr"
+    state: present

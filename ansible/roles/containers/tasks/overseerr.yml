@@ -1,0 +1,20 @@
+---
+# Overseerr - Media Request Manager
+# https://docs.linuxserver.io/images/docker-overseerr
+
+- name: Ensure Overseerr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/overseerr"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Overseerr docker-compose
+  ansible.builtin.template:
+    src: overseerr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/overseerr/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Overseerr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/overseerr"
+    state: present

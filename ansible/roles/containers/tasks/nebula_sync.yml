@@ -1,0 +1,19 @@
+---
+# Nebula-Sync - PiHole/Gravity Sync
+
+- name: Ensure Nebula-Sync directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/nebula-sync"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Nebula-Sync docker-compose
+  ansible.builtin.template:
+    src: nebula_sync/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/nebula-sync/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Nebula-Sync container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/nebula-sync"
+    state: present

@@ -1,0 +1,23 @@
+---
+###########################################################################
+# Portainer Agent - Remote Docker management
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://docs.portainer.io/admin/environments/add/docker/agent
+###########################################################################
+
+services:
+  portainer_agent:
+    image: {{ portainer_agent_image | default('portainer/agent:2.33.6') }}
+    container_name: {{ portainer_agent_container_name | default('portainer_agent') }}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: {{ cloud_resource_limits.portainer_agent.memory }}
+          cpus: "{{ cloud_resource_limits.portainer_agent.cpus }}"
+    ports:
+      - "{{ cloud_ports.portainer_agent }}:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host

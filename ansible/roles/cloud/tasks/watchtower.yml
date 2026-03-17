@@ -1,0 +1,20 @@
+---
+# Watchtower - Automatic container updates
+# https://github.com/nickfedor/watchtower
+
+- name: Ensure Watchtower directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/watchtower"
+    state: directory
+    mode: '0755'
+
+- name: Deploy Watchtower docker-compose
+  ansible.builtin.template:
+    src: watchtower/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/watchtower/docker-compose.yml"
+    mode: '0644'
+
+- name: Start Watchtower container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/watchtower"
+    state: present

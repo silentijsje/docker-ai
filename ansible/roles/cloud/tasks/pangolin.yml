@@ -1,0 +1,39 @@
+---
+# Pangolin - Tunneling stack (pangolin + gerbil + traefik)
+# https://github.com/fosrl/pangolin
+
+- name: Ensure Pangolin directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/pangolin"
+    - "{{ container_data_root }}/pangolin/config"
+    - "{{ container_data_root }}/pangolin/config/traefik"
+    - "{{ container_data_root }}/pangolin/config/letsencrypt"
+    - "{{ container_data_root }}/pangolin/config/traefik/logs"
+    - "{{ container_data_root }}/pangolin/config/traefik/plugins-local"
+
+- name: Deploy Pangolin docker-compose
+  ansible.builtin.template:
+    src: pangolin/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/pangolin/docker-compose.yml"
+    mode: '0644'
+
+- name: Deploy Traefik config
+  ansible.builtin.template:
+    src: pangolin/traefik_config.yml.j2
+    dest: "{{ container_data_root }}/pangolin/config/traefik/traefik_config.yml"
+    mode: '0644'
+
+- name: Deploy Traefik dynamic config
+  ansible.builtin.copy:
+    src: pangolin/dynamic_config.yml
+    dest: "{{ container_data_root }}/pangolin/config/traefik/dynamic_config.yml"
+    mode: '0644'
+
+- name: Start Pangolin containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/pangolin"
+    state: present

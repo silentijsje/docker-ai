@@ -80,8 +80,93 @@
     - booklore
 
 # =============================================================================
+# Media Management (continued)
+# =============================================================================
+
+- name: Deploy Prowlarr
+  ansible.builtin.include_tasks: prowlarr.yml
+  when: enabled_containers.prowlarr | default(false)
+  tags:
+    - media_management
+    - prowlarr
+
+- name: Deploy Whisparr
+  ansible.builtin.include_tasks: whisparr.yml
+  when: enabled_containers.whisparr | default(false)
+  tags:
+    - media_management
+    - whisparr
+
+- name: Deploy Overseerr
+  ansible.builtin.include_tasks: overseerr.yml
+  when: enabled_containers.overseerr | default(false)
+  tags:
+    - media_management
+    - overseerr
+
+- name: Deploy Tautulli
+  ansible.builtin.include_tasks: tautulli.yml
+  when: enabled_containers.tautulli | default(false)
+  tags:
+    - media_management
+    - tautulli
+
+- name: Deploy Tracearr
+  ansible.builtin.include_tasks: tracearr.yml
+  when: enabled_containers.tracearr | default(false)
+  tags:
+    - media_management
+    - tracearr
+
+- name: Deploy Wizarr
+  ansible.builtin.include_tasks: wizarr.yml
+  when: enabled_containers.wizarr | default(false)
+  tags:
+    - media_management
+    - wizarr
+
+# =============================================================================
+# Content Services
+# =============================================================================
+
+- name: Deploy Mealie
+  ansible.builtin.include_tasks: mealie.yml
+  when: enabled_containers.mealie | default(false)
+  tags:
+    - content
+    - mealie
+
+- name: Deploy Nextcloud
+  ansible.builtin.include_tasks: nextcloud.yml
+  when: enabled_containers.nextcloud | default(false)
+  tags:
+    - content
+    - nextcloud
+
+- name: Deploy Paperless-NGX
+  ansible.builtin.include_tasks: paperless.yml
+  when: enabled_containers.paperless | default(false)
+  tags:
+    - content
+    - paperless
+
+# =============================================================================
 # Security Services
 # =============================================================================
+
+- name: Deploy Authentik
+  ansible.builtin.include_tasks: authentik.yml
+  when: enabled_containers.authentik | default(false)
+  tags:
+    - security
+    - authentik
+
+- name: Deploy LLDAP
+  ansible.builtin.include_tasks: lldap.yml
+  when: enabled_containers.lldap | default(false)
+  tags:
+    - security
+    - lldap
 
 - name: Deploy Vaultwarden
   ansible.builtin.import_tasks: vaultwarden.yml
@@ -99,3 +184,54 @@
   when: enabled_containers.monitoring | default(false)
   tags:
     - monitoring
+
+- name: Deploy Jellystat
+  ansible.builtin.include_tasks: jellystat.yml
+  when: enabled_containers.jellystat | default(false)
+  tags:
+    - monitoring
+    - jellystat
+
+- name: Deploy Notifiarr
+  ansible.builtin.include_tasks: notifiarr.yml
+  when: enabled_containers.notifiarr | default(false)
+  tags:
+    - monitoring
+    - notifiarr
+
+# =============================================================================
+# Infrastructure Services (no Traefik)
+# =============================================================================
+
+- name: Deploy DDNS Updater
+  ansible.builtin.include_tasks: ddns_updater.yml
+  when: enabled_containers.ddns_updater | default(false)
+  tags:
+    - infrastructure
+    - ddns_updater
+
+- name: Deploy Nebula-Sync
+  ansible.builtin.include_tasks: nebula_sync.yml
+  when: enabled_containers.nebula_sync | default(false)
+  tags:
+    - infrastructure
+    - nebula_sync
+
+- name: Deploy Newt
+  ansible.builtin.include_tasks: newt.yml
+  when: enabled_containers.newt | default(false)
+  tags:
+    - infrastructure
+    - newt
+
+# =============================================================================
+# Master Compose File
+# =============================================================================
+
+- name: Deploy master Docker Compose file
+  ansible.builtin.template:
+    src: docker-compose.master.yml.j2
+    dest: "{{ container_data_root }}/docker-compose.yml"
+    mode: '0660'
+  tags:
+    - always
