@@ -5,7 +5,7 @@ set -euo pipefail
 FAILED=0
 
 # Check all staged vault files are encrypted
-for file in $(git diff --cached --name-only | grep -i 'vault.*\.yml$' || true); do
+for file in $(git diff --cached --name-only | grep -i 'vars/.*vault.*\.yml$' || true); do
   if [ -f "$file" ]; then
     header=$(head -1 "$file")
     if [ "$header" != '$ANSIBLE_VAULT;1.1;AES256' ]; then

@@ -4,3 +4,5 @@
 
 container_data_root: /opt/stacks
 container_network: pangolin
+traefik_network: pangolin
+traefik_https_entrypoint: websecure

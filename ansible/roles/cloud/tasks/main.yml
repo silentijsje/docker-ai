@@ -45,3 +45,7 @@
 - name: Deploy Portainer Agent
   ansible.builtin.include_tasks: portainer_agent.yml
   tags: [portainer_agent]
+
+- name: Deploy Vaultwarden
+  ansible.builtin.include_tasks: vaultwarden.yml
+  tags: [vaultwarden]

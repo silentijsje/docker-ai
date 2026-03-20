@@ -8,6 +8,10 @@ providers:
     pollInterval: "5s"
   file:
     filename: "/etc/traefik/dynamic_config.yml"
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: pangolin
 
 experimental:
   localPlugins:
@@ -16,6 +20,7 @@ experimental:
 
 log:
   level: "INFO"
+  filePath: "/var/log/traefik/traefik.log"
   format: "common"
   maxSize: 100
   maxBackups: 3
@@ -34,14 +39,31 @@ certificatesResolvers:
 entryPoints:
   web:
     address: ":80"
+    http:
+      encodedCharacters:
+        allowEncodedSlash: false
+        allowEncodedBackSlash: false
+        allowEncodedNullCharacter: false
+        allowEncodedSemicolon: false
+        allowEncodedPercent: false
+        allowEncodedQuestionMark: false
+        allowEncodedHash: false
   websecure:
     address: ":443"
+    http:
+      encodedCharacters:
+        allowEncodedSlash: false
+        allowEncodedBackSlash: false
+        allowEncodedNullCharacter: false
+        allowEncodedSemicolon: false
+        allowEncodedPercent: false
+        allowEncodedQuestionMark: false
+        allowEncodedHash: false
+      tls:
+        certResolver: "letsencrypt"
     transport:
       respondingTimeouts:
         readTimeout: "30m"
-    http:
-      tls:
-        certResolver: "letsencrypt"
 
 serversTransport:
   insecureSkipVerify: true

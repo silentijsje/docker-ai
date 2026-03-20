@@ -1,0 +1,64 @@
+#!/bin/bash
+# Vaultwarden Restore Script
+# Deployed by Ansible - Do not edit manually
+# Usage: restore-vaultwarden.sh [backup_file.tar.gz]
+#        If no file given, restores the most recent backup.
+
+set -euo pipefail
+
+VAULTWARDEN_DIR="{{ container_data_root }}/vaultwarden"
+DATA_DIR="${VAULTWARDEN_DIR}/data"
+BACKUP_DIR="${VAULTWARDEN_DIR}/backup"
+COMPOSE_FILE="${VAULTWARDEN_DIR}/docker-compose.yml"
+
+# Resolve backup file
+if [ $# -eq 1 ]; then
+    BACKUP_FILE="$1"
+else
+    BACKUP_FILE=$(find "${BACKUP_DIR}" -name "vaultwarden_*.tar.gz" | sort | tail -1)
+    if [ -z "${BACKUP_FILE}" ]; then
+        echo "ERROR: No backups found in ${BACKUP_DIR}" >&2
+        exit 1
+    fi
+fi
+
+if [ ! -f "${BACKUP_FILE}" ]; then
+    echo "ERROR: Backup file not found: ${BACKUP_FILE}" >&2
+    exit 1
+fi
+
+echo "Restoring from: ${BACKUP_FILE}"
+echo ""
+echo "WARNING: This will replace all current Vaultwarden data."
+read -r -p "Continue? [y/N] " confirm
+if [[ "${confirm}" != "y" && "${confirm}" != "Y" ]]; then
+    echo "Aborted."
+    exit 0
+fi
+
+# Stop container
+echo "Stopping Vaultwarden..."
+docker compose -f "${COMPOSE_FILE}" down
+
+# Snapshot current data before overwriting
+ROLLBACK_ARCHIVE="${BACKUP_DIR}/pre-restore_$(date +%Y%m%d_%H%M%S).tar.gz"
+if [ -d "${DATA_DIR}" ] && [ -n "$(ls -A "${DATA_DIR}")" ]; then
+    echo "Snapshotting current data to ${ROLLBACK_ARCHIVE}..."
+    tar -czf "${ROLLBACK_ARCHIVE}" -C "${VAULTWARDEN_DIR}" data
+fi
+
+# Wipe and restore
+echo "Restoring data..."
+rm -rf "${DATA_DIR}"
+mkdir -p "${DATA_DIR}"
+tar -xzf "${BACKUP_FILE}" -C "${VAULTWARDEN_DIR}" --strip-components=0 data
+
+# Start container
+echo "Starting Vaultwarden..."
+docker compose -f "${COMPOSE_FILE}" up -d
+
+echo ""
+echo "Restore complete."
+if [ -f "${ROLLBACK_ARCHIVE}" ]; then
+    echo "Rollback snapshot: ${ROLLBACK_ARCHIVE}"
+fi
