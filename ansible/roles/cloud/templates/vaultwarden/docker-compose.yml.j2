@@ -38,7 +38,9 @@ services:
       - traefik.http.routers.vaultwarden.service=vaultwarden
       - traefik.http.routers.vaultwarden.rule=Host(`vault.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.vaultwarden.entrypoints={{ traefik_https_entrypoint }}
-      - traefik.http.routers.vaultwarden.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
+{% if traefik_router_middlewares %}
+      - traefik.http.routers.vaultwarden.middlewares={{ traefik_router_middlewares }}
+{% endif %}
       # Service
       - traefik.http.services.vaultwarden.loadbalancer.server.scheme=http
       - traefik.http.services.vaultwarden.loadbalancer.server.port=80

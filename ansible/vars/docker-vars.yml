@@ -21,6 +21,9 @@ cloudflare_dns_zone: "{{ vault_cloudflare_dns_zone }}"
 # Docker network
 container_network: mediastack
 
+# Traefik router middlewares (override per-environment)
+traefik_router_middlewares: "security-headers@file,traefik-bouncer@file,ipAllowList@file"
+
 # =============================================================================
 # Port Assignments
 # =============================================================================
