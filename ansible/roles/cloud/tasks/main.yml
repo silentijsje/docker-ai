@@ -2,7 +2,10 @@
 # Cloud role - deploys all services on cloud.lan
 
 - name: Configure UFW firewall
-  ansible.builtin.include_tasks: ufw.yml
+  ansible.builtin.include_tasks:
+    file: ufw.yml
+    apply:
+      tags: [ufw]
   tags: [ufw]
 
 - name: Ensure /opt/stacks directory exists
@@ -19,33 +22,57 @@
 
 # Pangolin MUST be first — creates network + proxy
 - name: Deploy Pangolin stack
-  ansible.builtin.include_tasks: pangolin.yml
+  ansible.builtin.include_tasks:
+    file: pangolin.yml
+    apply:
+      tags: [pangolin]
   tags: [pangolin]
 
 - name: Deploy Authentik
-  ansible.builtin.include_tasks: authentik.yml
+  ansible.builtin.include_tasks:
+    file: authentik.yml
+    apply:
+      tags: [authentik]
   tags: [authentik]
 
 - name: Deploy Newt
-  ansible.builtin.include_tasks: newt.yml
+  ansible.builtin.include_tasks:
+    file: newt.yml
+    apply:
+      tags: [newt]
   tags: [newt]
 
 - name: Deploy Notifiarr
-  ansible.builtin.include_tasks: notifiarr.yml
+  ansible.builtin.include_tasks:
+    file: notifiarr.yml
+    apply:
+      tags: [notifiarr]
   tags: [notifiarr]
 
 - name: Deploy Watchtower
-  ansible.builtin.include_tasks: watchtower.yml
+  ansible.builtin.include_tasks:
+    file: watchtower.yml
+    apply:
+      tags: [watchtower]
   tags: [watchtower]
 
 - name: Deploy Uptime Kuma
-  ansible.builtin.include_tasks: uptime_kuma.yml
+  ansible.builtin.include_tasks:
+    file: uptime_kuma.yml
+    apply:
+      tags: [uptime_kuma]
   tags: [uptime_kuma]
 
 - name: Deploy Portainer Agent
-  ansible.builtin.include_tasks: portainer_agent.yml
+  ansible.builtin.include_tasks:
+    file: portainer_agent.yml
+    apply:
+      tags: [portainer_agent]
   tags: [portainer_agent]
 
 - name: Deploy Vaultwarden
-  ansible.builtin.include_tasks: vaultwarden.yml
+  ansible.builtin.include_tasks:
+    file: vaultwarden.yml
+    apply:
+      tags: [vaultwarden]
   tags: [vaultwarden]
