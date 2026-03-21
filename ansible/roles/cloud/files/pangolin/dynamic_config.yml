@@ -56,16 +56,6 @@ http:
       tls:
         certResolver: letsencrypt
 
-    authentik:
-      rule: "Host(`auth.silentijsje.com`)"
-      service: authentik
-      entryPoints:
-        - websecure
-      middlewares:
-        # - badger
-      tls:
-        certResolver: letsencrypt
-
   services:
     next-service:
       loadBalancer:
@@ -77,10 +67,6 @@ http:
         servers:
           - url: "http://pangolin:3000"  # API/WebSocket server
 
-    authentik:
-      loadBalancer:
-        servers:
-          - url: "https://authentik-server:9443"  # Authentik server
 tcp:
   serversTransports:
     pp-transport-v1:

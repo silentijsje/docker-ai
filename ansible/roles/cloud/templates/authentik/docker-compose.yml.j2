@@ -78,9 +78,6 @@ services:
     volumes:
       - {{ container_data_root }}/authentik/media:/media
       - {{ container_data_root }}/authentik/custom-templates:/templates
-    ports:
-      - "9000:9000"
-      - "9443:9443"
     depends_on:
       authentik-postgresql:
         condition: service_healthy
@@ -88,6 +85,19 @@ services:
         condition: service_healthy
     networks:
       - {{ container_network }}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network={{ traefik_network }}
+      # Router
+      - traefik.http.routers.authentik.service=authentik
+      - traefik.http.routers.authentik.rule=Host(`authentik.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.authentik.entrypoints={{ traefik_https_entrypoint }}
+{% if traefik_router_middlewares %}
+      - traefik.http.routers.authentik.middlewares={{ traefik_router_middlewares }}
+{% endif %}
+      # Service
+      - traefik.http.services.authentik.loadbalancer.server.scheme=http
+      - traefik.http.services.authentik.loadbalancer.server.port=9000
 
   authentik-worker:
     image: {{ authentik_image | default('ghcr.io/goauthentik/server:2025.8.4') }}
