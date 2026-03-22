@@ -18,6 +18,15 @@ http:
       middlewares:
         - security-headers@file
         - traefik-bouncer@file
+    hassio:
+      rule: "Host(`hassio.silentijsje.com`)"
+      service: hassio
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
     dns01:
       rule: "Host(`dns01.silentijsje.com`)"
       service: dns01
@@ -346,6 +355,12 @@ http:
       loadBalancer:
         servers:
           - url: "http://{{ vault_ip_dns02 }}:5380"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    hassio:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_hassio }}:8123"
         passHostHeader: true
         serversTransport: insecure-no-verify
   serversTransports:
