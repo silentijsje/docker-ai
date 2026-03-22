@@ -1,6 +1,0 @@
----
-traefik_config_src: "./files/"
-traefik_compose_dir: "{{ docker_data_root }}/traefik"
-traefik_config_dest: "{{ docker_data_root }}/traefik/config"
-traefik_dir_owner: stanley
-traefik_dir_group: renfrew

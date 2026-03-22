@@ -3,16 +3,6 @@
 # Usage: ansible-playbook containers.yml --ask-vault-pass
 # Or:    ansible-playbook containers.yml --vault-password-file=../.vault_pass
 
-- name: Setup proxy servers (Traefik)
-  hosts: docker01.prod.lan
-  become: true
-  vars_files:
-    - vars/vault.yml
-    - vars/users.yml
-    - vars/docker-vars.yml
-  roles:
-    - role: proxy
-
 - name: Deploy Docker Containers
   hosts: docker_vm
   vars_files:

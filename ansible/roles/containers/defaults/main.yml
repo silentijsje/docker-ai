@@ -13,6 +13,10 @@ container_media_root: /mnt/media
 container_dir_owner: stanley
 container_dir_group: renfrew
 
+traefik_enabled: false
+traefik_compose_dir: "{{ container_data_root }}/traefik"
+traefik_config_dest: "{{ container_data_root }}/traefik/config"
+
 cloudflare_dns_zone: silentijsje.com
 
 container_ports:
