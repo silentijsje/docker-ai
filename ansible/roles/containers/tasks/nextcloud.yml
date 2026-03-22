@@ -7,16 +7,25 @@
     path: "{{ item }}"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
   loop:
     - "{{ container_data_root }}/nextcloud"
     - "{{ container_data_root }}/nextcloud/config"
-    - "{{ container_data_root }}/nextcloud/postgresql"
+
+- name: Ensure Nextcloud postgres data dir exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/nextcloud/postgresql"
+    state: directory
+    mode: '0755'
 
 - name: Deploy Nextcloud docker-compose
   ansible.builtin.template:
     src: nextcloud/docker-compose.yml.j2
     dest: "{{ container_data_root }}/nextcloud/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Nextcloud containers
   community.docker.docker_compose_v2:

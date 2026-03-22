@@ -10,12 +10,14 @@ container_network: mediastack
 container_data_root: /mnt/docker
 container_media_root: /mnt/media
 
+container_dir_owner: stanley
+container_dir_group: renfrew
+
 cloudflare_dns_zone: silentijsje.com
 
 container_ports:
   radarr: 7878
   sonarr: 8989
-  booklore: 8085
   sabnzbd: 8083
   qbittorrent: 8084
   qbittorrent_bt: 6881
@@ -23,7 +25,6 @@ container_ports:
 enabled_containers:
   radarr: true
   sonarr: true
-  booklore: true
   sabnzbd: true
   qbittorrent: true
   vaultwarden: false

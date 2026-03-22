@@ -7,12 +7,16 @@
     path: "{{ container_data_root }}/overseerr"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Overseerr docker-compose
   ansible.builtin.template:
     src: overseerr/docker-compose.yml.j2
     dest: "{{ container_data_root }}/overseerr/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Overseerr container
   community.docker.docker_compose_v2:

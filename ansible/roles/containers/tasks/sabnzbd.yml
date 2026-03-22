@@ -7,12 +7,16 @@
     path: "{{ container_data_root }}/sabnzbd"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy SABnzbd docker-compose
   ansible.builtin.template:
     src: sabnzbd/docker-compose.yml.j2
     dest: "{{ container_data_root }}/sabnzbd/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start SABnzbd container
   community.docker.docker_compose_v2:

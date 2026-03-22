@@ -9,9 +9,6 @@
     vault_crowdsec_enroll_key: "mock_crowdsec_key_abcdefghijklmnop"
     vault_samba_username: "mockuser"
     vault_samba_password: "mockpassword"
-    vault_booklore_db_user: "booklore"
-    vault_booklore_db_password: "mockdbpassword"
-    vault_booklore_db_root_password: "mockrootpassword"
 
     # Only test Traefik (fastest, most critical)
     enabled_containers:
@@ -30,7 +27,6 @@
       bazarr: false
       requestrr: false
       watchtower: false
-      booklore: false
       heimdall: false
 
     # Mock container configuration

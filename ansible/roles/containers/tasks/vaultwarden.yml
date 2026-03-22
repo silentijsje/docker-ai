@@ -12,6 +12,8 @@
     path: "{{ item }}"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
   loop:
     - "{{ container_data_root }}/vaultwarden"
     - "{{ container_data_root }}/vaultwarden/data"
@@ -22,18 +24,24 @@
     src: vaultwarden/docker-compose.yml.j2
     dest: "{{ container_data_root }}/vaultwarden/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Vaultwarden backup script
   ansible.builtin.template:
     src: vaultwarden/backup-vaultwarden.sh.j2
     dest: "{{ container_data_root }}/vaultwarden/backup-vaultwarden.sh"
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Vaultwarden restore script
   ansible.builtin.template:
     src: vaultwarden/restore-vaultwarden.sh.j2
     dest: "{{ container_data_root }}/vaultwarden/restore-vaultwarden.sh"
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Schedule daily Vaultwarden backup
   ansible.builtin.cron:

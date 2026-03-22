@@ -175,16 +175,6 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
-    booklore:
-      rule: "Host(`booklore.silentijsje.com`)"
-      service: booklore
-      entryPoints:
-        - secureweb
-      tls: {}
-      middlewares:
-        - security-headers@file
-        - traefik-bouncer@file
-        - ipAllowList@file
     mealie:
       rule: "Host(`mealie.silentijsje.com`)"
       service: mealie
@@ -320,12 +310,6 @@ http:
       loadBalancer:
         servers:
           - url: "http://{{ vault_ip_docker01 }}:8181"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
-    booklore:
-      loadBalancer:
-        servers:
-          - url: "http://{{ vault_ip_docker01 }}:6060"
         passHostHeader: true
         serversTransport: insecure-no-verify
     mealie:

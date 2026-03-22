@@ -72,13 +72,6 @@
     - download_clients
     - qbittorrent
 
-- name: Deploy Booklore
-  ansible.builtin.include_tasks: booklore.yml
-  when: enabled_containers.booklore | default(false)
-  tags:
-    - content
-    - booklore
-
 # =============================================================================
 # Media Management (continued)
 # =============================================================================

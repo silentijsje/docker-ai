@@ -7,12 +7,16 @@
     path: "{{ container_data_root }}/qbittorrent"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy qBittorrent docker-compose
   ansible.builtin.template:
     src: qbittorrent/docker-compose.yml.j2
     dest: "{{ container_data_root }}/qbittorrent/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start qBittorrent container
   community.docker.docker_compose_v2:

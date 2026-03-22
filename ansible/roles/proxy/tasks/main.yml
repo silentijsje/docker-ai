@@ -1,15 +1,27 @@
 ---
+- name: Ensure compose directory exists
+  ansible.builtin.file:
+    path: "{{ traefik_compose_dir }}"
+    state: directory
+    mode: '0770'
+    owner: "{{ traefik_dir_owner }}"
+    group: "{{ traefik_dir_group }}"
+
 - name: Ensure Traefik config directory exists
   ansible.builtin.file:
     path: "{{ traefik_config_dest }}"
     state: directory
     mode: '0770'
+    owner: "{{ traefik_dir_owner }}"
+    group: "{{ traefik_dir_group }}"
 
 - name: Copy Traefik static configuration
   ansible.builtin.copy:
     src: files/traefik.yaml
     dest: "{{ traefik_config_dest }}/traefik.yaml"
     mode: '0660'
+    owner: "{{ traefik_dir_owner }}"
+    group: "{{ traefik_dir_group }}"
   register: traefik_static_config
 
 - name: Template Traefik internal routing (contains IPs)
@@ -17,6 +29,8 @@
     src: internal.yaml.j2
     dest: "{{ traefik_config_dest }}/internal.yaml"
     mode: '0660'
+    owner: "{{ traefik_dir_owner }}"
+    group: "{{ traefik_dir_group }}"
   register: traefik_internal_config
 
 - name: Template Traefik dynamic configuration (contains secrets)
@@ -24,19 +38,17 @@
     src: dynamic.yaml.j2
     dest: "{{ traefik_config_dest }}/dynamic.yaml"
     mode: '0660'
+    owner: "{{ traefik_dir_owner }}"
+    group: "{{ traefik_dir_group }}"
   register: traefik_dynamic_config
-
-- name: Ensure compose directory exists
-  ansible.builtin.file:
-    path: "{{ traefik_compose_dir }}"
-    state: directory
-    mode: '0770'
 
 - name: Template Docker Compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: "{{ traefik_compose_dir }}/docker-compose.yml"
     mode: '0660'
+    owner: "{{ traefik_dir_owner }}"
+    group: "{{ traefik_dir_group }}"
 
 - name: Deploy Docker Compose stack
   community.docker.docker_compose_v2:

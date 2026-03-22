@@ -6,6 +6,8 @@
     path: "{{ item }}"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
   loop:
     - "{{ container_data_root }}/homepage"
     - "{{ container_data_root }}/homepage/config"
@@ -15,30 +17,40 @@
     src: homepage/docker-compose.yml.j2
     dest: "{{ container_data_root }}/homepage/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Homepage env
   ansible.builtin.template:
     src: homepage/env.j2
     dest: "{{ container_data_root }}/homepage/.env"
     mode: '0600'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Homepage services.yaml
   ansible.builtin.template:
     src: homepage/services.yaml.j2
     dest: "{{ container_data_root }}/homepage/config/services.yaml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Homepage widgets.yaml
   ansible.builtin.template:
     src: homepage/widgets.yaml.j2
     dest: "{{ container_data_root }}/homepage/config/widgets.yaml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Homepage settings.yaml
   ansible.builtin.template:
     src: homepage/settings.yaml.j2
     dest: "{{ container_data_root }}/homepage/config/settings.yaml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Homepage container
   community.docker.docker_compose_v2:

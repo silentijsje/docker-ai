@@ -53,7 +53,6 @@ container_ports:
   wizarr: 5690           # Invite management (internal: 5690)
 
   # Books & Documents
-  booklore: 8085         # Book library (internal: configurable)
   paperless: 8000        # Documents (internal: 8000)
   paperless_ai: 3060     # Paperless AI (internal: 3000)
 
@@ -103,13 +102,6 @@ sabnzbd_container_name: sabnzbd
 # qBittorrent
 qbittorrent_image: lscr.io/linuxserver/qbittorrent:latest
 qbittorrent_container_name: qbittorrent
-
-# Booklore
-booklore_image: booklore/booklore:latest
-booklore_container_name: booklore
-booklore_mariadb_image: lscr.io/linuxserver/mariadb:11.4.5
-booklore_mariadb_container_name: booklore-mariadb
-booklore_db_name: booklore
 
 # Traefik - Reverse Proxy
 traefik_image: "traefik:latest"
@@ -247,8 +239,6 @@ resource_limits:
   sonarr: { memory: "1G", cpus: "1.0" }
   sabnzbd: { memory: "2G", cpus: "2.0" }
   qbittorrent: { memory: "1G", cpus: "1.0" }
-  booklore: { memory: "512M", cpus: "0.5" }
-  booklore_mariadb: { memory: "256M", cpus: "0.5" }
   homepage: { memory: "256M", cpus: "0.5" }
   watchtower: { memory: "128M", cpus: "0.25" }
   termix: { memory: "128M", cpus: "0.25" }
@@ -298,8 +288,6 @@ enabled_containers:
   # Media Management
   radarr: true
   sonarr: true
-  booklore: true
-
   # Download Clients
   sabnzbd: true
   qbittorrent: true

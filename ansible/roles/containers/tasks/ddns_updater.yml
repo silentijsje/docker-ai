@@ -6,18 +6,24 @@
     path: "{{ container_data_root }}/ddns-updater"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy DDNS Updater config
   ansible.builtin.template:
     src: ddns_updater/config.json.j2
     dest: "{{ container_data_root }}/ddns-updater/config.json"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy DDNS Updater docker-compose
   ansible.builtin.template:
     src: ddns_updater/docker-compose.yml.j2
     dest: "{{ container_data_root }}/ddns-updater/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start DDNS Updater container
   community.docker.docker_compose_v2:

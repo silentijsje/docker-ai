@@ -7,19 +7,30 @@
     path: "{{ item }}"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
   loop:
     - "{{ container_data_root }}/authentik"
-    - "{{ container_data_root }}/authentik/database"
-    - "{{ container_data_root }}/authentik/redis"
     - "{{ container_data_root }}/authentik/media"
     - "{{ container_data_root }}/authentik/custom-templates"
     - "{{ container_data_root }}/authentik/certs"
+
+- name: Ensure Authentik database/redis data dirs exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ container_data_root }}/authentik/database"
+    - "{{ container_data_root }}/authentik/redis"
 
 - name: Deploy Authentik docker-compose
   ansible.builtin.template:
     src: authentik/docker-compose.yml.j2
     dest: "{{ container_data_root }}/authentik/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Authentik containers
   community.docker.docker_compose_v2:

@@ -6,12 +6,16 @@
     path: "{{ container_data_root }}/portainer"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Portainer docker-compose
   ansible.builtin.template:
     src: portainer/docker-compose.yml.j2
     dest: "{{ container_data_root }}/portainer/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Portainer container
   community.docker.docker_compose_v2:

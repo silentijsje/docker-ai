@@ -6,12 +6,16 @@
     path: "{{ container_data_root }}/nebula-sync"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Nebula-Sync docker-compose
   ansible.builtin.template:
     src: nebula_sync/docker-compose.yml.j2
     dest: "{{ container_data_root }}/nebula-sync/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Nebula-Sync container
   community.docker.docker_compose_v2:

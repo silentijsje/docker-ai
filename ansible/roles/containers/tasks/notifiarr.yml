@@ -7,12 +7,16 @@
     path: "{{ container_data_root }}/notifiarr"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Notifiarr docker-compose
   ansible.builtin.template:
     src: notifiarr/docker-compose.yml.j2
     dest: "{{ container_data_root }}/notifiarr/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Notifiarr container
   community.docker.docker_compose_v2:

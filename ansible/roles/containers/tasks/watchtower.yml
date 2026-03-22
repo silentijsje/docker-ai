@@ -4,12 +4,16 @@
     path: "{{ container_data_root }}/watchtower"
     state: directory
     mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Deploy Watchtower docker-compose file
   ansible.builtin.template:
     src: watchtower/docker-compose.yml.j2
     dest: "{{ container_data_root }}/watchtower/docker-compose.yml"
     mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
 
 - name: Start Watchtower
   community.docker.docker_compose_v2:
