@@ -334,7 +334,7 @@ enabled_containers:
   # Infrastructure (new)
   ddns_updater: false
   nebula_sync: false
-  newt: false
+  newt: true
 
   # SSH Management (ssh hosts only)
   termix: true

@@ -9,6 +9,24 @@
     - vars/vault.yml
   roles:
     - role: bootstrap
+  tasks:
+    - name: Setup SMB mounts
+      block:
+        - name: Install cifs-utils
+          ansible.builtin.apt:
+            name: cifs-utils
+            state: present
+
+        - name: Create SMB credentials file
+          ansible.builtin.copy:
+            dest: /root/.smbcredentials
+            content: |
+              username={{ smb_credentials.username }}
+              password={{ smb_credentials.password }}
+            mode: '0600'
+            owner: root
+            group: root
+          no_log: true
 
 - name: Mount SMB shares on Docker VMs
   hosts: docker_vm
