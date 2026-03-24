@@ -70,6 +70,8 @@ container_ports:
   loki: 3100             # Log aggregation (internal: 3100)
   jellystat: 3050        # Jellyfin stats (internal: 3000)
   notifiarr: 5454        # Notifiarr (internal: 5454)
+  graylog_web: 9300      # Graylog Web UI (internal: 9000)
+  graylog_syslog: 5140   # Syslog TCP/UDP (internal: 5140)
 
   # Download Clients
   sabnzbd: 8083          # Usenet (internal: 8080)
@@ -222,6 +224,14 @@ node_exporter_image: prom/node-exporter:latest
 loki_image: grafana/loki:latest
 promtail_image: grafana/promtail:latest
 
+# Graylog - Log Management
+graylog_image: graylog/graylog:7.0.4
+graylog_container_name: graylog
+graylog_mongo_image: mongo:7.0
+graylog_mongo_container_name: graylog-mongo
+graylog_opensearch_image: opensearchproject/opensearch:2
+graylog_opensearch_container_name: graylog-opensearch
+
 # =============================================================================
 # Resource Limits
 # =============================================================================
@@ -253,6 +263,9 @@ resource_limits:
   notifiarr: { memory: "256M", cpus: "0.5" }
   jellystat: { memory: "512M", cpus: "0.5" }
   jellystat_db: { memory: "256M", cpus: "0.5" }
+  graylog: { memory: "2G", cpus: "2.0" }
+  graylog_mongo: { memory: "512M", cpus: "0.5" }
+  graylog_opensearch: { memory: "2G", cpus: "2.0" }
   # Security
   authentik_pg: { memory: "512M", cpus: "0.5" }
   authentik_redis: { memory: "256M", cpus: "0.25" }
@@ -318,6 +331,7 @@ enabled_containers:
   # Monitoring (new)
   jellystat: false
   notifiarr: false
+  graylog: true
 
   # Infrastructure (new)
   ddns_updater: false

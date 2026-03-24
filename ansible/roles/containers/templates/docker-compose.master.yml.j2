@@ -70,6 +70,9 @@ include:
 {% if enabled_containers.notifiarr | default(false) %}
   - path: {{ container_data_root }}/notifiarr/docker-compose.yml
 {% endif %}
+{% if enabled_containers.graylog | default(false) %}
+  - path: {{ container_data_root }}/graylog/docker-compose.yml
+{% endif %}
 {% if enabled_containers.ddns_updater | default(false) %}
   - path: {{ container_data_root }}/ddns-updater/docker-compose.yml
 {% endif %}

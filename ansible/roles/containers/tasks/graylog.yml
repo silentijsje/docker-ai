@@ -1,0 +1,63 @@
+---
+# Graylog - Log Management Platform
+# https://go2docs.graylog.org/current/what_is_graylog/what_is_graylog.htm
+
+- name: Set vm.max_map_count for OpenSearch
+  ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: "262144"
+    state: present
+    reload: true
+
+- name: Ensure Graylog directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/graylog"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Ensure Graylog mongo data dir exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/graylog/mongo"
+    state: directory
+    mode: '0755'
+
+- name: Ensure Graylog opensearch data dir exists (owned by opensearch uid 1000)
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/graylog/opensearch"
+    state: directory
+    mode: '0755'
+    owner: '1000'
+    group: '1000'
+  become: true
+
+- name: Ensure Graylog data dir exists (owned by graylog uid 1100)
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/graylog/data"
+    state: directory
+    mode: '0777'
+    owner: '1100'
+    group: '1100'
+  become: true
+
+- name: Seed Graylog default config if missing
+  ansible.builtin.shell: |
+    id=$(docker create graylog/graylog:6.0)
+    docker cp ${id}:/usr/share/graylog/data/config {{ container_data_root }}/graylog/data/
+    docker rm ${id}
+  args:
+    creates: "{{ container_data_root }}/graylog/data/config/graylog.conf"
+
+- name: Deploy Graylog docker-compose
+  ansible.builtin.template:
+    src: graylog/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/graylog/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Start Graylog containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/graylog"
+    state: present

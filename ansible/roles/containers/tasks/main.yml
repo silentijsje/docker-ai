@@ -193,6 +193,13 @@
     - monitoring
     - notifiarr
 
+- name: Deploy Graylog
+  ansible.builtin.import_tasks: graylog.yml
+  when: enabled_containers.graylog | default(false)
+  tags:
+    - monitoring
+    - graylog
+
 # =============================================================================
 # Infrastructure Services (no Traefik)
 # =============================================================================
