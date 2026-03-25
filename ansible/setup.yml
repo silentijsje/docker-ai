@@ -10,13 +10,6 @@
   roles:
     - role: bootstrap
   tasks:
-    - name: Setup SMB mounts
-      block:
-        - name: Install cifs-utils
-          ansible.builtin.apt:
-            name: cifs-utils
-            state: present
-
         - name: Create SMB credentials file
           ansible.builtin.copy:
             dest: /root/.smbcredentials
