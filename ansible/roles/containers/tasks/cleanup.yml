@@ -1,0 +1,40 @@
+---
+# Cleanup containers and files for disabled services
+
+- name: Build list of disabled services
+  ansible.builtin.set_fact:
+    _disabled_services: >-
+      {{ enabled_containers | dict2items
+         | selectattr('value', 'equalto', false)
+         | map(attribute='key')
+         | list }}
+
+- name: Check for compose files of disabled services
+  ansible.builtin.stat:
+    path: "{{ container_data_root }}/{{ item | replace('_', '-') }}/docker-compose.yml"
+  loop: "{{ _disabled_services }}"
+  register: _disabled_compose
+
+- name: Bring down disabled container stacks
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/{{ item.item | replace('_', '-') }}"
+    state: absent
+    remove_orphans: true
+  loop: "{{ _disabled_compose.results }}"
+  when: item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+  ignore_errors: true
+
+- name: Remove disabled service directories
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/{{ item | replace('_', '-') }}"
+    state: absent
+  loop: "{{ _disabled_services }}"
+
+- name: Remove Vaultwarden backup cron job
+  ansible.builtin.cron:
+    name: "Vaultwarden backup"
+    user: root
+    state: absent
+  when: not (enabled_containers.vaultwarden | default(true))

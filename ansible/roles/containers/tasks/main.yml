@@ -9,6 +9,15 @@
     state: present
 
 # =============================================================================
+# CLEANUP: Remove disabled services before deploying
+# =============================================================================
+
+- name: Cleanup disabled containers
+  ansible.builtin.import_tasks: cleanup.yml
+  tags:
+    - always
+
+# =============================================================================
 # PHASE 1: Infrastructure Services (Deploy in Order)
 # =============================================================================
 # Traefik MUST be first - all other services depend on it
