@@ -31,8 +31,8 @@ include:
 {% if enabled_containers.whisparr | default(false) %}
   - path: {{ container_data_root }}/whisparr/docker-compose.yml
 {% endif %}
-{% if enabled_containers.overseerr | default(false) %}
-  - path: {{ container_data_root }}/overseerr/docker-compose.yml
+{% if enabled_containers.seerr | default(false) %}
+  - path: {{ container_data_root }}/seerr/docker-compose.yml
 {% endif %}
 {% if enabled_containers.tautulli | default(false) %}
   - path: {{ container_data_root }}/tautulli/docker-compose.yml

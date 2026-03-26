@@ -5,6 +5,7 @@
   vars:
     # Mock vault variables for containers
     vault_cloudflare_api_token: "mock_cloudflare_token_12345678901234567890"
+    cloudflare_api_token: "{{ vault_cloudflare_api_token }}"
     vault_traefik_email: "test@example.com"
     vault_crowdsec_enroll_key: "mock_crowdsec_key_abcdefghijklmnop"
     vault_samba_username: "mockuser"
@@ -22,7 +23,7 @@
       sabnzbd: false
       qbittorrent: false
       jellyfin: false
-      overseerr: false
+      seerr: false
       tautulli: false
       bazarr: false
       requestrr: false

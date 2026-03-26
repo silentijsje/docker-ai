@@ -125,9 +125,9 @@ http:
         - security-headers@file
         - traefik-bouncer@file
         - ipAllowList@file
-    overseerr:
-      rule: "Host(`overseerr.silentijsje.com`)"
-      service: overseerr
+    seerr:
+      rule: "Host(`seerr.silentijsje.com`)"
+      service: seerr
       entryPoints:
         - secureweb
       tls: {}
@@ -269,7 +269,7 @@ http:
           - url: "https://{{ vault_ip_unifi }}"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    overseerr:
+    seerr:
       loadBalancer:
         servers:
           - url: "http://{{ vault_ip_docker01 }}:5055"

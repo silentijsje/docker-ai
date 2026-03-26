@@ -15,8 +15,9 @@ container_timezone: "{{ timezone }}"
 # Paths
 container_data_root: "{{ docker_data_root }}"        # /docker
 
-# Cloudflare DNS zone for Traefik labels (from vault for security)
+# Cloudflare credentials for Traefik (intermediates allow per-group override)
 cloudflare_dns_zone: "{{ vault_cloudflare_dns_zone }}"
+cloudflare_api_token: "{{ vault_cloudflare_api_token }}"
 
 # Docker network
 container_network: mediastack
@@ -47,7 +48,7 @@ container_ports:
   sonarr: 8989           # TV Shows (internal: 8989)
   prowlarr: 9696         # Indexers (internal: 9696)
   whisparr: 6969         # Adult content (internal: 6969)
-  overseerr: 5055        # Media requests (internal: 5055)
+  seerr: 5055        # Media requests (internal: 5055)
   tautulli: 8181         # Plex stats (internal: 8181)
   tracearr: 3070         # Media tracking (internal: 3000)
   wizarr: 5690           # Invite management (internal: 5690)
@@ -142,9 +143,9 @@ prowlarr_container_name: prowlarr
 whisparr_image: ghcr.io/hotio/whisparr:latest
 whisparr_container_name: whisparr
 
-# Overseerr
-overseerr_image: lscr.io/linuxserver/overseerr:latest
-overseerr_container_name: overseerr
+# Seerr
+seerr_image: ghcr.io/seerr-team/seerr:latest
+seerr_container_name: seerr
 
 # Tautulli
 tautulli_image: ghcr.io/tautulli/tautulli:latest
@@ -255,7 +256,7 @@ resource_limits:
   # Media Management
   prowlarr: { memory: "512M", cpus: "0.5" }
   whisparr: { memory: "1G", cpus: "1.0" }
-  overseerr: { memory: "512M", cpus: "0.5" }
+  seerr: { memory: "512M", cpus: "0.5" }
   tautulli: { memory: "512M", cpus: "0.5" }
   tracearr: { memory: "1G", cpus: "1.0" }
   wizarr: { memory: "256M", cpus: "0.25" }
@@ -312,10 +313,10 @@ enabled_containers:
   monitoring: true
 
   # Media Management (new)
-  prowlarr: false
+  prowlarr: true
   whisparr: false
-  overseerr: false
-  tautulli: false
+  seerr: true
+  tautulli: true
   tracearr: false
   wizarr: false
 
@@ -330,11 +331,11 @@ enabled_containers:
 
   # Monitoring (new)
   jellystat: false
-  notifiarr: false
+  notifiarr: true
   graylog: true
 
   # Infrastructure (new)
-  ddns_updater: false
+  ddns_updater: true
   nebula_sync: false
   newt: true
 

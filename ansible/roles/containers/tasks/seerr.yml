@@ -1,0 +1,24 @@
+---
+# Seerr - Media Request Manager
+# https://github.com/seerr-team/seerr
+
+- name: Ensure Seerr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/seerr"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Deploy Seerr docker-compose
+  ansible.builtin.template:
+    src: seerr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/seerr/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Start Seerr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}/seerr"
+    state: present

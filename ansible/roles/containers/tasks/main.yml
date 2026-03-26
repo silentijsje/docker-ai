@@ -91,12 +91,12 @@
     - media_management
     - whisparr
 
-- name: Deploy Overseerr
-  ansible.builtin.include_tasks: overseerr.yml
-  when: enabled_containers.overseerr | default(false)
+- name: Deploy Seerr
+  ansible.builtin.include_tasks: seerr.yml
+  when: enabled_containers.seerr | default(false)
   tags:
     - media_management
-    - overseerr
+    - seerr
 
 - name: Deploy Tautulli
   ansible.builtin.include_tasks: tautulli.yml
