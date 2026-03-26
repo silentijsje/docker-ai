@@ -32,8 +32,14 @@ services:
       - "{{ container_ports.qbittorrent_bt }}:6881/udp"
     networks:
       - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
     labels:
       - traefik.enable=true
+{% if traefik_enabled | default(false) %}
+      - traefik.docker.network=proxy
+{% endif %}
       # Router
       - traefik.http.routers.qbittorrent.service=qbittorrent
       - traefik.http.routers.qbittorrent.rule=Host(`torrent.{{ cloudflare_dns_zone }}`)
@@ -46,3 +52,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}
