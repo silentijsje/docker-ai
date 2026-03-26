@@ -16,20 +16,3 @@ container_dir_group: renfrew
 traefik_enabled: false
 traefik_compose_dir: "{{ container_data_root }}/traefik"
 traefik_config_dest: "{{ container_data_root }}/traefik/config"
-
-cloudflare_dns_zone: silentijsje.com
-
-container_ports:
-  radarr: 7878
-  sonarr: 8989
-  sabnzbd: 8083
-  qbittorrent: 8084
-  qbittorrent_bt: 6881
-
-enabled_containers:
-  radarr: true
-  sonarr: true
-  sabnzbd: true
-  qbittorrent: true
-  vaultwarden: false
-  monitoring: false
