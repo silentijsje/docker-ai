@@ -1,0 +1,148 @@
+---
+# =============================================================================
+# Container Images & Service Settings
+# =============================================================================
+# Image sources, versions, container names, and per-service config
+
+# Radarr
+radarr_image: lscr.io/linuxserver/radarr:latest
+radarr_container_name: radarr
+
+# Sonarr
+sonarr_image: lscr.io/linuxserver/sonarr:latest
+sonarr_container_name: sonarr
+
+# SABnzbd
+sabnzbd_image: lscr.io/linuxserver/sabnzbd:latest
+sabnzbd_container_name: sabnzbd
+
+# qBittorrent
+qbittorrent_image: lscr.io/linuxserver/qbittorrent:latest
+qbittorrent_container_name: qbittorrent
+
+# Traefik - Reverse Proxy
+traefik_image: "traefik:latest"
+traefik_log_level: "INFO"
+traefik_cert_email: "{{ vault_traefik_cert_email }}"
+
+# CrowdSec - WAF
+crowdsec_image: "crowdsecurity/crowdsec:latest"
+
+# Portainer - Docker Management
+portainer_image: "portainer/portainer-ce:latest"
+
+# Homepage - Dashboard
+homepage_image: "ghcr.io/gethomepage/homepage:latest"
+
+# Watchtower - Automatic Container Updates
+watchtower_image: "containrrr/watchtower:latest"
+watchtower_schedule: "0 0 4 * * *"  # Daily at 4 AM
+watchtower_cleanup: true
+watchtower_include_stopped: false
+
+# Termix - Web SSH Management (ssh hosts only)
+termix_image: ghcr.io/lukegus/termix:latest
+termix_container_name: termix
+termix_domain: termix  # Subdomain (full: termix.{{ cloudflare_dns_zone }})
+
+# Vaultwarden - Password Manager
+vaultwarden_image: vaultwarden/server:latest
+vaultwarden_container_name: vaultwarden
+
+# Prowlarr
+prowlarr_image: lscr.io/linuxserver/prowlarr:latest
+prowlarr_container_name: prowlarr
+
+# Whisparr
+whisparr_image: ghcr.io/hotio/whisparr:latest
+whisparr_container_name: whisparr
+
+# Seerr
+seerr_image: ghcr.io/seerr-team/seerr:latest
+seerr_container_name: seerr
+
+# Tautulli
+tautulli_image: ghcr.io/tautulli/tautulli:latest
+tautulli_container_name: tautulli
+
+# Tracearr
+tracearr_image: ghcr.io/connorgallopo/tracearr:supervised
+tracearr_container_name: tracearr
+
+# Wizarr
+wizarr_image: ghcr.io/wizarrrr/wizarr:latest
+wizarr_container_name: wizarr
+
+# Notifiarr
+notifiarr_image: golift/notifiarr:latest
+notifiarr_container_name: notifiarr
+
+# LLDAP
+lldap_image: lldap/lldap:stable
+lldap_container_name: lldap
+
+# Mealie
+mealie_image: ghcr.io/mealie-recipes/mealie:latest
+mealie_container_name: mealie
+
+# Authentik
+authentik_image: ghcr.io/goauthentik/server:2025.8.4
+authentik_pg_image: postgres:16-alpine
+authentik_redis_image: redis:alpine
+authentik_pg_container_name: authentik-postgresql
+authentik_redis_container_name: authentik-redis
+authentik_server_container_name: authentik-server
+authentik_worker_container_name: authentik-worker
+
+# Jellystat
+jellystat_image: cyfershepard/jellystat:latest
+jellystat_container_name: jellystat
+jellystat_db_image: postgres:15.2
+jellystat_db_container_name: jellystat-db
+
+# Nextcloud
+nextcloud_image: lscr.io/linuxserver/nextcloud:latest
+nextcloud_container_name: nextcloud
+nextcloud_pg_image: postgres:16-alpine
+nextcloud_pg_container_name: nextcloud-postgresql
+
+# Paperless-NGX
+paperless_image: ghcr.io/paperless-ngx/paperless-ngx:latest
+paperless_container_name: paperless-webserver
+paperless_redis_image: redis:8
+paperless_redis_container_name: paperless-redis
+paperless_db_image: postgres:17
+paperless_db_container_name: paperless-db
+paperless_gotenberg_image: gotenberg/gotenberg:8.20
+paperless_gotenberg_container_name: paperless-gotenberg
+paperless_tika_image: apache/tika:latest
+paperless_tika_container_name: paperless-tika
+paperless_ai_image: clusterzx/paperless-ai:latest
+paperless_ai_container_name: paperless-ai
+
+# DDNS Updater
+ddns_updater_image: qmcgaw/ddns-updater:latest
+ddns_updater_container_name: ddns-updater
+
+# Nebula-Sync
+nebula_sync_image: ghcr.io/lovelaze/nebula-sync:latest
+nebula_sync_container_name: nebula-sync
+
+# Newt
+newt_image: fosrl/newt:latest
+newt_container_name: newt
+
+# Monitoring Stack
+prometheus_image: prom/prometheus:latest
+grafana_image: grafana/grafana:latest
+node_exporter_image: prom/node-exporter:latest
+loki_image: grafana/loki:latest
+promtail_image: grafana/promtail:latest
+
+# Graylog - Log Management
+graylog_image: graylog/graylog:7.0.4
+graylog_container_name: graylog
+graylog_mongo_image: mongo:7.0
+graylog_mongo_container_name: graylog-mongo
+graylog_opensearch_image: opensearchproject/opensearch:2
+graylog_opensearch_container_name: graylog-opensearch

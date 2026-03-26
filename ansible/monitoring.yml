@@ -7,8 +7,12 @@
   become: true
   vars_files:
     - vars/vault.yml
+    - vars/ota-vault.yml
     - vars/users.yml
     - vars/docker-vars.yml
+    - vars/containers-images.yml
+    - vars/containers-ports.yml
+    - vars/containers-enabled.yml
 
   roles:
     - role: docker

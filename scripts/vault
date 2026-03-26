@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ACTION="${1:-}"
+VAULT_PASS_FILE=".vault_pass"
+VAULT_FILES=(
+  "ansible/vars/vault.yml"
+  "ansible/vars/ufw-vault.yml"
+  "ansible/vars/ota-vault.yml"
+  "ansible/vars/prod-vault.yml"
+)
+
+cd "$(git rev-parse --show-toplevel)"
+
+case "$ACTION" in
+  encrypt)
+    for f in "${VAULT_FILES[@]}"; do
+      if ! head -1 "$f" | grep -q '^\$ANSIBLE_VAULT'; then
+        ansible-vault encrypt "$f" --vault-password-file="$VAULT_PASS_FILE"
+        echo "encrypted: $f"
+      else
+        echo "already encrypted: $f"
+      fi
+    done ;;
+  decrypt)
+    for f in "${VAULT_FILES[@]}"; do
+      if head -1 "$f" | grep -q '^\$ANSIBLE_VAULT'; then
+        ansible-vault decrypt "$f" --vault-password-file="$VAULT_PASS_FILE"
+        echo "decrypted: $f"
+      else
+        echo "already decrypted: $f"
+      fi
+    done ;;
+  *)
+    echo "Usage: $0 {encrypt|decrypt}"
+    exit 1 ;;
+esac

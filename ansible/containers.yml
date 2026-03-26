@@ -3,12 +3,33 @@
 # Usage: ansible-playbook containers.yml --ask-vault-pass
 # Or:    ansible-playbook containers.yml --vault-password-file=../.vault_pass
 
-- name: Deploy Docker Containers
-  hosts: docker_vm
+- name: Deploy Docker Containers (PROD)
+  hosts: docker_prod
   vars_files:
     - vars/vault.yml
+    - vars/prod-vault.yml
     - vars/users.yml
     - vars/docker-vars.yml
+    - vars/containers-images.yml
+    - vars/containers-ports.yml
+    - vars/containers-enabled.yml
+
+  roles:
+    - role: docker
+      become: true
+    - role: containers
+      become: true
+
+- name: Deploy Docker Containers (OTA)
+  hosts: docker_OTA
+  vars_files:
+    - vars/vault.yml
+    - vars/ota-vault.yml
+    - vars/users.yml
+    - vars/docker-vars.yml
+    - vars/containers-images.yml
+    - vars/containers-ports.yml
+    - vars/containers-enabled.yml
 
   roles:
     - role: docker
@@ -22,6 +43,9 @@
     - vars/vault.yml
     - vars/users.yml
     - vars/docker-vars.yml
+    - vars/containers-images.yml
+    - vars/containers-ports.yml
+    - vars/containers-enabled.yml
 
   roles:
     - role: docker

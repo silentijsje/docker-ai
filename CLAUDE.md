@@ -25,25 +25,26 @@ head -1 ansible/vars/ufw-vault.yml
 # Should show: $ANSIBLE_VAULT;1.1;AES256
 ```
 
-To encrypt if not encrypted:
+To encrypt/decrypt all vault files at once:
 ```bash
-ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
+scripts/vault encrypt
+scripts/vault decrypt
 ```
 
 ## Editing the Vault
 
 When you need to add or edit secrets in the vault:
 
-1. Decrypt the vault:
+1. Decrypt:
 ```bash
-ansible-vault decrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
+scripts/vault decrypt
 ```
 
-2. Make your changes to the file
+2. Make your changes
 
 3. **Always re-encrypt when done:**
 ```bash
-ansible-vault encrypt ansible/vars/vault.yml --vault-password-file=.vault_pass
+scripts/vault encrypt
 ```
 
 Never commit plaintext secrets to this repository.

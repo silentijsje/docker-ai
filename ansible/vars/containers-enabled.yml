@@ -1,0 +1,54 @@
+---
+# =============================================================================
+# Enabled Containers
+# =============================================================================
+# Toggle services on/off
+
+enabled_containers:
+  # Infrastructure (Phase 1)
+  portainer: true
+  homepage: true
+  watchtower: true
+
+  # Media Management
+  radarr: true
+  sonarr: true
+  # Download Clients
+  sabnzbd: true
+  qbittorrent: true
+
+  # Security
+  vaultwarden: true
+
+  # Monitoring
+  monitoring: true
+
+  # Media Management (new)
+  prowlarr: true
+  whisparr: false
+  seerr: true
+  tautulli: true
+  tracearr: false
+  wizarr: false
+
+  # Content (new)
+  mealie: false
+  nextcloud: false
+  paperless: false
+
+  # Security (new)
+  authentik: false
+  lldap: false
+
+  # Monitoring (new)
+  jellystat: false
+  notifiarr: true
+  graylog: true
+
+  # Infrastructure (new)
+  ddns_updater: true
+  nebula_sync: false
+  newt: true
+
+  # SSH Management (ssh hosts only)
+  termix: true

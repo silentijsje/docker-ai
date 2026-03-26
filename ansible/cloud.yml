@@ -8,6 +8,9 @@
     - vars/vault.yml
     - vars/ufw-vault.yml
     - vars/docker-vars.yml
+    - vars/containers-images.yml
+    - vars/containers-ports.yml
+    - vars/containers-enabled.yml
     - vars/cloud-vars.yml
 
   roles:
