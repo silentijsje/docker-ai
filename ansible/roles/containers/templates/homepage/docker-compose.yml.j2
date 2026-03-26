@@ -23,12 +23,12 @@ services:
       - "{{ container_ports.homepage }}:3000"
     networks:
       - {{ container_network }}
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
       - proxy
 {% endif %}
     labels:
       - "traefik.enable=true"
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
       - "traefik.docker.network=proxy"
 {% endif %}
       - "traefik.http.routers.homepage.entrypoints=secureweb"
@@ -40,7 +40,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
   proxy:
     external: true
 {% endif %}

@@ -53,12 +53,12 @@ services:
       - loki
     networks:
       - {{ container_network }}
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
       - proxy
 {% endif %}
     labels:
       - traefik.enable=true
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
       - traefik.docker.network=proxy
 {% endif %}
       # Router
@@ -140,7 +140,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
   proxy:
     external: true
 {% endif %}

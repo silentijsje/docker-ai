@@ -40,7 +40,7 @@ services:
       - proxy
     environment:
       - TZ={{ timezone }}
-      - CF_DNS_API_TOKEN={{ vault_cloudflare_api_token }}
+      - CF_DNS_API_TOKEN={{ cloudflare_api_token }}
     ports:
       - 80:80
       - 443:443
@@ -54,12 +54,12 @@ services:
       - traefik.enable=true
     # ROUTERS
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.rule=Host(`traefik.{{ vault_cloudflare_dns_zone }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.traefik.rule=Host(`traefik.{{ cloudflare_dns_zone }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       - traefik.http.routers.traefik.entrypoints=secureweb
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.tls.domains[0].main={{ vault_cloudflare_dns_zone }}
-      - traefik.http.routers.traefik.tls.domains[0].sans=*.{{ vault_cloudflare_dns_zone }}
+      - traefik.http.routers.traefik.tls.domains[0].main={{ cloudflare_dns_zone }}
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.{{ cloudflare_dns_zone }}
       - traefik.http.routers.traefik.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
     # SERVICES
       - traefik.http.services.traefik.loadbalancer.server.scheme=http

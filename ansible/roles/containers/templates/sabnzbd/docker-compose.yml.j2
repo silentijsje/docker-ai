@@ -29,17 +29,17 @@ services:
       - "{{ container_ports.sabnzbd }}:8080"
     networks:
       - {{ container_network }}
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
       - proxy
 {% endif %}
     labels:
       - traefik.enable=true
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
       - traefik.docker.network=proxy
 {% endif %}
       # Router
       - traefik.http.routers.sabnzbd.service=sabnzbd
-      - traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.sabnzbd.rule=Host(`nzb.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.sabnzbd.entrypoints=secureweb
       - traefik.http.routers.sabnzbd.middlewares=security-headers@file,traefik-bouncer@file,ipAllowList@file
       # Service
@@ -49,7 +49,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
-{% if inventory_hostname in groups['proxy'] %}
+{% if traefik_enabled | default(false) %}
   proxy:
     external: true
 {% endif %}

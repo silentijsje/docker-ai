@@ -21,13 +21,13 @@ services:
       - PUID={{ container_puid }}
       - PGID={{ container_pgid }}
       - TZ={{ container_timezone }}
-      - WEBUI_PORT=8080
+      - WEBUI_PORT={{ container_ports.qbittorrent }}
     volumes:
       - {{ container_data_root }}/qbittorrent:/config
       - {{ container_media_root }}/Downloads:/downloads
       - {{ container_temp_root }}:/temporary
     ports:
-      - "{{ container_ports.qbittorrent }}:8080"
+      - "{{ container_ports.qbittorrent }}:{{ container_ports.qbittorrent }}"
       - "{{ container_ports.qbittorrent_bt }}:6881/tcp"
       - "{{ container_ports.qbittorrent_bt }}:6881/udp"
     networks:
@@ -36,12 +36,12 @@ services:
       - traefik.enable=true
       # Router
       - traefik.http.routers.qbittorrent.service=qbittorrent
-      - traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.qbittorrent.rule=Host(`torrent.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.qbittorrent.entrypoints=secureweb
       - traefik.http.routers.qbittorrent.middlewares=security-headers@file,traefik-bouncer@file
       # Service
       - traefik.http.services.qbittorrent.loadbalancer.server.scheme=http
-      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080
+      - traefik.http.services.qbittorrent.loadbalancer.server.port={{ container_ports.qbittorrent }}
 
 networks:
   {{ container_network }}:

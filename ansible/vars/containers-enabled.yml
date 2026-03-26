@@ -18,10 +18,10 @@ enabled_containers:
   qbittorrent: true
 
   # Security
-  vaultwarden: true
+  vaultwarden: false
 
   # Monitoring
-  monitoring: true
+  monitoring: false
 
   # Media Management (new)
   prowlarr: true
@@ -43,7 +43,7 @@ enabled_containers:
   # Monitoring (new)
   jellystat: false
   notifiarr: true
-  graylog: true
+  graylog: false
 
   # Infrastructure (new)
   ddns_updater: true
