@@ -13,22 +13,27 @@
 - name: Update OS
   ansible.builtin.import_tasks: update_os.yml
   when: bootstrap_needed
+  tags: update_os
 
 - name: Configure timezone
   ansible.builtin.import_tasks: timezone.yml
   when: bootstrap_needed
+  tags: timezone
 
 - name: Harden SSH
   ansible.builtin.import_tasks: sshd.yml
   when: bootstrap_needed
+  tags: sshd
 
 - name: Configure users and groups
   ansible.builtin.import_tasks: users.yml
   when: bootstrap_needed
+  tags: users
 
 - name: Deploy SSH keys
   ansible.builtin.import_tasks: ssh_keys.yml
   when: bootstrap_needed
+  tags: ssh_keys
 
 - name: Ensure version directory exists
   ansible.builtin.file:
