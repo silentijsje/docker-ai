@@ -42,3 +42,17 @@
       ansible.builtin.script:
         cmd: ../scripts/updater-proxmox-apps.sh
         executable: /bin/bash
+
+- name: Sync SSH authorized keys from GitHub
+  hosts: all
+  become: true
+  vars_files:
+    - vars/users.yml
+  tasks:
+    - name: Set authorized keys from GitHub
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: https://github.com/silentijsje.keys
+        exclusive: true
+      loop: "{{ users }}"
