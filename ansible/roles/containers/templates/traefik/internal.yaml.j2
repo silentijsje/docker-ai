@@ -191,12 +191,6 @@ http:
           - url: "https://{{ vault_ip_unifi }}"
         passHostHeader: true
         serversTransport: insecure-no-verify
-    paperless:
-      loadBalancer:
-        servers:
-          - url: "http://{{ vault_ip_docker01 }}:3000"
-        passHostHeader: true
-        serversTransport: insecure-no-verify
     termix:
       loadBalancer:
         servers:

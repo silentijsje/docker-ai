@@ -9,10 +9,6 @@ enabled_containers:
   portainer: true
   homepage: true
   watchtower: true
-
-  # Media Management
-  radarr: true
-  sonarr: true
   # Download Clients
   sabnzbd: true
   qbittorrent: true
@@ -23,9 +19,11 @@ enabled_containers:
   # Monitoring
   monitoring: false
 
-  # Media Management (new)
+  # Media Management
+  radarr: true
+  sonarr: true
   prowlarr: true
-  whisparr: false
+  whisparr: true
   seerr: true
   tautulli: true
   tracearr: false
@@ -34,7 +32,7 @@ enabled_containers:
   # Content (new)
   mealie: false
   nextcloud: false
-  paperless: false
+  paperless: true
 
   # Security (new)
   authentik: false

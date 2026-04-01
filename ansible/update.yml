@@ -34,6 +34,37 @@
         test_command: uptime
       when: reboot_required_file.stat.exists
 
+- name: Prune unused Docker images
+  hosts: docker_vm
+  become: true
+  tasks:
+    - name: Remove unused Docker images
+      community.docker.docker_prune:
+        images: true
+        images_filters:
+          dangling: false
+
+- name: Sync SSH authorized keys from GitHub
+  hosts: all
+  become: true
+  vars_files:
+    - vars/users.yml
+    - vars/vault.yml
+  tasks:
+    - name: Get existing users
+      ansible.builtin.getent:
+        database: passwd
+      register: etc_passwd
+
+    - name: Set authorized keys from GitHub
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: https://github.com/silentijsje.keys
+        exclusive: true
+      loop: "{{ users }}"
+      when: item.name in etc_passwd.ansible_facts.getent_passwd
+
 - name: Update Proxmox LXC containers
   hosts: proxmox_host
   become: true
@@ -42,17 +73,3 @@
       ansible.builtin.script:
         cmd: ../scripts/updater-proxmox-apps.sh
         executable: /bin/bash
-
-- name: Sync SSH authorized keys from GitHub
-  hosts: all
-  become: true
-  vars_files:
-    - vars/users.yml
-  tasks:
-    - name: Set authorized keys from GitHub
-      ansible.posix.authorized_key:
-        user: "{{ item.name }}"
-        state: present
-        key: https://github.com/silentijsje.keys
-        exclusive: true
-      loop: "{{ users }}"

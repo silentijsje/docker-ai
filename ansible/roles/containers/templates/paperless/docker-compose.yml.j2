@@ -58,11 +58,13 @@ services:
         limits:
           memory: {{ resource_limits.paperless_web.memory }}
           cpus: "{{ resource_limits.paperless_web.cpus }}"
-    user: "{{ container_puid }}:{{ container_pgid }}"
     environment:
+      - USERMAP_UID={{ container_puid }}
+      - USERMAP_GID={{ container_pgid }}
       - PAPERLESS_REDIS=redis://paperless-redis:6379
       - PAPERLESS_DBHOST=paperless-db
       - PAPERLESS_DBPASS={{ vault_paperless_pg_password }}
+      - PAPERLESS_URL=https://paperless.{{ cloudflare_dns_zone }}
       - PAPERLESS_TIKA_ENABLED=1
       - PAPERLESS_TIKA_GOTENBERG_ENDPOINT=http://paperless-gotenberg:3000
       - PAPERLESS_TIKA_ENDPOINT=http://paperless-tika:9998
