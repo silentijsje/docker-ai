@@ -290,13 +290,13 @@ containers:
       - OIDC_ADMIN_GROUP=mealie-admins
       - OIDC_AUTO_REDIRECT=false
       - OIDC_REMEMBER_ME=true
-      - SMTP_HOST=smtp.fastmail.com
-      - SMTP_PORT=587
-      - SMTP_USER=info@silentijsje.com
+      - SMTP_HOST={{ vault_smtp_host }}
+      - SMTP_PORT={{ vault_smtp_port}}
+      - SMTP_USER={{ vault_smtp_username }}
       - SMTP_PASSWORD={{ vault_mealie_smtp_password }}
-      - SMTP_FROM_NAME=Stanley Renfrew
+      - SMTP_FROM_NAME={{ vault_smtp_from }}
       - SMTP_AUTH_STRATEGY=TLS
-      - SMTP_FROM_EMAIL=mealie@silentijsje.com
+      - SMTP_FROM_EMAIL={{ vault_smtp_from_email }}
 
   # ===========================================================================
   # Security
@@ -320,10 +320,10 @@ containers:
       - DOMAIN=https://vault.{{ cloudflare_dns_zone }}
       - ADMIN_TOKEN={{ vault_vaultwarden_admin_token }}
       - SIGNUPS_ALLOWED=false
-      - SMTP_HOST=smtp.fastmail.com
-      - SMTP_PORT=587
+      - SMTP_HOST={{ vault_smtp_host }}
+      - SMTP_PORT={{ vault_smtp_port }}
       - SMTP_SECURITY=starttls
-      - SMTP_USERNAME={{ vault_vaultwarden_smtp_username }}
+      - SMTP_USERNAME={{ vault_smtp_username }}
       - SMTP_PASSWORD={{ vault_vaultwarden_smtp_password }}
       - SMTP_FROM={{ vault_vaultwarden_smtp_from }}
       - SMTP_FROM_NAME=Vaultwarden
