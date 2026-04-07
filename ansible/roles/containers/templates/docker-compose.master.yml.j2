@@ -43,6 +43,9 @@ include:
 {% if enabled_containers.wizarr | default(false) %}
   - path: {{ container_data_root }}/wizarr/docker-compose.yml
 {% endif %}
+{% if enabled_containers.drawio | default(false) %}
+  - path: {{ container_data_root }}/drawio/docker-compose.yml
+{% endif %}
 {% if enabled_containers.mealie | default(false) %}
   - path: {{ container_data_root }}/mealie/docker-compose.yml
 {% endif %}
