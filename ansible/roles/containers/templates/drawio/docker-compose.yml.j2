@@ -1,0 +1,47 @@
+---
+###########################################################################
+# draw.io - Diagramming Tool
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/jgraph/drawio
+###########################################################################
+
+services:
+  drawio:
+    image: {{ drawio_image | default('jgraph/drawio:latest') }}
+    container_name: {{ drawio_container_name | default('drawio') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.drawio.memory }}
+          cpus: "{{ resource_limits.drawio.cpus }}"
+    ports:
+      - "{{ container_ports.drawio }}:8080"
+    networks:
+      - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if traefik_enabled | default(false) %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.drawio.service=drawio
+      - traefik.http.routers.drawio.rule=Host(`drawio.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.drawio.entrypoints=secureweb
+      - traefik.http.routers.drawio.middlewares={{ traefik_router_middlewares }}
+      # Service
+      - traefik.http.services.drawio.loadbalancer.server.scheme=http
+      - traefik.http.services.drawio.loadbalancer.server.port=8080
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}

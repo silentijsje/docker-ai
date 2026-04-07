@@ -54,6 +54,7 @@ container_ports:
   qbittorrent_bt: 6881   # BitTorrent protocol
 
   # Content
+  drawio: 8085           # draw.io diagramming (internal: 8080)
   mealie: 9002           # Recipe manager (internal: 9000)
   nextcloud: 8443        # Cloud storage (internal: 443)
 

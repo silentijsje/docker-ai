@@ -1,0 +1,58 @@
+---
+# =============================================================================
+# Unified container deployment
+# =============================================================================
+# Simple (single-service) containers → generic template, driven by containers.yml
+# Multi-service stacks              → dedicated templates, listed in stacks.yml
+
+# ---------------------------------------------------------------------------
+# Simple containers
+# ---------------------------------------------------------------------------
+
+- name: Ensure simple container directories exist
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/{{ item.name }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+  loop: "{{ containers | selectattr('enabled') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Deploy simple container compose files
+  ansible.builtin.template:
+    src: generic-compose.yml.j2
+    dest: "{{ container_data_root }}/{{ item.name }}/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+  loop: "{{ containers | selectattr('enabled') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+# ---------------------------------------------------------------------------
+# Multi-service stacks (dedicated templates)
+# ---------------------------------------------------------------------------
+
+- name: Ensure stack directories exist
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/{{ item.name }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+  loop: "{{ stacks | selectattr('enabled') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Deploy stack compose files
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "{{ container_data_root }}/{{ item.name }}/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+  loop: "{{ stacks | selectattr('enabled') | list }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,19 @@
+---
+# draw.io - Diagramming Tool
+# https://github.com/jgraph/drawio
+
+- name: Ensure draw.io directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/drawio"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Deploy draw.io docker-compose
+  ansible.builtin.template:
+    src: drawio/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/drawio/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"

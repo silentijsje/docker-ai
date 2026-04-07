@@ -30,6 +30,7 @@ enabled_containers:
   wizarr: false
 
   # Content (new)
+  drawio: true
   mealie: false
   nextcloud: false
   paperless: true

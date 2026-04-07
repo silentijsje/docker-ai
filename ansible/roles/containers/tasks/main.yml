@@ -132,6 +132,13 @@
 # Content Services
 # =============================================================================
 
+- name: Deploy draw.io
+  ansible.builtin.include_tasks: drawio.yml
+  when: enabled_containers.drawio | default(false)
+  tags:
+    - content
+    - drawio
+
 - name: Deploy Mealie
   ansible.builtin.include_tasks: mealie.yml
   when: enabled_containers.mealie | default(false)
@@ -235,7 +242,7 @@
     - newt
 
 # =============================================================================
-# Master Compose File
+# Master Compose File - Deploy config then start all containers
 # =============================================================================
 
 - name: Deploy master Docker Compose file
@@ -243,5 +250,27 @@
     src: docker-compose.master.yml.j2
     dest: "{{ container_data_root }}/docker-compose.yml"
     mode: '0660'
+  tags:
+    - always
+
+- name: Start all containers via master docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ container_data_root }}"
+    state: present
+    remove_orphans: true
+  tags:
+    - always
+
+- name: Restart Traefik if config changed
+  community.docker.docker_container:
+    name: traefik
+    state: started
+    restart: true
+  when:
+    - traefik_enabled | default(false)
+    - >
+      (traefik_static_config is defined and traefik_static_config.changed) or
+      (traefik_internal_config is defined and traefik_internal_config.changed) or
+      (traefik_dynamic_config is defined and traefik_dynamic_config.changed)
   tags:
     - always

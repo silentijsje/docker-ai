@@ -69,6 +69,7 @@ resource_limits:
   authentik_worker: { memory: "1G", cpus: "1.0" }
   lldap: { memory: "256M", cpus: "0.25" }
   # Content
+  drawio: { memory: "512M", cpus: "0.5" }
   mealie: { memory: "1G", cpus: "0.5" }
   nextcloud: { memory: "1G", cpus: "1.0" }
   nextcloud_pg: { memory: "256M", cpus: "0.5" }

@@ -21,6 +21,7 @@ services:
       - PUID={{ container_puid }}
       - PGID={{ container_pgid }}
       - TZ={{ container_timezone }}
+      - SABNZBD__MISC__HOST_WHITELIST_ENTRIES=nzb.{{ cloudflare_dns_zone }}
     volumes:
       - {{ container_data_root }}/sabnzbd:/config
       - {{ container_media_root }}:/mnt/media

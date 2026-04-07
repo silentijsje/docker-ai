@@ -1,0 +1,34 @@
+---
+# =============================================================================
+# Multi-service stack definitions
+# =============================================================================
+# Stacks have multiple inter-dependent services that can't fit the generic
+# template cleanly (databases, workers, sidecars, etc.).
+# Each stack uses its own dedicated docker-compose.yml.j2 template.
+# Template paths are relative to the Ansible role's templates/ directory.
+
+stacks:
+
+  - name: authentik
+    enabled: false
+    template: authentik/docker-compose.yml.j2
+
+  - name: paperless
+    enabled: true
+    template: paperless/docker-compose.yml.j2
+
+  - name: jellystat
+    enabled: false
+    template: jellystat/docker-compose.yml.j2
+
+  - name: nextcloud
+    enabled: false
+    template: nextcloud/docker-compose.yml.j2
+
+  - name: graylog
+    enabled: false
+    template: graylog/docker-compose.yml.j2
+
+  - name: monitoring
+    enabled: false
+    template: monitoring/docker-compose.yml.j2

@@ -81,6 +81,10 @@ notifiarr_container_name: notifiarr
 lldap_image: lldap/lldap:stable
 lldap_container_name: lldap
 
+# draw.io
+drawio_image: jgraph/drawio:latest
+drawio_container_name: drawio
+
 # Mealie
 mealie_image: ghcr.io/mealie-recipes/mealie:latest
 mealie_container_name: mealie
