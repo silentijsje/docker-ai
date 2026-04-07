@@ -36,8 +36,3 @@
     mode: '0755'
     owner: "{{ container_dir_owner }}"
     group: "{{ container_dir_group }}"
-
-- name: Start Paperless containers
-  community.docker.docker_compose_v2:
-    project_src: "{{ container_data_root }}/paperless"
-    state: present

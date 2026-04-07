@@ -1,0 +1,167 @@
+# Home Assistant Naming Convention & Entity Rename Plan
+
+## Convention Rules
+
+### 1. Language
+- All English — no Dutch (rolluik, slaapkamer, deken, keuken, thuis, schuif pui, etc.)
+
+### 2. Friendly Name Format
+- Title Case everywhere
+- Pattern: [Area] [Device/Thing] [Attribute] — most-general to most-specific, left to right
+- Area prefix only when needed to disambiguate
+- Never repeat what the domain already tells you
+
+### 3. Automation Format
+- Pattern: [Area]. [Device]. [Action]
+- Example: "Bedroom. Cover. Open and close" ✓
+
+### 4. Helper Format
+- Descriptive noun/adjective phrase in Title Case
+- No underscores or dashes in friendly names
+
+### 5. What NOT to include in friendly names
+- Integration slugs (no "shelly-keuken", "valetudo_illustrioussickpheasant")
+- Raw hex addresses (no "0xa4c138b244f6fe12")
+- Device model numbers (no "Varin® VA-E002")
+
+---
+
+## Device Renames
+
+| Current Name | Proposed Name | Reason |
+|---|---|---|
+| rolluik (Z-Wave cover) | Bedroom Roller Shutter | Dutch → English |
+| slaapkamer_rgb (Shelly RGBW2, bedroom) | Bedroom RGB Controller | Dutch + underscore |
+| bureau_rgb (Shelly RGBW2, desk) | Desk RGB Controller | Dutch |
+| deken (Shelly Plug S, living room — powers Xmas tree) | Christmas Tree Plug | Dutch; clarifies purpose |
+| deken_2 (Shelly Plug S, bedroom — actual blanket) | Blanket Plug | Dutch; clarifies purpose |
+| lr_main_light (Shelly Dimmer, living room) | Dining Table Dimmer | Raw entity prefix |
+| shelly_keuken / Kitchen device | Kitchen Light Switch | Dutch slug |
+| slaapkamer (Shelly, bedroom) | Bedroom Switch | Dutch |
+| Varin® VA-E002 (Tuya, bedroom) | Bedroom Fan | Model number |
+| server_adict (Shelly Plug S, shed) | Server Plug | Unclear name |
+| Hallway 2 (Tuya switch) | Hallway Light Switch | Numbered suffix |
+| Hallway door (SONOFF switch) | Hallway Door Switch | |
+| CornerLight (SONOFF dimmer, living room) | Living Room Corner Dimmer | No area; conflicts with Hue bulb |
+| Test (ESP32 — active fan controller) | Fan Controller | |
+| FanController (ESP32 — unavailable) | Fan Controller (Old) | Unavailable; likely old device |
+| Shed temp | Shed Sensor | |
+| livingroom_temp | Living Room Sensor | Underscore |
+| Lamp 3 koppen | Living Room 3-Head Lamp | Dutch |
+| schuif pui (Aqara door sensor) | Patio Door | Dutch "schuif pui" = sliding patio door |
+| 0xa4c138b244f6fe12 (Arteco soil sensor) | Plant Sensor 1 | Hex address |
+| 0xa4c13865ef4425c0 (Arteco soil sensor) | Plant Sensor 2 | Hex address |
+| 0xa4c138b22451f0fa (Arteco soil sensor) | Plant Sensor 3 | Hex address |
+| 0xa4c138c9aea5cdce (Arteco soil sensor) | Plant Sensor 4 | Hex address |
+| double rocker (Aqara, bedroom) | Bedroom Remote | |
+
+---
+
+## Light Entity Renames
+
+| Current entity_id | Current friendly name | Proposed friendly name |
+|---|---|---|
+| light.cristmas_tree | Rgb lamp | Christmas Tree |
+| light.slaapkamer_rgb | Slaapkamer_RGB | Bedroom RGB Light |
+| light.bureau_rgb | Bureau_RGB | Desk RGB Light |
+| light.dining_table | Dining table | Dining Table Light |
+| light.varin_r_va_e002 | Slaapkamer | Bedroom Fan Light |
+| light.hallway_2 | Hallway 2 | Hallway Light |
+| light.hallway_door | Hallway door | Hallway Door Light |
+| light.shelly_keuken_light | Kitchen shelly-keuken_light | Kitchen Light |
+| light.corner_light_2 | Corner light | Living Room Corner Light |
+| light.main_light | Main light | Living Room Main Light |
+| light.led_strip_converter | Led strip converter | Living Room LED Strip |
+| light.countertop | countertop | Kitchen Countertop |
+| light.cornerlight | CornerLight | Living Room Corner Dimmer |
+| light.slaapkamer_lamp | Slaapkamer lamp | Bedroom Lamp |
+
+---
+
+## Cover Entity Renames
+
+| Current entity_id | Proposed friendly name |
+|---|---|
+| cover.rolluik | Bedroom Roller Shutter |
+| cover.roller_bedroom | Bedroom Roller |
+
+---
+
+## Helper Renames (input_boolean / input_number)
+
+| Current entity_id | Current friendly name | Proposed friendly name |
+|---|---|---|
+| input_boolean.thuis | Thuis | At Home |
+| input_boolean.sleeping_b | Sleeping | Sleeping |
+| input_boolean.hot_weather | Hot_weather | Hot Weather |
+| input_boolean.vacuum_day_trig | Vacuum-day-trig | Vacuum Daily Trigger |
+| input_boolean.windows | Windows | Windows Open |
+| input_boolean.holiday | Holiday | Holiday Mode |
+| input_boolean.max_temp | Max temp | Max Temperature |
+| input_boolean.force_eco | Force ECO | Force Eco Mode |
+| input_number.temp_home | Temp-Home | Target Temp Home |
+| input_number.temp_away | Temp-Away | Target Temp Away |
+
+---
+
+## Scene Renames
+
+| Current entity_id | Current friendly name | Proposed friendly name |
+|---|---|---|
+| scene.naar_bed | Naar bed | Bedtime |
+| scene.alle_lampen_uit | Alle lampen uit | All Lights Off |
+
+---
+
+## Device Tracker / Person Renames
+
+| Current entity_id | Current friendly name | Proposed friendly name |
+|---|---|---|
+| device_tracker.stanley_iphone_16 | Stanley iphone | Stanley iPhone |
+| device_tracker.stanleys_iphone | Stanley iphone werk | Stanley Work iPhone |
+| device_tracker.grapheneos_pixel_7 | grapheneos pixel 7 | Stanley Pixel 7 |
+
+---
+
+## Binary Sensor Renames
+
+| Current entity_id | Current friendly name | Proposed friendly name |
+|---|---|---|
+| binary_sensor.schuif_pui_contact | schuif pui Door | Patio Door |
+| binary_sensor.front_door_contact | Front door Door | Front Door |
+| binary_sensor.bedroom_window_contact | bedroom window Door | Bedroom Window |
+
+---
+
+## Automation Renames (inconsistent ones only)
+
+| Current entity_id | Current friendly name | Proposed friendly name |
+|---|---|---|
+| automation.new_automation | Holiday. Turn light off 22:30 | Holiday. Light. Turn off 22:30 |
+| automation.new_automation_2 | Living room. Light. Wakeup turn on | Living Room. Light. Wake up |
+| automation.new_automation_3 | Helper. Update | Helper. Update available |
+| automation.advanced_heating_control_v5 | 🔥 Advanced Heating Control V5 | House. Heating. Advanced control |
+| automation.weekly_low_battery_alert | Weekly Low Battery Alert | Notify. Low battery weekly |
+
+---
+
+## Do Not Rename
+
+- Karen (robot vacuum) — intentional name
+- PooperScooper9000 (Litter-Robot) — intentional
+- Loki, Lando (cats) — intentional
+- SHIELD (NVIDIA media player) — product name
+- All Z-Wave technical parameter entities (alarm configs, calibration selects)
+- All update.* entities — auto-managed
+- All system/infrastructure entities (Zigbee2MQTT bridge, HA core, supervisor, etc.)
+
+---
+
+## Open Questions
+
+1. What are the actual plant names for the 4 soil moisture sensors (Plant Sensor 1-4)?
+2. Is grapheneos_pixel_7 yours? If so, rename to "Stanley Pixel 7"
+3. Is light.slaapkamer_lamp a dead device to remove, or just temporarily unavailable?
+4. "Lamp 3 koppen" (Shelly 1, living room) has no entities — dead device or just not integrated?
+5. Are "Test" ESP32 and "FanController" ESP32 two separate physical devices, or is "Test" a replacement for the unavailable "FanController"?
+6. Does "deken" (Christmas Tree Plug) serve double duty as an RGB lamp year-round, or only seasonal?

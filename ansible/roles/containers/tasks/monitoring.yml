@@ -81,8 +81,3 @@
     owner: "472"
     group: "472"
     mode: '0644'
-
-- name: Start monitoring stack
-  community.docker.docker_compose_v2:
-    project_src: "{{ container_data_root }}/monitoring"
-    state: present

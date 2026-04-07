@@ -1,0 +1,31 @@
+---
+- name: Configure unattended-upgrades
+  hosts: all
+  become: true
+  vars:
+    unattended_upgrades_reboot: true
+    unattended_upgrades_reboot_time: "02:00"
+    unattended_upgrades_reboot_with_users: false
+  tasks:
+    - name: Install unattended-upgrades
+      ansible.builtin.apt:
+        name: unattended-upgrades
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Configure unattended-upgrades origins and reboot
+      ansible.builtin.template:
+        src: templates/50unattended-upgrades.j2
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Configure apt periodic settings
+      ansible.builtin.template:
+        src: templates/20auto-upgrades.j2
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        owner: root
+        group: root
+        mode: '0644'

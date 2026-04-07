@@ -52,23 +52,3 @@
     owner: "{{ container_dir_owner }}"
     group: "{{ container_dir_group }}"
 
-- name: Deploy Traefik + CrowdSec stack
-  community.docker.docker_compose_v2:
-    project_src: "{{ traefik_compose_dir }}"
-    files:
-      - docker-compose.yml
-    state: present
-    recreate: auto
-  register: traefik_compose_result
-
-- name: Restart Traefik if config changed
-  community.docker.docker_container:
-    name: traefik
-    state: started
-    restart: true
-  when:
-    - not traefik_compose_result.changed
-    - >
-      traefik_static_config.changed or
-      traefik_internal_config.changed or
-      traefik_dynamic_config.changed

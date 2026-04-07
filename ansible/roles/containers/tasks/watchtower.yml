@@ -14,8 +14,3 @@
     mode: '0644'
     owner: "{{ container_dir_owner }}"
     group: "{{ container_dir_group }}"
-
-- name: Start Watchtower
-  community.docker.docker_compose_v2:
-    project_src: "{{ container_data_root }}/watchtower"
-    state: present

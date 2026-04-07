@@ -50,8 +50,3 @@
     hour: "3"
     job: "{{ container_data_root }}/vaultwarden/backup-vaultwarden.sh"
     user: root
-
-- name: Start Vaultwarden container
-  community.docker.docker_compose_v2:
-    project_src: "{{ container_data_root }}/vaultwarden"
-    state: present

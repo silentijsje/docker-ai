@@ -17,8 +17,3 @@
     mode: '0644'
     owner: "{{ container_dir_owner }}"
     group: "{{ container_dir_group }}"
-
-- name: Start Whisparr container
-  community.docker.docker_compose_v2:
-    project_src: "{{ container_data_root }}/whisparr"
-    state: present
