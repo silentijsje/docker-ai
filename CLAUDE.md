@@ -5,6 +5,7 @@
 ## Github
 
 - Your primary method for interacting with Github should be with the Github CLI.
+- Whenever there are changes to be committed and pushed, push the changes first to a new branch. Then run the GitHub actions to check all the changes and when the action is complete, merge it with the main branch.
 
 ## Git
 
