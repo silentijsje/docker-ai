@@ -178,6 +178,14 @@
             password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
 
 - Services:
+    - Mealie:
+        icon: mealie.svg
+        href: "{{HOMEPAGE_VAR_MEALIE_URL}}"
+        description: recipes
+        widget:
+            type: mealie
+            url: "{{HOMEPAGE_VAR_MEALIE_API_URL}}"
+            key: "{{HOMEPAGE_VAR_MEALIE_API_KEY}}"
     - Paperless:
         icon: paperless-ngx.svg
         href: "{{HOMEPAGE_VAR_PAPERLESS_URL}}"
