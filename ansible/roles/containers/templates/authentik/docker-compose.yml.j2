@@ -94,10 +94,7 @@ services:
       - traefik.docker.network=proxy
       - traefik.http.routers.authentik.service=authentik
       - traefik.http.routers.authentik.rule=Host(`auth2.{{ cloudflare_dns_zone }}`)
-      - traefik.http.routers.authentik.entrypoints={{ traefik_https_entrypoint }}
-{% if traefik_router_middlewares %}
-      - traefik.http.routers.authentik.middlewares={{ traefik_router_middlewares }}
-{% endif %}
+      - traefik.http.routers.authentik.entrypoints=secureweb
       - traefik.http.services.authentik.loadbalancer.server.scheme=http
       - traefik.http.services.authentik.loadbalancer.server.port=9000
 {% else %}
