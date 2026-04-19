@@ -93,7 +93,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy
       - traefik.http.routers.authentik.service=authentik
-      - traefik.http.routers.authentik.rule=Host(`auth.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.authentik.rule=Host(`auth2.{{ cloudflare_dns_zone }}`)
       - traefik.http.routers.authentik.entrypoints={{ traefik_https_entrypoint }}
 {% if traefik_router_middlewares %}
       - traefik.http.routers.authentik.middlewares={{ traefik_router_middlewares }}
