@@ -36,7 +36,7 @@ enabled_containers:
   paperless: true
 
   # Security (new)
-  authentik: false
+  authentik: true
   lldap: false
 
   # Monitoring (new)

@@ -90,7 +90,7 @@ mealie_image: ghcr.io/mealie-recipes/mealie:latest
 mealie_container_name: mealie
 
 # Authentik
-authentik_image: ghcr.io/goauthentik/server:2025.8.4
+authentik_image: ghcr.io/goauthentik/server:2026.2.2
 authentik_pg_image: postgres:16-alpine
 authentik_redis_image: redis:alpine
 authentik_pg_container_name: authentik-postgresql

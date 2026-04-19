@@ -1,6 +1,6 @@
 ---
 ###########################################################################
-# Authentik - Identity Provider
+# Authentik - Identity Provider (OTA instance)
 # Deployed by Ansible - Do not edit manually
 # Documentation: https://goauthentik.io/docs
 ###########################################################################
@@ -22,7 +22,7 @@ services:
       - POSTGRES_USER=authentik
       - POSTGRES_PASSWORD={{ vault_authentik_pg_pass }}
     volumes:
-      - {{ container_data_root }}/authentik/database:/var/lib/postgresql/data
+      - authentik-database:/var/lib/postgresql/data
     networks:
       - {{ container_network }}
     healthcheck:
@@ -45,7 +45,7 @@ services:
           cpus: "{{ resource_limits.authentik_redis.cpus }}"
     command: --save 60 1 --loglevel warning
     volumes:
-      - {{ container_data_root }}/authentik/redis:/data
+      - authentik-redis:/data
     networks:
       - {{ container_network }}
     healthcheck:
@@ -56,7 +56,7 @@ services:
       timeout: 3s
 
   authentik-server:
-    image: {{ authentik_image | default('ghcr.io/goauthentik/server:2025.8.4') }}
+    image: {{ authentik_image | default('ghcr.io/goauthentik/server:2026.2.2') }}
     container_name: {{ authentik_server_container_name | default('authentik-server') }}
     restart: unless-stopped
     security_opt:
@@ -78,9 +78,6 @@ services:
     volumes:
       - {{ container_data_root }}/authentik/media:/media
       - {{ container_data_root }}/authentik/custom-templates:/templates
-    ports:
-      - "{{ container_ports.authentik_http }}:9000"
-      - "{{ container_ports.authentik_https }}:9443"
     depends_on:
       authentik-postgresql:
         condition: service_healthy
@@ -92,21 +89,23 @@ services:
       - proxy
 {% endif %}
     labels:
-      - traefik.enable=true
 {% if traefik_enabled | default(false) %}
+      - traefik.enable=true
       - traefik.docker.network=proxy
-{% endif %}
-      # Router
       - traefik.http.routers.authentik.service=authentik
       - traefik.http.routers.authentik.rule=Host(`auth.{{ cloudflare_dns_zone }}`)
-      - traefik.http.routers.authentik.entrypoints=secureweb
-      - traefik.http.routers.authentik.middlewares=security-headers@file
-      # Service
+      - traefik.http.routers.authentik.entrypoints={{ traefik_https_entrypoint }}
+{% if traefik_router_middlewares %}
+      - traefik.http.routers.authentik.middlewares={{ traefik_router_middlewares }}
+{% endif %}
       - traefik.http.services.authentik.loadbalancer.server.scheme=http
       - traefik.http.services.authentik.loadbalancer.server.port=9000
+{% else %}
+      - traefik.enable=false
+{% endif %}
 
   authentik-worker:
-    image: {{ authentik_image | default('ghcr.io/goauthentik/server:2025.8.4') }}
+    image: {{ authentik_image | default('ghcr.io/goauthentik/server:2026.2.2') }}
     container_name: {{ authentik_worker_container_name | default('authentik-worker') }}
     restart: unless-stopped
     security_opt:
@@ -137,6 +136,12 @@ services:
         condition: service_healthy
     networks:
       - {{ container_network }}
+
+volumes:
+  authentik-database:
+    driver: local
+  authentik-redis:
+    driver: local
 
 networks:
   {{ container_network }}:
