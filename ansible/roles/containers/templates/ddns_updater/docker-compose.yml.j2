@@ -36,7 +36,6 @@ services:
       - BACKUP_DIRECTORY=/updater/data
       - LOG_LEVEL=info
       - LOG_CALLER=hidden
-      - SHOUTRRR_ADDRESSES=
     volumes:
       - {{ container_data_root }}/ddns-updater:/updater/data
     ports:

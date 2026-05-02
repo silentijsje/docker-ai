@@ -1,0 +1,28 @@
+---
+# Komodo - Build & Deployment System
+# https://komo.do/docs
+
+- name: Ensure Komodo directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+  loop:
+    - "{{ container_data_root }}/komodo"
+    - "{{ container_data_root }}/komodo/backups"
+
+- name: Ensure Komodo periphery root exists
+  ansible.builtin.file:
+    path: /etc/komodo
+    state: directory
+    mode: '0755'
+
+- name: Deploy Komodo docker-compose
+  ansible.builtin.template:
+    src: komodo/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/komodo/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"

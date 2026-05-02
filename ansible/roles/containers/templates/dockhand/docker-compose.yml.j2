@@ -1,0 +1,54 @@
+---
+###########################################################################
+# Dockhand - Modern Docker Management
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://dockhand.pro/manual/
+###########################################################################
+
+services:
+  dockhand:
+    image: {{ dockhand_image | default('fnsys/dockhand:latest') }}
+    container_name: {{ dockhand_container_name | default('dockhand') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.dockhand.memory }}
+          cpus: "{{ resource_limits.dockhand.cpus }}"
+    ports:
+      - "{{ container_ports.dockhand }}:3000"
+    environment:
+      - DATA_DIR=/app/data
+      - ENCRYPTION_KEY={{ vault_dockhand_encryption_key }}
+      - TZ={{ container_timezone }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ container_data_root }}/dockhand:/app/data
+    networks:
+      - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if traefik_enabled | default(false) %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.dockhand.service=dockhand
+      - traefik.http.routers.dockhand.rule=Host(`dockhand.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.dockhand.entrypoints=secureweb
+      - traefik.http.routers.dockhand.middlewares={{ traefik_router_middlewares }}
+      # Service
+      - traefik.http.services.dockhand.loadbalancer.server.scheme=http
+      - traefik.http.services.dockhand.loadbalancer.server.port=3000
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}

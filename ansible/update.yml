@@ -32,7 +32,11 @@
         pre_reboot_delay: 0
         post_reboot_delay: 30
         test_command: uptime
-      when: reboot_required_file.stat.exists
+      when: reboot_required_file.stat.exists and inventory_hostname not in groups['ssh']
+
+    - name: Schedule midnight reboot if required (ssh server)
+      ansible.builtin.command: shutdown -r 00:00 "Scheduled reboot by Ansible for system updates"
+      when: reboot_required_file.stat.exists and inventory_hostname in groups['ssh']
 
 - name: Prune unused Docker images
   hosts: docker_vm

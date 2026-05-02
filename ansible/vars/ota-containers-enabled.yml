@@ -1,0 +1,35 @@
+---
+# OTA-specific container enablement — overrides containers-enabled.yml entirely.
+# Only komodo, dockhand, and portainer run on OTA; everything else is off.
+
+enabled_containers:
+  portainer: true
+  homepage: true
+  watchtower: false
+  sabnzbd: false
+  qbittorrent: false
+  vaultwarden: false
+  monitoring: false
+  radarr: false
+  sonarr: false
+  prowlarr: false
+  whisparr: false
+  seerr: false
+  tautulli: false
+  tracearr: false
+  wizarr: false
+  drawio: false
+  mealie: false
+  nextcloud: false
+  paperless: false
+  authentik: false
+  lldap: false
+  jellystat: false
+  notifiarr: false
+  graylog: false
+  ddns_updater: false
+  nebula_sync: false
+  newt: false
+  termix: false
+  komodo: true
+  dockhand: true

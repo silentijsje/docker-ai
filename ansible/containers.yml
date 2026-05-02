@@ -30,6 +30,7 @@
     - vars/containers-images.yml
     - vars/containers-ports.yml
     - vars/containers-enabled.yml
+    - vars/ota-containers-enabled.yml
 
   roles:
     - role: docker
