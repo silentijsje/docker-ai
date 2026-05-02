@@ -7,7 +7,7 @@
 
 services:
   forgejo:
-    image: {{ forgejo_image | default('codeberg.org/forgejo/forgejo:latest') }}
+    image: {{ forgejo_image | default('codeberg.org/forgejo/forgejo:10') }}
     container_name: {{ forgejo_container_name | default('forgejo') }}
     restart: unless-stopped
     security_opt:

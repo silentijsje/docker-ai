@@ -134,7 +134,7 @@ komodo_periphery_container_name: komodo-periphery
 komodo_mongo_container_name: komodo-mongo
 
 # Forgejo - Self-hosted Git Forge
-forgejo_image: codeberg.org/forgejo/forgejo:latest
+forgejo_image: codeberg.org/forgejo/forgejo:10
 forgejo_container_name: forgejo
 
 # Dockhand - Docker Management
