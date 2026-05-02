@@ -34,6 +34,7 @@ enabled_containers:
   mealie: false
   nextcloud: false
   paperless: true
+  forgejo: true
 
   # Security (new)
   authentik: true
@@ -43,6 +44,10 @@ enabled_containers:
   jellystat: false
   notifiarr: true
   graylog: false
+
+  # Management Tools (OTA only — overridden in ota-containers-enabled.yml)
+  komodo: false
+  dockhand: false
 
   # Infrastructure (new)
   ddns_updater: true

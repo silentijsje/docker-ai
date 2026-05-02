@@ -36,6 +36,20 @@
     - infrastructure
     - portainer
 
+- name: Deploy Komodo
+  ansible.builtin.include_tasks: komodo.yml
+  when: enabled_containers.komodo | default(false)
+  tags:
+    - infrastructure
+    - komodo
+
+- name: Deploy Dockhand
+  ansible.builtin.include_tasks: dockhand.yml
+  when: enabled_containers.dockhand | default(false)
+  tags:
+    - infrastructure
+    - dockhand
+
 - name: Deploy Watchtower
   ansible.builtin.include_tasks: watchtower.yml
   when: enabled_containers.watchtower | default(false)
@@ -159,6 +173,13 @@
   tags:
     - content
     - paperless
+
+- name: Deploy Forgejo
+  ansible.builtin.include_tasks: forgejo.yml
+  when: enabled_containers.forgejo | default(false)
+  tags:
+    - content
+    - forgejo
 
 # =============================================================================
 # Security Services

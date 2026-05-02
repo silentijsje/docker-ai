@@ -71,6 +71,7 @@ resource_limits:
   # Content
   drawio: { memory: "512M", cpus: "0.5" }
   mealie: { memory: "1G", cpus: "0.5" }
+  forgejo: { memory: "512M", cpus: "0.5" }
   nextcloud: { memory: "1G", cpus: "1.0" }
   nextcloud_pg: { memory: "256M", cpus: "0.5" }
   paperless_redis: { memory: "256M", cpus: "0.25" }
@@ -79,6 +80,11 @@ resource_limits:
   paperless_gotenberg: { memory: "512M", cpus: "0.5" }
   paperless_tika: { memory: "512M", cpus: "0.5" }
   paperless_ai: { memory: "512M", cpus: "0.5" }
+  # Management Tools
+  komodo_mongo: { memory: "512M", cpus: "0.5" }
+  komodo_core: { memory: "1G", cpus: "1.0" }
+  komodo_periphery: { memory: "512M", cpus: "0.5" }
+  dockhand: { memory: "256M", cpus: "0.5" }
   # Infrastructure
   ddns_updater: { memory: "128M", cpus: "0.25" }
   nebula_sync: { memory: "128M", cpus: "0.25" }
