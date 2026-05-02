@@ -57,6 +57,11 @@ container_ports:
   drawio: 8085           # draw.io diagramming (internal: 8080)
   mealie: 9002           # Recipe manager (internal: 9000)
   nextcloud: 8443        # Cloud storage (internal: 443)
+  forgejo: 8088          # Git forge (internal: 3000; SSH on host 2222)
+
+  # Management Tools
+  komodo: 9120           # Komodo Core UI (internal: 9120)
+  dockhand: 3003         # Dockhand UI (internal: 3000)
 
   # Infrastructure (no Traefik)
   ddns_updater: 8087     # DDNS Updater (internal: 8000)

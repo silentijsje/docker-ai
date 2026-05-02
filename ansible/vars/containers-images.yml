@@ -90,7 +90,7 @@ mealie_image: ghcr.io/mealie-recipes/mealie:latest
 mealie_container_name: mealie
 
 # Authentik
-authentik_image: ghcr.io/goauthentik/server:2025.8.4
+authentik_image: ghcr.io/goauthentik/server:2026.2.2
 authentik_pg_image: postgres:16-alpine
 authentik_redis_image: redis:alpine
 authentik_pg_container_name: authentik-postgresql
@@ -123,6 +123,23 @@ paperless_tika_image: apache/tika:latest
 paperless_tika_container_name: paperless-tika
 paperless_ai_image: clusterzx/paperless-ai:latest
 paperless_ai_container_name: paperless-ai
+
+# Komodo - Build & Deployment System
+komodo_image_tag: "2"
+komodo_core_image: ghcr.io/moghtech/komodo-core
+komodo_periphery_image: ghcr.io/moghtech/komodo-periphery
+komodo_mongo_image: mongo:latest
+komodo_core_container_name: komodo-core
+komodo_periphery_container_name: komodo-periphery
+komodo_mongo_container_name: komodo-mongo
+
+# Forgejo - Self-hosted Git Forge
+forgejo_image: codeberg.org/forgejo/forgejo:10
+forgejo_container_name: forgejo
+
+# Dockhand - Docker Management
+dockhand_image: fnsys/dockhand:latest
+dockhand_container_name: dockhand
 
 # DDNS Updater
 ddns_updater_image: qmcgaw/ddns-updater:latest

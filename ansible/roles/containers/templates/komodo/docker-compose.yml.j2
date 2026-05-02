@@ -1,0 +1,136 @@
+---
+###########################################################################
+# Komodo - Build & Deployment System
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://komo.do/docs
+###########################################################################
+
+services:
+  komodo-mongo:
+    image: {{ komodo_mongo_image | default('mongo:latest') }}
+    container_name: {{ komodo_mongo_container_name | default('komodo-mongo') }}
+    restart: unless-stopped
+    command: --quiet --wiredTigerCacheSizeGB 0.25
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.komodo_mongo.memory }}
+          cpus: "{{ resource_limits.komodo_mongo.cpus }}"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=komodo
+      - MONGO_INITDB_ROOT_PASSWORD={{ vault_komodo_db_password }}
+    volumes:
+      - komodo-mongo-data:/data/db
+      - komodo-mongo-config:/data/configdb
+    networks:
+      - {{ container_network }}
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
+
+  komodo-core:
+    image: {{ komodo_core_image | default('ghcr.io/moghtech/komodo-core') }}:{{ komodo_image_tag | default('2') }}
+    container_name: {{ komodo_core_container_name | default('komodo-core') }}
+    init: true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.komodo_core.memory }}
+          cpus: "{{ resource_limits.komodo_core.cpus }}"
+    depends_on:
+      komodo-mongo:
+        condition: service_healthy
+    ports:
+      - "{{ container_ports.komodo }}:9120"
+    environment:
+      - KOMODO_HOST=https://komodo.{{ cloudflare_dns_zone }}
+      - KOMODO_TITLE=Komodo
+      - KOMODO_DATABASE_ADDRESS=komodo-mongo:27017
+      - KOMODO_DATABASE_USERNAME=komodo
+      - KOMODO_DATABASE_PASSWORD={{ vault_komodo_db_password }}
+      - KOMODO_WEBHOOK_SECRET={{ vault_komodo_webhook_secret }}
+      - KOMODO_JWT_SECRET={{ vault_komodo_jwt_secret }}
+      - KOMODO_INIT_ADMIN_USERNAME=admin
+      - KOMODO_INIT_ADMIN_PASSWORD={{ vault_komodo_admin_password }}
+      - KOMODO_PERIPHERY_PUBLIC_KEY=file:/config/keys/periphery.pub
+      - KOMODO_FIRST_SERVER_NAME=ota
+      - KOMODO_MONITORING_INTERVAL=15-sec
+      - KOMODO_RESOURCE_POLL_INTERVAL=1-hr
+      - KOMODO_JWT_TTL=1-day
+      - KOMODO_OIDC_ENABLED=false
+      - TZ={{ container_timezone }}
+    volumes:
+      - komodo-keys:/config/keys
+      - {{ container_data_root }}/komodo/backups:/backups
+    networks:
+      - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if traefik_enabled | default(false) %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.komodo.service=komodo
+      - traefik.http.routers.komodo.rule=Host(`komodo.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.komodo.entrypoints=secureweb
+      - traefik.http.routers.komodo.middlewares={{ traefik_router_middlewares }}
+      # Service
+      - traefik.http.services.komodo.loadbalancer.server.scheme=http
+      - traefik.http.services.komodo.loadbalancer.server.port=9120
+
+  komodo-periphery:
+    image: {{ komodo_periphery_image | default('ghcr.io/moghtech/komodo-periphery') }}:{{ komodo_image_tag | default('2') }}
+    container_name: {{ komodo_periphery_container_name | default('komodo-periphery') }}
+    init: true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.komodo_periphery.memory }}
+          cpus: "{{ resource_limits.komodo_periphery.cpus }}"
+    depends_on:
+      - komodo-core
+    environment:
+      - PERIPHERY_CORE_ADDRESS=ws://komodo-core:9120
+      - PERIPHERY_CONNECT_AS=ota
+      - PERIPHERY_CORE_PUBLIC_KEYS=file:/config/keys/core.pub
+      - PERIPHERY_ROOT_DIRECTORY=/etc/komodo
+      - PERIPHERY_INCLUDE_DISK_MOUNTS=/etc/hostname
+      - PERIPHERY_DISABLE_TERMINALS=false
+      - PERIPHERY_DISABLE_CONTAINER_TERMINALS=false
+    volumes:
+      - komodo-keys:/config/keys
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/proc
+      - /etc/komodo:/etc/komodo
+    networks:
+      - {{ container_network }}
+
+volumes:
+  komodo-mongo-data:
+    driver: local
+  komodo-mongo-config:
+    driver: local
+  komodo-keys:
+    driver: local
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}

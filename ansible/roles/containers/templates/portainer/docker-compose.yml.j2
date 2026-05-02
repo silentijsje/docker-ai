@@ -19,8 +19,14 @@ services:
       - "{{ container_ports.portainer }}:9000"
     networks:
       - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
     labels:
       - "traefik.enable=true"
+{% if traefik_enabled | default(false) %}
+      - "traefik.docker.network=proxy"
+{% endif %}
       - "traefik.http.routers.portainer.entrypoints=secureweb"
       - "traefik.http.routers.portainer.rule=Host(`portainer.{{ cloudflare_dns_zone }}`)"
       - "traefik.http.routers.portainer.service=portainer"
@@ -31,3 +37,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}

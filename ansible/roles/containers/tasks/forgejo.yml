@@ -1,0 +1,19 @@
+---
+# Forgejo - Self-hosted Git forge
+# https://forgejo.org
+
+- name: Ensure Forgejo directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/forgejo"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Deploy Forgejo docker-compose
+  ansible.builtin.template:
+    src: forgejo/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/forgejo/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"

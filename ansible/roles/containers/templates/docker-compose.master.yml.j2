@@ -7,6 +7,12 @@ include:
 {% if enabled_containers.portainer | default(false) %}
   - path: {{ container_data_root }}/portainer/docker-compose.yml
 {% endif %}
+{% if enabled_containers.komodo | default(false) %}
+  - path: {{ container_data_root }}/komodo/docker-compose.yml
+{% endif %}
+{% if enabled_containers.dockhand | default(false) %}
+  - path: {{ container_data_root }}/dockhand/docker-compose.yml
+{% endif %}
 {% if enabled_containers.watchtower | default(false) %}
   - path: {{ container_data_root }}/watchtower/docker-compose.yml
 {% endif %}
@@ -54,6 +60,9 @@ include:
 {% endif %}
 {% if enabled_containers.paperless | default(false) %}
   - path: {{ container_data_root }}/paperless/docker-compose.yml
+{% endif %}
+{% if enabled_containers.forgejo | default(false) %}
+  - path: {{ container_data_root }}/forgejo/docker-compose.yml
 {% endif %}
 {% if enabled_containers.authentik | default(false) %}
   - path: {{ container_data_root }}/authentik/docker-compose.yml

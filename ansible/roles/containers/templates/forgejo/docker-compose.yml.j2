@@ -1,0 +1,54 @@
+---
+###########################################################################
+# Forgejo - Self-hosted Git Forge
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://forgejo.org/docs/latest/admin/installation/docker/
+###########################################################################
+
+services:
+  forgejo:
+    image: {{ forgejo_image | default('codeberg.org/forgejo/forgejo:10') }}
+    container_name: {{ forgejo_container_name | default('forgejo') }}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.forgejo.memory }}
+          cpus: "{{ resource_limits.forgejo.cpus }}"
+    environment:
+      - USER_UID={{ container_puid }}
+      - USER_GID={{ container_pgid }}
+      - TZ={{ container_timezone }}
+    volumes:
+      - {{ container_data_root }}/forgejo/data:/data
+    ports:
+      - "{{ container_ports.forgejo }}:3000"
+      - "2222:22"
+    networks:
+      - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if traefik_enabled | default(false) %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.forgejo.service=forgejo
+      - traefik.http.routers.forgejo.rule=Host(`git.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.forgejo.entrypoints=secureweb
+      - traefik.http.routers.forgejo.middlewares={{ traefik_router_middlewares }}
+      # Service
+      - traefik.http.services.forgejo.loadbalancer.server.scheme=http
+      - traefik.http.services.forgejo.loadbalancer.server.port=3000
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}

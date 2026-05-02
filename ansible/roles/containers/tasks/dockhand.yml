@@ -1,0 +1,19 @@
+---
+# Dockhand - Modern Docker Management
+# https://dockhand.pro/manual/
+
+- name: Ensure Dockhand directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/dockhand"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Deploy Dockhand docker-compose
+  ansible.builtin.template:
+    src: dockhand/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/dockhand/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"

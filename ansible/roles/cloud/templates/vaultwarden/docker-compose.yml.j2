@@ -19,7 +19,7 @@ services:
           cpus: "{{ resource_limits.vaultwarden.cpus }}"
     environment:
       - TZ={{ container_timezone }}
-      - DOMAIN=https://vaultwarden.{{ cloudflare_dns_zone }}
+      - DOMAIN=https://vault.{{ cloudflare_dns_zone }}
       - ADMIN_TOKEN={{ vault_vaultwarden_admin_token }}
       - SIGNUPS_ALLOWED=false
       - SMTP_HOST=smtp.fastmail.com
@@ -35,7 +35,7 @@ services:
       - "{{ container_ports.vaultwarden }}:80"
     networks:
       - {{ container_network }}
-{% if inventory_hostname in groups['proxy'] %}
+{% if 'proxy' in groups and inventory_hostname in groups['proxy'] %}
       - proxy
 {% endif %}
     labels:
@@ -60,7 +60,7 @@ services:
 networks:
   {{ container_network }}:
     external: true
-{% if inventory_hostname in groups['proxy'] %}
+{% if 'proxy' in groups and inventory_hostname in groups['proxy'] %}
   proxy:
     external: true
 {% endif %}
