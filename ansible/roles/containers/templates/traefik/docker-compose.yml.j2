@@ -15,7 +15,7 @@ services:
     environment:
       - TZ={{ timezone }}
     ports:
-      - 127.0.0.1:8081:8080
+      - 8081:8080
       - 6060:6060        # Provides Metrics for Prometheus
       - 7422:7422        # Provides WAF AppSec
     depends_on:

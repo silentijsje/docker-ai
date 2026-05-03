@@ -1,0 +1,15 @@
+[Unit]
+Description=Traefik is an open-source Edge Router that makes publishing your services a fun and easy experience
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/traefik --configFile={{ traefik_config_dir }}/traefik.yaml
+Restart=on-failure
+ExecReload=/bin/kill -USR1 $MAINPID
+Environment="CF_DNS_API_TOKEN={{ vault_cloudflare_api_token }}"
+Environment="TZ={{ timezone | default('Europe/Amsterdam') }}"
+
+[Install]
+WantedBy=multi-user.target

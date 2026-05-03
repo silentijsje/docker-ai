@@ -1,0 +1,67 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+log:
+  level: INFO
+  filePath: {{ traefik_log_dir }}/traefik.log
+  format: json
+
+accessLog:
+  filePath: {{ traefik_log_dir }}/traefik-access.log
+  format: json
+  filters:
+    statusCodes:
+      - "200"
+      - "400-599"
+    retryAttempts: true
+    minDuration: "10ms"
+  bufferingSize: 0
+  fields:
+    headers:
+      defaultMode: drop
+      names:
+        User-Agent: keep
+
+api:
+  dashboard: true
+  insecure: false
+
+entryPoints:
+  web:
+    address: ':80'
+    http:
+      redirections:
+        entryPoint:
+          to: secureweb
+          scheme: https
+  secureweb:
+    address: ':443'
+  metrics:
+    address: ':8082'
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+
+providers:
+  file:
+    directory: {{ traefik_conf_d }}
+    watch: true
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "{{ vault_acme_email }}"
+      storage: {{ traefik_ssl_dir }}/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+
+experimental:
+  plugins:
+    crowdsec-bouncer-traefik-plugin:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.4.2

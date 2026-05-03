@@ -1,0 +1,418 @@
+http:
+  routers:
+    # --- Traefik dashboard (this host) ---
+    traefik-dashboard:
+      rule: "Host(`traefik.{{ cloudflare_dns_zone }}`)"
+      service: api@internal
+      entryPoints:
+        - secureweb
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "{{ cloudflare_dns_zone }}"
+            sans:
+              - "*.{{ cloudflare_dns_zone }}"
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+
+    # --- Infrastructure ---
+    portainer:
+      rule: "Host(`portainer.{{ cloudflare_dns_zone }}`)"
+      service: portainer
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    homepage:
+      rule: "Host(`homepage.{{ cloudflare_dns_zone }}`)"
+      service: homepage
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    komodo:
+      rule: "Host(`komodo.{{ cloudflare_dns_zone }}`)"
+      service: komodo
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    dockhand:
+      rule: "Host(`dockhand.{{ cloudflare_dns_zone }}`)"
+      service: dockhand
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    capacitarr:
+      rule: "Host(`capacitarr.{{ cloudflare_dns_zone }}`)"
+      service: capacitarr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+
+    # --- Media management ---
+    radarr:
+      rule: "Host(`radarr.{{ cloudflare_dns_zone }}`)"
+      service: radarr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    sonarr:
+      rule: "Host(`sonarr.{{ cloudflare_dns_zone }}`)"
+      service: sonarr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    prowlarr:
+      rule: "Host(`prowlarr.{{ cloudflare_dns_zone }}`)"
+      service: prowlarr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    whisparr:
+      rule: "Host(`whisparr.{{ cloudflare_dns_zone }}`)"
+      service: whisparr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    seerr:
+      rule: "Host(`seerr.{{ cloudflare_dns_zone }}`)"
+      service: seerr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    tautulli:
+      rule: "Host(`tautulli.{{ cloudflare_dns_zone }}`)"
+      service: tautulli
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    jellystat:
+      rule: "Host(`jellystat.{{ cloudflare_dns_zone }}`)"
+      service: jellystat
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    notifiarr:
+      rule: "Host(`notifiarr.{{ cloudflare_dns_zone }}`)"
+      service: notifiarr
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+
+    # --- Download clients ---
+    sabnzbd:
+      rule: "Host(`nzb.{{ cloudflare_dns_zone }}`)"
+      service: sabnzbd
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    qbittorrent:
+      rule: "Host(`torrent.{{ cloudflare_dns_zone }}`)"
+      service: qbittorrent
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+
+    # --- Content ---
+    drawio:
+      rule: "Host(`drawio.{{ cloudflare_dns_zone }}`)"
+      service: drawio
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    mealie:
+      rule: "Host(`mealie.{{ cloudflare_dns_zone }}`)"
+      service: mealie
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    nextcloud:
+      rule: "Host(`cloud.{{ cloudflare_dns_zone }}`)"
+      service: nextcloud
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    paperless:
+      rule: "Host(`paperless.{{ cloudflare_dns_zone }}`)"
+      service: paperless
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    forgejo:
+      rule: "Host(`git.{{ cloudflare_dns_zone }}`)"
+      service: forgejo
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+
+    # --- Security ---
+    vaultwarden:
+      rule: "Host(`vault.{{ cloudflare_dns_zone }}`)"
+      service: vaultwarden
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    lldap:
+      rule: "Host(`ldap.{{ cloudflare_dns_zone }}`)"
+      service: lldap
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    authentik:
+      rule: "Host(`auth2.{{ cloudflare_dns_zone }}`)"
+      service: authentik
+      entryPoints:
+        - secureweb
+      tls: {}
+
+    # --- Monitoring ---
+    grafana:
+      rule: "Host(`grafana.{{ cloudflare_dns_zone }}`)"
+      service: grafana
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    graylog:
+      rule: "Host(`graylog.{{ cloudflare_dns_zone }}`)"
+      service: graylog
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+
+    # --- Disabled (uncomment when enabled) ---
+    # tracearr:
+    #   rule: "Host(`tracearr.{{ cloudflare_dns_zone }}`)"
+    #   service: tracearr
+    #   entryPoints: [secureweb]
+    #   tls: {}
+    #   middlewares: [security-headers@file, traefik-bouncer@file, ipAllowList@file]
+    # wizarr:
+    #   rule: "Host(`wizarr.{{ cloudflare_dns_zone }}`)"
+    #   service: wizarr
+    #   entryPoints: [secureweb]
+    #   tls: {}
+    #   middlewares: [security-headers@file, traefik-bouncer@file, ipAllowList@file]
+
+  services:
+    # --- Infrastructure ---
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9000"
+    homepage:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:3001"
+    komodo:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9120"
+    dockhand:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:3003"
+    capacitarr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:2187"
+
+    # --- Media management ---
+    radarr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:7878"
+    sonarr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8989"
+    prowlarr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9696"
+    whisparr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:6969"
+    seerr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:5055"
+    tautulli:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8181"
+    jellystat:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:3050"
+    notifiarr:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:5454"
+
+    # --- Download clients ---
+    sabnzbd:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8083"
+    qbittorrent:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8084"
+
+    # --- Content ---
+    drawio:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8085"
+    mealie:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9002"
+    nextcloud:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_prod_docker01 }}:8443"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    paperless:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8000"
+    forgejo:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8088"
+
+    # --- Security ---
+    vaultwarden:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:8086"
+    lldap:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:17170"
+    authentik:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9001"
+
+    # --- Monitoring ---
+    grafana:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:3000"
+    graylog:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_prod_docker01 }}:9300"
+
+    # --- Disabled ---
+    # tracearr:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://{{ vault_ip_prod_docker01 }}:3070"
+    # wizarr:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://{{ vault_ip_prod_docker01 }}:5690"
+
+  serversTransports:
+    insecure-no-verify:
+      insecureSkipVerify: true

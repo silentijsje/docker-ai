@@ -1,0 +1,226 @@
+http:
+  routers:
+    jellyfin:
+      rule: "Host(`jellyfin.silentijsje.com`)"
+      service: jellyfin
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+    jellyfin2:
+      rule: "Host(`jellyfin2.silentijsje.com`)"
+      service: jellyfin2
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+    hassio:
+      rule: "Host(`hassio.silentijsje.com`)"
+      service: hassio
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+    dns01:
+      rule: "Host(`dns01.silentijsje.com`)"
+      service: dns01
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    dns02:
+      rule: "Host(`dns02.silentijsje.com`)"
+      service: dns02
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    immich:
+      rule: "Host(`immich.silentijsje.com`)"
+      service: immich
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+    truenas:
+      rule: "Host(`truenas.silentijsje.com`)"
+      service: truenas
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    pve1:
+      rule: "Host(`pve1.silentijsje.com`)"
+      service: pve1
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    pve2:
+      rule: "Host(`pve2.silentijsje.com`)"
+      service: pve2
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    pdm:
+      rule: "Host(`pdm.silentijsje.com`)"
+      service: pdm
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    pbs:
+      rule: "Host(`pbs.silentijsje.com`)"
+      service: pbs
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    unifi:
+      rule: "Host(`unifi.silentijsje.com`)"
+      service: unifi
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    termix:
+      rule: "Host(`termix.silentijsje.com`)"
+      service: termix
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+    portainer-ssh:
+      rule: "Host(`portainer-ssh.silentijsje.com`)"
+      service: portainer-ssh
+      entryPoints:
+        - secureweb
+      tls: {}
+      middlewares:
+        - security-headers@file
+        - traefik-bouncer@file
+        - ipAllowList@file
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_jellyfin }}:8096"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    jellyfin2:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_jellyfin2 }}:8096"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    immich:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_immich }}:2283"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    truenas:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_truenas }}"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    pve1:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_pve1 }}:8006"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    pve2:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_pve2 }}:8006"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    pdm:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_pdm }}:8443"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    pbs:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_pbs }}:8007"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    unifi:
+      loadBalancer:
+        servers:
+          - url: "https://{{ vault_ip_unifi }}"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    termix:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_ssh }}:8080"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    portainer-ssh:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_ssh }}:9000"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    dns01:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_dns01 }}:5380"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    dns02:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_dns02 }}:5380"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+    hassio:
+      loadBalancer:
+        servers:
+          - url: "http://{{ vault_ip_hassio }}:8123"
+        passHostHeader: true
+        serversTransport: insecure-no-verify
+  serversTransports:
+    insecure-no-verify:
+      insecureSkipVerify: true

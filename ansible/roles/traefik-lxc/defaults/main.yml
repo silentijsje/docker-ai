@@ -1,0 +1,5 @@
+---
+traefik_config_dir: /etc/traefik
+traefik_conf_d: /etc/traefik/conf.d
+traefik_ssl_dir: /etc/traefik/ssl
+traefik_log_dir: /var/log/traefik

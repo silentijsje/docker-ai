@@ -1,0 +1,12 @@
+---
+# Deploy Traefik on LXC (binary + systemd)
+# Usage: ansible-playbook traefik.yml --ask-vault-pass
+
+- name: Deploy Traefik LXC
+  hosts: proxy
+  vars_files:
+    - vars/vault.yml
+    - vars/docker-vars.yml
+
+  roles:
+    - role: traefik-lxc
