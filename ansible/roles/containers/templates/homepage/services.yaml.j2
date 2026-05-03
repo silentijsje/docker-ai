@@ -37,6 +37,10 @@
         icon: crowdsec.png
         href: "https://app.crowdsec.net"
         description: security
+    - Authentik:
+        icon: authentik.svg
+        href: "https://auth2.{{ cloudflare_dns_zone }}"
+        description: SSO
     - DNS01:
         icon: technitium.png
         href: "https://dns01.{{ cloudflare_dns_zone }}"
@@ -81,40 +85,44 @@
         icon: sonarr.svg
         href: "https://sonarr.{{ cloudflare_dns_zone }}"
         description: tv shows
+    - Prowlarr:
+        icon: prowlarr.svg
+        href: "https://prowlarr.{{ cloudflare_dns_zone }}"
+        description: indexers
+    - Whisparr:
+        icon: whisparr.png
+        href: "https://whisparr.{{ cloudflare_dns_zone }}"
+        description: adult content
     - SABnzbd:
         icon: sabnzbd.svg
-        href: "https://sabnzbd.{{ cloudflare_dns_zone }}"
+        href: "https://nzb.{{ cloudflare_dns_zone }}"
         description: usenet
     - qBittorrent:
         icon: qbittorrent.svg
-        href: "https://qbt.{{ cloudflare_dns_zone }}"
+        href: "https://torrent.{{ cloudflare_dns_zone }}"
         description: torrents
+    - Capacitarr:
+        icon: capacitarr.png
+        href: "https://capacitarr.{{ cloudflare_dns_zone }}"
+        description: disk capacity
 
 - Services:
     - Home Assistant:
         icon: home-assistant.svg
         href: "https://hassio.{{ cloudflare_dns_zone }}"
         description: home
-    - Mealie:
-        icon: mealie.svg
-        href: "https://mealie.{{ cloudflare_dns_zone }}"
-        description: recipes
     - Paperless:
         icon: paperless-ngx.svg
         href: "https://paperless.{{ cloudflare_dns_zone }}"
         description: documents
-    - Grafana:
-        icon: grafana.svg
-        href: "https://grafana.{{ cloudflare_dns_zone }}"
-        description: monitoring
-    - Vaultwarden:
-        icon: vaultwarden.svg
-        href: "https://vault.{{ cloudflare_dns_zone }}"
-        description: passwords
-    - Wizarr:
-        icon: wizarr.svg
-        href: "https://wizarr.{{ cloudflare_dns_zone }}"
-        description: invites
+    - Notifiarr:
+        icon: notifiarr.png
+        href: "https://notifiarr.{{ cloudflare_dns_zone }}"
+        description: notifications
+    - DrawIO:
+        icon: drawio.svg
+        href: "https://drawio.{{ cloudflare_dns_zone }}"
+        description: diagrams
     - Termix:
         icon: console.svg
         href: "https://termix.{{ cloudflare_dns_zone }}"
