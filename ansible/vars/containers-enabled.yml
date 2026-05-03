@@ -28,6 +28,7 @@ enabled_containers:
   tautulli: true
   tracearr: false
   wizarr: false
+  capacitarr: true
 
   # Content (new)
   drawio: true

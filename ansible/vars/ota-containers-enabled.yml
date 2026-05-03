@@ -31,5 +31,6 @@ enabled_containers:
   nebula_sync: false
   newt: false
   termix: false
+  capacitarr: true
   komodo: true
   dockhand: true

@@ -1,0 +1,55 @@
+---
+###########################################################################
+# Capacitarr - Disk Capacity Manager for *arr
+# Deployed by Ansible - Do not edit manually
+# Documentation: https://github.com/Ghent/capacitarr
+###########################################################################
+
+services:
+  capacitarr:
+    image: {{ capacitarr_image | default('ghcr.io/ghent/capacitarr:stable') }}
+    container_name: {{ capacitarr_container_name | default('capacitarr') }}
+    hostname: capacitarr
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: {{ resource_limits.capacitarr.memory }}
+          cpus: "{{ resource_limits.capacitarr.cpus }}"
+    environment:
+      - TZ={{ container_timezone }}
+      - PUID={{ container_puid }}
+      - PGID={{ container_pgid }}
+      - JWT_SECRET={{ vault_capacitarr_jwt_secret }}
+    volumes:
+      - {{ container_data_root }}/capacitarr:/config
+    ports:
+      - "{{ container_ports.capacitarr }}:2187"
+    networks:
+      - {{ container_network }}
+{% if traefik_enabled | default(false) %}
+      - proxy
+{% endif %}
+    labels:
+      - traefik.enable=true
+{% if traefik_enabled | default(false) %}
+      - traefik.docker.network=proxy
+{% endif %}
+      # Router
+      - traefik.http.routers.capacitarr.service=capacitarr
+      - traefik.http.routers.capacitarr.rule=Host(`capacitarr.{{ cloudflare_dns_zone }}`)
+      - traefik.http.routers.capacitarr.entrypoints=secureweb
+      - traefik.http.routers.capacitarr.middlewares={{ traefik_router_middlewares }}
+      # Service
+      - traefik.http.services.capacitarr.loadbalancer.server.scheme=http
+      - traefik.http.services.capacitarr.loadbalancer.server.port=2187
+
+networks:
+  {{ container_network }}:
+    external: true
+{% if traefik_enabled | default(false) %}
+  proxy:
+    external: true
+{% endif %}

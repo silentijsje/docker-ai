@@ -135,6 +135,13 @@
     - media_management
     - tracearr
 
+- name: Deploy Capacitarr
+  ansible.builtin.include_tasks: capacitarr.yml
+  when: enabled_containers.capacitarr | default(false)
+  tags:
+    - media_management
+    - capacitarr
+
 - name: Deploy Wizarr
   ansible.builtin.include_tasks: wizarr.yml
   when: enabled_containers.wizarr | default(false)
