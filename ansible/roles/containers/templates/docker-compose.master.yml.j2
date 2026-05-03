@@ -46,6 +46,9 @@ include:
 {% if enabled_containers.tracearr | default(false) %}
   - path: {{ container_data_root }}/tracearr/docker-compose.yml
 {% endif %}
+{% if enabled_containers.capacitarr | default(false) %}
+  - path: {{ container_data_root }}/capacitarr/docker-compose.yml
+{% endif %}
 {% if enabled_containers.wizarr | default(false) %}
   - path: {{ container_data_root }}/wizarr/docker-compose.yml
 {% endif %}

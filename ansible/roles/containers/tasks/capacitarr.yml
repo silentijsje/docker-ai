@@ -1,0 +1,19 @@
+---
+# Capacitarr - Disk Capacity Manager for *arr
+# https://github.com/Ghent/capacitarr
+
+- name: Ensure Capacitarr directory exists
+  ansible.builtin.file:
+    path: "{{ container_data_root }}/capacitarr"
+    state: directory
+    mode: '0755'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"
+
+- name: Deploy Capacitarr docker-compose
+  ansible.builtin.template:
+    src: capacitarr/docker-compose.yml.j2
+    dest: "{{ container_data_root }}/capacitarr/docker-compose.yml"
+    mode: '0644'
+    owner: "{{ container_dir_owner }}"
+    group: "{{ container_dir_group }}"

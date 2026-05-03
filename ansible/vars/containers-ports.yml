@@ -59,6 +59,9 @@ container_ports:
   nextcloud: 8443        # Cloud storage (internal: 443)
   forgejo: 8088          # Git forge (internal: 3000; SSH on host 2222)
 
+  # *arr Utilities
+  capacitarr: 2187       # Disk capacity manager (internal: 2187)
+
   # Management Tools
   komodo: 9120           # Komodo Core UI (internal: 9120)
   dockhand: 3003         # Dockhand UI (internal: 3000)

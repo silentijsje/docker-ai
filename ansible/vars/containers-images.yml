@@ -137,6 +137,10 @@ komodo_mongo_container_name: komodo-mongo
 forgejo_image: codeberg.org/forgejo/forgejo:10
 forgejo_container_name: forgejo
 
+# Capacitarr - Disk Capacity Manager for *arr
+capacitarr_image: ghcr.io/ghent/capacitarr:stable
+capacitarr_container_name: capacitarr
+
 # Dockhand - Docker Management
 dockhand_image: fnsys/dockhand:latest
 dockhand_container_name: dockhand

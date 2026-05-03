@@ -49,6 +49,7 @@ resource_limits:
   watchtower: { memory: "128M", cpus: "0.25" }
   termix: { memory: "128M", cpus: "0.25" }
   # Media Management
+  capacitarr: { memory: "256M", cpus: "0.5" }
   prowlarr: { memory: "512M", cpus: "0.5" }
   whisparr: { memory: "1G", cpus: "1.0" }
   seerr: { memory: "512M", cpus: "0.5" }
